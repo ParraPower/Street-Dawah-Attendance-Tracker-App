@@ -1,0 +1,25 @@
+{
+  "name": "group-members-extractor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "cross-env NODE_ENV=local ts-node --loader ts-node/esm src/index.ts"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "@whiskeysockets/baileys": "^7.0.0-rc.6"
+  },
+  "devDependencies": {
+    "@tsconfig/node20": "^20.1.6",
+    "@types/node": "^24.10.0",
+    "cross-env": "^10.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
