@@ -3,22 +3,23 @@
     "compilerOptions": {
       "outDir": "./dist",
       "rootDir": "./src",
-      "module": "ESNext",
-      "target": "es2020",
-      "moduleResolution": "node",
+      "module": "NodeNext",
+      "moduleResolution": "NodeNext",
+      "target": "ES2022",
       "esModuleInterop": true,
       "strict": true,
       "skipLibCheck": true,
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,  
+      "allowSyntheticDefaultImports": true
+
+    },
+     "paths": {
+      "@/*": ["./*"]
     },
     "include": ["src/**/*", "env.d.ts"],
     "ts-node": {
-      // Tell ts-node CLI to install the --loader automatically, explained below
       "esm": true,
-      // "compilerOptions": {
-      //   "module": "CommonJS"
-      // }
     }
-}
+  }
   

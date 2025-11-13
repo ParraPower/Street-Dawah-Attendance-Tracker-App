@@ -1,0 +1,33 @@
+{
+  "name": "attendance-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.27"
+  },
+  "devDependencies": {
+    "@tsconfig/node20": "^20.1.6",
+    "@types/node": "^24.10.0",
+    "cross-env": "^10.1.0",
+    "dotenv-cli": "^11.0.0",
+    "jest": "^30.2.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+    "type": "module",
+  "scripts": {
+    "test": "npm jest",
+    "build": "tsc",
+    "typeorm": "ts-node --transpile-only ./node_modules/typeorm/cli.js",
+    "chuck": "npx typeorm-ts-node-esm migration:generate ./src/migrations/LocalMigration -d ./src/data-source.ts",
+    "migration:generate": "cross-env NODE_ENV=local dotenv -e .env.local npm run chuck", 
+    "migration:run": "npm run typeorm migration:run",
+    "start": "cross-env NODE_ENV=local node ./src/help.ts --loader ts-node/esm"
+  },
+  "author": "",
+  "license": "ISC"
+}
