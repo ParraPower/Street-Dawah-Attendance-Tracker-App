@@ -1,5 +1,5 @@
 import './setup-env';
-import { AppDataSource } from './data-source.js';
+import AppDataSource from './data-source.js';
 import { User } from './entities/User.js';
 
 AppDataSource.initialize()

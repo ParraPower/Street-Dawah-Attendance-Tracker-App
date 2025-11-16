@@ -22,10 +22,11 @@
   "scripts": {
     "test": "npm jest",
     "build": "tsc",
-    "typeorm": "ts-node --transpile-only ./node_modules/typeorm/cli.js",
-    "chuck": "npx typeorm-ts-node-esm migration:generate ./src/migrations/LocalMigration -d ./src/data-source.ts",
-    "migration:generate": "cross-env NODE_ENV=local dotenv -e .env.local npm run chuck", 
-    "migration:run": "npm run typeorm migration:run",
+    "typeorm:generate": "npx typeorm-ts-node-esm migration:generate -d ./src/data-source.ts",    
+    "typeorm:run": "npx typeorm-ts-node-esm migration:run -d ./src/data-source.ts",    
+    "migration:generate": "bash ./src/scripts/generate-migration.sh",
+    "migration:generate:win": "powershell -ExecutionPolicy Bypass -File ./scripts/generate-migration.ps1",
+    "migration:run": "npm run typeorm:run",
     "start": "cross-env NODE_ENV=local node ./src/help.ts --loader ts-node/esm"
   },
   "author": "",

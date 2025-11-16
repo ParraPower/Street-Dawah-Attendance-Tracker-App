@@ -1,4 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Attendance } from "./Attendance.js";
+import { Session } from "./Session.js";
+import { UserMembership } from "./UserMembership.js";
+
 
 @Entity()
 export class User {
@@ -10,4 +14,13 @@ export class User {
 
   @Column()
   mobile!: string;
+
+  @OneToMany(() => Attendance, (a) => a.user)
+  attendances?: Attendance[];
+
+  @OneToMany(() => Session, (s) => s.emirUser)
+  sessions?: Session[];
+
+  @OneToMany(() => UserMembership, (um) => um.user)
+  userMemberships?: UserMembership[];
 }

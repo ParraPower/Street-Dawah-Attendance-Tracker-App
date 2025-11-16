@@ -19,7 +19,7 @@
     },
     "include": ["src/**/*", "env.d.ts"],
     "ts-node": {
-      "esm": true,
+      "esm": true,//"migration:generate": "cross-env NODE_ENV=local dotenv -e .env.local npm run chuck:local", 
     }
   }
   
