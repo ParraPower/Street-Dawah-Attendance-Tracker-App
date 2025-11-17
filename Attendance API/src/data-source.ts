@@ -1,6 +1,16 @@
 import 'reflect-metadata';
+import { User } from './domains/user/User.module.js';
+import { Location } from './domains/location/Location.module.js';
+import { UserOutreachActivityLog } from './domains/outreach/Outreach.module.js';
 import { DataSource } from 'typeorm';
-import { Attendance, Location, Membership, Session, User, UserMembership } from './entities/index.js';
+import { 
+  //UserEntities, 
+  //AttendanceEntities, 
+  //LocationEntities, 
+  //MembershipEntities, 
+  //SessionEntities, 
+  //OutreachEntities 
+} from './domains/entities.index.js';
 import * as dotenv from 'dotenv';
 import { getDirname } from './utils/esm-globals.js';
 
@@ -12,7 +22,17 @@ const AppDataSource = new DataSource({
   url: process.env.DATABASE_URL, // Use environment variable
   synchronize: true, // Auto-create tables (disable in production)
   logging: false,
-  entities: [Attendance, Location, Membership, Session, User, UserMembership],
+  entities: [
+    User,
+    Location,
+    UserOutreachActivityLog
+    //...UserEntities, 
+    //...LocationEntities,
+    //...AttendanceEntities,
+    //...OutreachEntities,
+    //...MembershipEntities,
+    //...SessionEntities
+  ],
   migrations: [getDirname(import.meta.url) + "/migrations/*.ts"],
 });
 

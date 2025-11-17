@@ -8,9 +8,9 @@ import {
   JoinColumn,
   Index,
 } from "typeorm";
-import { User } from "./User.js";
-import { Location } from "./Location.js";
-import { Session } from "./Session.js";
+//import { User } from "../../user/entities/User.js";
+//import { Location } from "../../location/entities/Location.js";
+import { Session } from "../../session/entities/Session.js";
 
 @Entity({ name: "attendances" })
 @Index(["userId"])
@@ -20,16 +20,16 @@ export class Attendance {
   @PrimaryGeneratedColumn("increment")
   id!: number;
 
-  @ManyToOne(() => User, (user) => user.attendances, { nullable: false, onDelete: "CASCADE" })
-  @JoinColumn({ name: "userId" })
-  user!: User;
+  // @ManyToOne(() => User, (user) => user.attendances, { nullable: false, onDelete: "CASCADE" })
+  // @JoinColumn({ name: "userId" })
+  // user!: User;
 
   @Column()
   userId!: number;
 
-  @ManyToOne(() => Location, (location) => location.attendances, { nullable: false, onDelete: "CASCADE" })
-  @JoinColumn({ name: "locationId" })
-  location!: Location;
+  // @ManyToOne(() => Location, (location) => location.attendances, { nullable: false, onDelete: "CASCADE" })
+  // @JoinColumn({ name: "locationId" })
+  // location!: Location;
 
   @Column()
   locationId!: number;

@@ -8,7 +8,6 @@ import {
   Index,
 } from "typeorm";
 import { UserMembership } from "./UserMembership.js";
-import { MembershipTypeEnum } from "./MembershipTypeEnum.js";
 
 @Entity({ name: "memberships" })
 @Index(["isActive"])

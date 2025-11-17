@@ -1,0 +1,43 @@
+// src/domains/user/services/User.service.ts
+import AppDataSource from "../../../data-source.js";
+import { User } from "../entities/User.js";
+import { Repository } from "typeorm";
+
+export class UserService {
+  private userRepo: Repository<User>;
+
+  constructor() {
+    this.userRepo = AppDataSource.getRepository(User);
+  }
+
+  // CREATE
+  async createUser(data: Partial<User>): Promise<User> {
+    const user = this.userRepo.create(data);
+    return await this.userRepo.save(user);
+  }
+
+  // READ (by ID)
+  async getUserById(id: number): Promise<User | null> {
+    return await this.userRepo.findOne({ where: { id } });
+  }
+
+  // READ (all)
+  async getAllUsers(): Promise<User[]> {
+    return await this.userRepo.find();
+  }
+
+  // UPDATE
+  async updateUser(id: number, updates: Partial<User>): Promise<User | null> {
+    const user = await this.userRepo.findOne({ where: { id } });
+    if (!user) return null;
+
+    Object.assign(user, updates);
+    return await this.userRepo.save(user);
+  }
+
+  // DELETE
+  async deleteUser(id: number): Promise<boolean> {
+    const result = await this.userRepo.delete(id);
+    return result.affected !== 0;
+  }
+}

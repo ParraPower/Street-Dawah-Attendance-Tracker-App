@@ -8,7 +8,7 @@ import {
   JoinColumn,
   Index,
 } from "typeorm";
-import { User } from "./User.js";
+//import { User } from "../../user/entities/User.js";
 import { Membership } from "./Membership.js";
 
 @Entity({ name: "user_memberships" })
@@ -18,9 +18,9 @@ export class UserMembership {
   @PrimaryGeneratedColumn("increment")
   id!: number;
 
-  @ManyToOne(() => User, (u) => u.userMemberships, { nullable: false, onDelete: "CASCADE" })
-  @JoinColumn({ name: "userId" })
-  user!: User;
+  // @ManyToOne(() => User, (u) => u.userMemberships, { nullable: false, onDelete: "CASCADE" })
+  // @JoinColumn({ name: "userId" })
+  // user!: User;
 
   @Column()
   userId!: number;

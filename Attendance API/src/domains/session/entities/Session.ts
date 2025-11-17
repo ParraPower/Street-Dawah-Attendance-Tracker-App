@@ -10,9 +10,9 @@ import {
   OneToMany,
   Index,
 } from "typeorm";
-import { User } from "./User.js";
-import { Location } from "./Location.js";
-import { Attendance } from "./Attendance.js";
+//import { User } from "../../user/entities/User.js";
+import { Location } from "../../location/entities/Location.js";
+import { Attendance } from "../../attendance/entities/Attendance.js";
 
 @Entity({ name: "sessions" })
 @Index(["emirUserId"])
@@ -21,18 +21,18 @@ export class Session {
   @PrimaryGeneratedColumn("increment")
   id!: number;
 
-  // EmirUserID -> reference to User
-  @ManyToOne(() => User, (user) => user.sessions, { nullable: false, onDelete: "CASCADE" })
-  @JoinColumn({ name: "emirUserId" })
-  emirUser!: User;
+  // // EmirUserID -> reference to User
+  // @ManyToOne(() => User, (user) => user.sessions, { nullable: false, onDelete: "CASCADE" })
+  // @JoinColumn({ name: "emirUserId" })
+  // emirUser!: User;
 
   @Column()
   emirUserId!: number;
 
-  // Location reference for the session
-  @ManyToOne(() => Location, (location) => location.sessions, { nullable: false, onDelete: "CASCADE" })
-  @JoinColumn({ name: "locationId" })
-  location!: Location;
+  // // Location reference for the session
+  // @ManyToOne(() => Location, (location) => location.sessions, { nullable: false, onDelete: "CASCADE" })
+  // @JoinColumn({ name: "locationId" })
+  // location!: Location;
 
   @Column()
   locationId!: number;
