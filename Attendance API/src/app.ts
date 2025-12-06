@@ -2,7 +2,7 @@
 import express from "express";
 // import helmet from "helmet";
 // import morgan from "morgan";
-import userRouter from "./domains/user/routes/User.routes.js"; // .js for NodeNext runtime
+import userRouter from "./domains/user/routes/user-routes.js"; // .js for NodeNext runtime
 //import { errorHandler } from "./middleware/errorHandler.js";
 //import { notFoundHandler } from "./middleware/notFoundHandler.js";
 import { authenticate } from "./middleware/authenticate.js";

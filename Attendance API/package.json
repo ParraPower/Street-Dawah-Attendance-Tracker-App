@@ -31,7 +31,7 @@
     "migration:generate": "bash ./src/scripts/generate-migration.sh",
     "migration:generate:win": "powershell -ExecutionPolicy Bypass -File ./scripts/generate-migration.ps1",
     "migration:run": "npm run typeorm:run",
-    "start": "cross-env NODE_ENV=local node ./src/help.ts --loader ts-node/esm"
+    "start": "cross-env NODE_ENV=local node ./dist/server.js --loader ts-node/esm"
   },
   "author": "",
   "license": "ISC"

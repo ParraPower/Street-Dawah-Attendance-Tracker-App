@@ -1,5 +1,5 @@
 // src/domains/session/Session.module.ts
-import { Session } from "./entities/Session.js";
+import { Session } from "./entities/session.js";
 
 export const SessionEntities = [
   Session

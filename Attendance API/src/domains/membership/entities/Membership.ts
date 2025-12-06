@@ -7,16 +7,28 @@ import {
   OneToMany,
   Index,
 } from "typeorm";
-import { UserMembership } from "./UserMembership.js";
+import { IMembership } from './../interfaces/imembership.js';
+import { IUserMembership } from './../interfaces/iuser-membership.js';
+import { IAudit } from "../../../core/interfaces/iaudit.js";
+import { IBaseEntity } from "../../../core/interfaces/ibase-entity.js";
 
 @Entity({ name: "memberships" })
 @Index(["isActive"])
-export class Membership {
+export class Membership implements IMembership, IAudit, IBaseEntity {
   @PrimaryGeneratedColumn("increment")
   id!: number;
 
   @Column({ type: "varchar", length: 255 })
   name!: string;
+
+  @Column({ type: "varchar", length: 20 })
+  mobile!: string;
+
+  @Column({ type: "varchar", length: 150 })
+  passwordHash!: string;
+
+  @Column({ type: "varchar", length: 150 })
+  passwordSalt!: string;
 
   @Column({ type: "boolean", default: false })
   isActive!: boolean;
@@ -30,8 +42,8 @@ export class Membership {
   @Column({ type: "integer", name: "membership_types_flag", default: () => "0" })
   membershipTypesFlag!: number;
 
-  @OneToMany(() => UserMembership, (um) => um.membership)
-  userMemberships?: UserMembership[];
+  @OneToMany("UserMembership", "membership")
+  userMemberships?: IUserMembership[];
 
   @CreateDateColumn({ type: "timestamptz" })
   createdAt!: Date;

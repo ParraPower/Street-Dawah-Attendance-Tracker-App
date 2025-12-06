@@ -1,7 +1,7 @@
 // src/domains/user/user.module.ts
-import { Membership } from "./entities/Membership.js";
-import { UserMembership } from "./entities/UserMembership.js";
-import { MembershipTypeEnum } from "./enums/MembershipTypeEnum.js";
+import { Membership } from "./entities/membership.js";
+import { UserMembership } from "./entities/user-membership.js";
+import { MembershipTypeEnum } from "./enums/membership-type-enum.js";
 
 export const MembershipEntities = [
   Membership,

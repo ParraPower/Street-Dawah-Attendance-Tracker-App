@@ -1,5 +1,5 @@
 // src/domains/attendance/Attendance.module.ts
-import { UserOutreachActivityLog } from "./entities/UserOutreachActivityLog.js";
+import { UserOutreachActivityLog } from "./entities/user-outreach-activity-log.js";
 
 export const OutreachEntities = [
   UserOutreachActivityLog

@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { UserService } from "../services/User.service.js";
-import { RegisterUserDto } from "../dtos/registerUserDTO.js";
+import { UserService } from "../services/user-service.js";
+import { RegisterUserDto } from "../dtos/register-user-dto.js";
 import { validateDto } from "../../../middleware/validateDto.js";
 import { authenticate } from "../../../middleware/authenticate.js";
 import { authorize } from "../../../middleware/authorize.js";

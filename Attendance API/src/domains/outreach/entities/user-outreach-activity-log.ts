@@ -10,10 +10,10 @@ import {
   Index,
 } from "typeorm";
 
-import { OutreachDirectionTypeEnum } from "../enums/OutreachDirectionTypeEnum.js";
-import { OutreachActivityTypeEnum } from "../enums/OutreachActivityTypeEnum.js";
-import { IUserOutreachActivityLog } from "../interfaces/IUserOutreachActivityLog.js";
-import { IUser } from "../../user/interfaces/IUser.js";
+import { OutreachDirectionTypeEnum } from "../enums/outreach-direction-type-enum.js";
+import { OutreachActivityTypeEnum } from "../enums/outreach-activity-type-enum.js";
+import { IUserOutreachActivityLog } from "../interfaces/iuser-outreach-activity-log.js";
+import { IUser } from "../../user/interfaces/iuser.js";
 
 @Entity({ name: "user_outreach_activity_logs" })
 @Index(["volunteerUserId"])

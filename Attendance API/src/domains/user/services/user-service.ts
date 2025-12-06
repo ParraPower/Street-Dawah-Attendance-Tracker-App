@@ -1,6 +1,6 @@
 // src/domains/user/services/User.service.ts
 import AppDataSource from "../../../data-source.js";
-import { User } from "../entities/User.js";
+import { User } from "../entities/user.js";
 import { Repository } from "typeorm";
 
 export class UserService {
@@ -23,7 +23,8 @@ export class UserService {
 
   // READ (all)
   async getAllUsers(): Promise<User[]> {
-    return await this.userRepo.find();
+    return Promise.resolve([  ]);
+    //return await this.userRepo.find();
   }
 
   // UPDATE

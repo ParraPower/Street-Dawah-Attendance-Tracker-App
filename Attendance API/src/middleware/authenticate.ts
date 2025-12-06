@@ -1,6 +1,7 @@
 export const authenticate = (req: any, res: any, next: () => any) => {
   // Example: check JWT token
-  
+  //console.log("authenticate: ", process.env);
+
   if (process.env.BYPASS_AUTHN) {
     req.user = { id: 1, role: "ADMIN" };
     next();

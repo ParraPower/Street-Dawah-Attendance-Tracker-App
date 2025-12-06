@@ -1,5 +1,5 @@
-import { OutreachActivityTypeEnum } from "../enums/OutreachActivityTypeEnum.js";
-import { OutreachDirectionTypeEnum } from "../enums/OutreachDirectionTypeEnum.js";
+import { OutreachActivityTypeEnum } from "../enums/outreach-activity-type-enum.js";
+import { OutreachDirectionTypeEnum } from "../enums/outreach-direction-type-enum.js";
 
 export interface IUserOutreachActivityLog {
   id: number;

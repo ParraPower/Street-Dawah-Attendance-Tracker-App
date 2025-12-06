@@ -8,13 +8,15 @@ import {
   JoinColumn,
   Index,
 } from "typeorm";
-//import { User } from "../../user/entities/User.js";
-import { Membership } from "./Membership.js";
+import { IMembership } from "../interfaces/imembership.js";
+import { IUserMembership } from "../interfaces/iuser-membership.js";
+import { IBaseEntity } from "../../../core/interfaces/ibase-entity.js";
+import { IAudit } from "../../../core/interfaces/iaudit.js";
 
 @Entity({ name: "user_memberships" })
 @Index(["userId"])
 @Index(["membershipId"])
-export class UserMembership {
+export class UserMembership implements IUserMembership, IBaseEntity, IAudit {
   @PrimaryGeneratedColumn("increment")
   id!: number;
 
@@ -25,9 +27,9 @@ export class UserMembership {
   @Column()
   userId!: number;
 
-  @ManyToOne(() => Membership, (m) => m.userMemberships, { nullable: false, onDelete: "CASCADE" })
+  @ManyToOne("Membership", "userMemberships", { nullable: false, onDelete: "CASCADE" })
   @JoinColumn({ name: "membershipId" })
-  membership!: Membership;
+  membership!: IMembership;
 
   @Column()
   membershipId!: number;
@@ -45,5 +47,5 @@ export class UserMembership {
   createdAt!: Date;
 
   @UpdateDateColumn({ type: "timestamptz" })
-  updatedAt!: Date;
+  updatedAt?: Date;
 }

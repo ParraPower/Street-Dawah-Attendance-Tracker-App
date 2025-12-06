@@ -11,8 +11,8 @@ import {
   Index,
 } from "typeorm";
 //import { User } from "../../user/entities/User.js";
-import { Location } from "../../location/entities/Location.js";
-import { Attendance } from "../../attendance/entities/Attendance.js";
+//import { Location } from "../../location/entities/location.js";
+import { Attendance } from "../../attendance/entities/attendance.js";
 
 @Entity({ name: "sessions" })
 @Index(["emirUserId"])

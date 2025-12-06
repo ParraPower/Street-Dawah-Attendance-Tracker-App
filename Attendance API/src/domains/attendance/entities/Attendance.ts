@@ -10,7 +10,7 @@ import {
 } from "typeorm";
 //import { User } from "../../user/entities/User.js";
 //import { Location } from "../../location/entities/Location.js";
-import { Session } from "../../session/entities/Session.js";
+import { Session } from "../../session/entities/session.js";
 
 @Entity({ name: "attendances" })
 @Index(["userId"])

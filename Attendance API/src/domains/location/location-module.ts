@@ -1,5 +1,5 @@
 // src/domains/user/user.module.ts
-import { Location } from "./entities/Location.js";
+import { Location } from "./entities/location.js";
 
 export const LocationEntities = [
   Location

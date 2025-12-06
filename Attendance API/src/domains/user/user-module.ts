@@ -1,6 +1,6 @@
 // src/domains/user/user.module.ts
-import { User } from "./entities/User.js";
-import { UserService } from "./services/User.service.js";
+import { User } from "./entities/user.js";
+import { UserService } from "./services/user-service.js";
 
 export const UserEntities = [
   User

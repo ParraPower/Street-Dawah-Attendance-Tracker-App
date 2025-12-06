@@ -3,8 +3,8 @@ declare global {
       interface ProcessEnv {
         NODE_ENV: string;
         DATABASE_URL: string;
-        BYPASS_AUTHN: boolean;
-        BYPASS_AUTHZ: boolean;
+        BYPASS_AUTHN: string;
+        BYPASS_AUTHZ: string;
       }
     }
   }
