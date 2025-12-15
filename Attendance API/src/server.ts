@@ -1,7 +1,7 @@
 // src/server.ts
 import "reflect-metadata";
 //import { createDataSource } from "./data-source.js";
-import AppDataSource from "./data-source.js";
+//import AppDataSource from "./data-source.js";
 import app from "./app.js";
 
 const PORT = Number(process.env.PORT ?? 3000);
@@ -12,9 +12,9 @@ async function bootstrap() {
     // const dataSource = createDataSource();
     // await dataSource.initialize();
 
-    AppDataSource.initialize();
+    //AppDataSource.initialize();
 
-    console.log("DataSource initialized");
+    //console.log("DataSource initialized");
 
     // Start HTTP server
     app.listen(PORT, () => {

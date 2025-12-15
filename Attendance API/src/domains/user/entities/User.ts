@@ -9,7 +9,8 @@ import { IBaseEntity } from '../../../core/interfaces/ibase-entity.js';
 import { IAudit } from '../../../core/interfaces/iaudit.js';
 
 @Entity()
-export class User implements IUser, IBaseEntity, IAudit {  
+export class User implements IUser, IBaseEntity, IAudit {
+
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -19,8 +20,11 @@ export class User implements IUser, IBaseEntity, IAudit {
   @Column()
   mobile!: string;
 
-  @Column({ select: false })
+  @Column({ select: false, length: 250 })
   passwordHash!: string;
+
+  @Column({ type: "varchar", length: 150 })
+  passwordSalt!: string;
 
   // @OneToMany(() => Attendance, (a) => a.user)
   // attendances?: Attendance[];
@@ -37,11 +41,17 @@ export class User implements IUser, IBaseEntity, IAudit {
   @OneToMany("UserOutreachActivityLog", "managementOutreachUser")
   managementOutreachLogs?: IUserOutreachActivityLog[];
 
-  isActive!: boolean;
+  isDeleted?: boolean;
 
   @UpdateDateColumn({ type: "timestamptz" })
   createdAt!: Date;
   
   @UpdateDateColumn({ type: "timestamptz" })
   updatedAt?: Date;
+
+  @Column()
+  createdBy!: number;
+
+  @Column({ nullable: true })
+  updatedBy?: number;  
 }

@@ -35,7 +35,7 @@ export class UserMembership implements IUserMembership, IBaseEntity, IAudit {
   membershipId!: number;
 
   @Column({ type: "boolean", default: false })
-  isActive!: boolean;
+  isDeleted!: boolean;
 
   @Column({ type: "timestamptz", nullable: true })
   dateActivated?: Date | null;
@@ -46,6 +46,12 @@ export class UserMembership implements IUserMembership, IBaseEntity, IAudit {
   @CreateDateColumn({ type: "timestamptz" })
   createdAt!: Date;
 
-  @UpdateDateColumn({ type: "timestamptz" })
+  @UpdateDateColumn({ type: "timestamptz", nullable: true })
   updatedAt?: Date;
+
+  @Column()
+  createdBy!: number;
+  
+  @Column({ nullable: true })
+  updatedBy?: number;
 }

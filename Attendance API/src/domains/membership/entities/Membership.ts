@@ -11,35 +11,22 @@ import { IMembership } from './../interfaces/imembership.js';
 import { IUserMembership } from './../interfaces/iuser-membership.js';
 import { IAudit } from "../../../core/interfaces/iaudit.js";
 import { IBaseEntity } from "../../../core/interfaces/ibase-entity.js";
+import { MembershipTypeEnum } from "../enums/membership-type-enum.js";
 
 @Entity({ name: "memberships" })
-@Index(["isActive"])
+@Index(["isDeleted"])
 export class Membership implements IMembership, IAudit, IBaseEntity {
+
   @PrimaryGeneratedColumn("increment")
   id!: number;
 
   @Column({ type: "varchar", length: 255 })
   name!: string;
 
-  @Column({ type: "varchar", length: 20 })
-  mobile!: string;
-
-  @Column({ type: "varchar", length: 150 })
-  passwordHash!: string;
-
-  @Column({ type: "varchar", length: 150 })
-  passwordSalt!: string;
-
   @Column({ type: "boolean", default: false })
-  isActive!: boolean;
+  isDeleted!: boolean;
 
-  @Column({ type: "timestamptz", nullable: true })
-  dateActivated?: Date | null;
-
-  @Column({ type: "timestamptz", nullable: true })
-  dateTurnedOff?: Date | null;
-
-  @Column({ type: "integer", name: "membership_types_flag", default: () => "0" })
+  @Column({ type: "integer", name: "membership_types_flag", default: () => MembershipTypeEnum.NONE.valueOf() })
   membershipTypesFlag!: number;
 
   @OneToMany("UserMembership", "membership")
@@ -48,6 +35,12 @@ export class Membership implements IMembership, IAudit, IBaseEntity {
   @CreateDateColumn({ type: "timestamptz" })
   createdAt!: Date;
 
-  @UpdateDateColumn({ type: "timestamptz" })
-  updatedAt!: Date;
+  @UpdateDateColumn({ type: "timestamptz", nullable: true })
+  updatedAt?: Date;
+
+  @Column()
+  createdBy!: number;
+  
+  @Column({ nullable: true })
+  updatedBy?: number;
 }

@@ -14,7 +14,7 @@ import { Session } from "../../session/entities/session.js";
 
 @Entity({ name: "attendances" })
 @Index(["userId"])
-@Index(["locationId"])
+//@Index(["locationId"])
 @Index(["sessionId"])
 export class Attendance {
   @PrimaryGeneratedColumn("increment")
@@ -27,12 +27,12 @@ export class Attendance {
   @Column()
   userId!: number;
 
-  // @ManyToOne(() => Location, (location) => location.attendances, { nullable: false, onDelete: "CASCADE" })
-  // @JoinColumn({ name: "locationId" })
-  // location!: Location;
+  // // // @ManyToOne(() => Location, (location) => location.attendances, { nullable: false, onDelete: "CASCADE" })
+  // // // @JoinColumn({ name: "locationId" })
+  // // // location!: Location;
 
-  @Column()
-  locationId!: number;
+  // // @Column()
+  // // locationId!: number;
 
   // Link to session (new foreign key)
   @ManyToOne(() => Session, (session) => session.attendances, { nullable: false, onDelete: "CASCADE" })

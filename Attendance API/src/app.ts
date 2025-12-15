@@ -3,9 +3,11 @@ import express from "express";
 // import helmet from "helmet";
 // import morgan from "morgan";
 import userRouter from "./domains/user/routes/user-routes.js"; // .js for NodeNext runtime
+import importRouter from "./domains/import/routes/import-routes.js"; // .js for NodeNext runtime
 //import { errorHandler } from "./middleware/errorHandler.js";
 //import { notFoundHandler } from "./middleware/notFoundHandler.js";
 import { authenticate } from "./middleware/authenticate.js";
+import { authorize } from "./middleware/authorize.js";
 //import rateLimit from "express-rate-limit";
 
 const app = express();
@@ -25,7 +27,11 @@ app.use(express.urlencoded({ extended: true }));
 // });
 
 // Mount user router under /user so all endpoints start with /user
-app.use("/user", authenticate/*, userRateLimiter*/, userRouter);
+//app.use("/user", authenticate, authorize,/* userRateLimiter,*/ userRouter);
+
+
+// Mount import router under /import so all endpoints start with /import
+app.use("/import", /*authenticate, authorize,*//* userRateLimiter,*/ importRouter);
 
 // // 404 handler
 // app.use(notFoundHandler);

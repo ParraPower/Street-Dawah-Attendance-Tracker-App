@@ -1,9 +1,13 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
+import { IAudit } from "../../../core/interfaces/iaudit.js";
+import { IBaseEntity } from "../../../core/interfaces/ibase-entity.js";
+import { ILocation } from "../interfaces/ilocation.js";
 // import { Attendance } from "../../attendance/entities/Attendance.js";
 // import { Session } from "../../session/entities/Session.js";
 
 @Entity({ name: "locations" })
-export class Location {
+export class Location implements ILocation, IAudit, IBaseEntity{
+  
   @PrimaryGeneratedColumn("increment")
   id!: number;
 
@@ -14,7 +18,7 @@ export class Location {
   postcode!: string;
 
   @Column({ type: "boolean", default: false })
-  isActive!: boolean;
+  isDeleted?: boolean;
 
   // @OneToMany(() => Attendance, (a) => a.location)
   // attendances?: Attendance[];
@@ -27,4 +31,10 @@ export class Location {
 
   @UpdateDateColumn({ type: "timestamptz" })
   updatedAt!: Date;
+
+  @Column()
+  createdBy!: number;
+
+  @Column({ nullable: true })
+  updatedBy?: number;  
 }
