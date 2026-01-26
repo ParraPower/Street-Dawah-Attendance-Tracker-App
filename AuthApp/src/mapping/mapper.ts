@@ -7,6 +7,4 @@ export const mapper = createMapper({
   //pluginInitializer: classes,
 });
 
-console.log('Mapper created:', mapper);
-
 

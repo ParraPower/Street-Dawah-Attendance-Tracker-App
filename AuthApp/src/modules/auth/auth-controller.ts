@@ -8,16 +8,16 @@ const router = Router();
 const service = new AuthService();
 createUserProfile();
 
-// router.post('/register', async (req, res) => {
-//   const { email, username, password } = req.body;
-//   try {
-//     const user = await service.register(email, username, password);
-//     const userDto = mapper.map(user, UserDto, Object.getPrototypeOf(user).constructor);
-//     res.status(201).json(userDto);
-//   } catch (err: any) {
-//     res.status(400).json({ error: err.message });
-//   }
-// });
+router.post('/register', async (req, res) => {
+  const { email, username, password } = req.body;
+  try {
+    const user = await service.register(email, username, password);
+    const userDto = mapper.map(user, Object.getPrototypeOf(user).constructor, UserDto);
+    res.status(201).json(userDto);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
 
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;

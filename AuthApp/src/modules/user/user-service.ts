@@ -56,4 +56,10 @@ export class UserService {
 
     return mapper.map(savedUser, Object.getPrototypeOf(savedUser).constructor, UserDto)
   }
+
+  getUserById = async (id: number): Promise<UserDto | null> => {
+    const user = await this.userRepo.findOneBy({ id })
+    if (!user) return null
+    return mapper.map(user, Object.getPrototypeOf(user).constructor, UserDto)
+  }
 }

@@ -18,6 +18,9 @@ export class JwtKey {
   @Column({ default: false })
   isActive!: boolean;
 
+  @Column({ type: 'text' })
+  algorithm!: string;
+
   @CreateDateColumn()
   createdAt!: Date;
 }

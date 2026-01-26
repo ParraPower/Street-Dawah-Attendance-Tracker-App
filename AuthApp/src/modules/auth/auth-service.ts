@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-//import { AppDataSource } from '../../config/ormconfig';
+import AppDataSource from '../../config/data-source';
 import { UserEntity } from '../../domains/users/user-entity';
 import { signToken } from '../../security/jwt';
 import { PasswordService } from '../password/password-service';
@@ -9,37 +9,40 @@ import { PasswordService } from '../password/password-service';
 export class AuthService {
   private passwordService: PasswordService
 
-  // private userRepo = AppDataSource.getRepository(User);
-  // private tokenWhitelistRepo = AppDataSource.getRepository(TokenWhitelist);
+  private userRepo = AppDataSource.getRepository(UserEntity);
+  //private tokenWhitelistRepo = AppDataSource.getRepository(TokenWhitelist);
 
   constructor() {
     this.passwordService = new PasswordService
   }
 
-  // async register(email: string, username: string, password: string) {
-  //   const passwordHash = await bcrypt.hash(password, 12);
-  //   const user = this.userRepo.create({
-  //     email,
-  //     username,
-  //     passwordHash,
-  //     scopes: ['user-read'], // default scopes on signup
-  //   });
-  //   return this.userRepo.save(user);
-  // }
+  async register(email: string, username: string, password: string) {
+    const passwordHash = await bcrypt.hash(password, 12);
+    const user = this.userRepo.create({
+      email,
+      username,
+      passwordHash,
+      scopes: [], // default scopes on signup
+    });
+    return this.userRepo.save(user);
+  }
 
   async login(email: string, password: string) {
-    const user = new UserEntity();
-    Object.assign(user, {
-      id: 'some-uuid',
-      email: email,
-      username: 'testuser',
-      passwordHash: await bcrypt.hash('password123', 12),
-      scopes: ['user-read', 'user-write'],
-      createdAt: new Date(),
-      updatedAt: new Date(), 
-    });
-    console.log('Simulated user:', user);
-    //const user = await this.userRepo.findOne({ where: { email } });
+    let user: UserEntity | null = new UserEntity();
+    if (process.env.NODE_ENV === 'development' && process.env.ALLOW_FAKE_LOGIN === 'true') {
+      Object.assign(user, {
+        id: 'some-uuid',
+        email: email,
+        username: 'testuser',
+        passwordHash: await bcrypt.hash('password123', 12),
+        scopes: ['user-read', 'user-write'],
+        createdAt: new Date(),
+        updatedAt: new Date(), 
+      });
+    }
+    else {
+      user = await this.userRepo.findOne({ where: { email } });
+    }
     if (!user) throw new Error('Invalid credentials');
 
     const ok = await this.passwordService.comparePasswordToUserPasswordHash(password, user);

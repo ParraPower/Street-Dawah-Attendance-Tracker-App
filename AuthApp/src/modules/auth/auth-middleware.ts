@@ -1,11 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyJwt } from '../../security/jwt';
-import { isValidScopeString, ScopeList } from './scopes';
+import { hasScopes, parseScopeStringFromJWT, ScopeList } from './scopes';
+import { UserJwtPayload } from '@/dtos/jwt/userJwtPayload.dto';
 // import { AppDataSource } from '../../config/ormconfig';
 // import { TokenBlacklist } from '../../domains/tokens/token-blacklist-entity';
 
+type RequestWithUser = Request & { user?: UserJwtPayload };
+
 export async function authenticate(
-  req: Request,
+  req: RequestWithUser,
   res: Response,
   next: NextFunction,
 ) {
@@ -15,46 +18,47 @@ export async function authenticate(
   if (!token) return res.status(401).json({ error: 'Missing token' });
 
   try {
-    const payload = verifyJwt(token);
+
+    verifyJwt(token, (err, decoded) => {
+      if (err) {
+        throw err;
+      }
+      (req as RequestWithUser).user = decoded;
+    });
     // const repo = AppDataSource.getRepository(TokenBlacklist);
     // const blacklisted = await repo.findOne({ where: { jti: payload.jti } });
 
     // if (blacklisted) {
     //   return res.status(401).json({ error: 'Token revoked' });
     // }
-
-    (req as any).user = payload;
     next();
   } catch (err) {
     return res.status(401).json({ error: 'Invalid token' });
   }
 }
 
-export const authorize = (requiredScopes: ScopeList) => (req: Request, res: Response, next: NextFunction) => {
-  //return async function (req: Request, res: Response, next: NextFunction) {
-    try {
-      if (!req.user)
-        throw new Error("user for authorization not assigned");
+export const authorize = (requiredScopes: ScopeList) => (req: RequestWithUser, res: Response, next: NextFunction) => {
+  try {
+    const userJwtPayload = req.user as UserJwtPayload
+    if (!userJwtPayload)
+      throw new Error("user for authorization not assigned");
 
-      if (!isValidScopeString(req.user.scope))
-        throw new Error("invalid scope for user assigned");
+    const scopeList = parseScopeStringFromJWT(userJwtPayload);
 
-      const userScopes = req.user.scope.split(",").map(s => s.trim());
+    if (!scopeList.length)
+      throw new Error("invalid scope for user assigned");
 
-      // Check if user has ALL required scopes
-      const missing = requiredScopes.filter(s => !userScopes.includes(s));
-
-      if (missing.length > 0) {
+    // Check if user has ALL required scopes
+    if (!hasScopes(scopeList, requiredScopes)) {
         return res.status(403).json({
-          error: "insufficient_scope",
-          missing
-        });
-      }
+        error: "insufficient_scope",
+        requiredScopes
+      });
 
-      next();
-    } catch (err) {
-      console.log("authorization error", err);
-      return res.status(401).json({ error: "Invalid token" });
     }
-  //};
+
+    next();
+  } catch (err) {
+    return res.status(401).json({ error: "Invalid token" });
+  }
 }

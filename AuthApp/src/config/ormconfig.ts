@@ -4,9 +4,7 @@ import { UserEntity } from '@/domains/users/user-entity';
 // import { TokenBlacklist } from '../domains/tokens/token-blacklist-entity';
 //import { TokenWhitelist } from '../domains/tokens/token-whitelist-entity';
 import { JwtKey } from '@/domains/keys/key-entity';
-//import { getDirname } from 'utils/esm-globals';
 
-console.log("ormconfig __dirname:", __dirname);
 
 const createDataSource = () => new DataSource({
   type: 'postgres',
@@ -22,7 +20,3 @@ const createDataSource = () => new DataSource({
 })
 
 export { createDataSource };
-
-// const AppDataSource = ;
-
-// export default AppDataSource;

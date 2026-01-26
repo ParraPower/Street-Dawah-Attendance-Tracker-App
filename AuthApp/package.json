@@ -11,7 +11,7 @@
     "migration:generate": "bash ./scripts/generate-migration.sh",
     "migration:generate:win": "powershell -ExecutionPolicy Bypass -File ./scripts/generate-migration.ps1",
     "migration:run": "npm run typeorm:run",
-    "start:dev": "npm run build && cross-env NODE_ENV=local ts-node-dev src/server.ts"
+    "start:dev": "npm run build && cross-env NODE_ENV=local ts-node-dev -r tsconfig-paths/register src/server.ts"
   },
   "author": "",
   "license": "ISC",

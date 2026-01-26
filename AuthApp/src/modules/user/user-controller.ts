@@ -9,9 +9,6 @@ const userService = new UserService();
 
 const router = Router();
 
-router.get("/:id", authenticate, authorize([Scopes.Mudeer, Scopes.Khaleef, Scopes.Emir]), (req, res) => {
-
-});
 
 router.post(
   "/",
@@ -33,4 +30,9 @@ router.post(
   }
 )
 
-export default router;
+router.get("/:id", authenticate, authorize([Scopes.Emir]), async (req, res) => {
+  const user = await userService.getUserById(parseInt(req.params.id));
+  res.json(user);
+});
+
+export { router as UserController };

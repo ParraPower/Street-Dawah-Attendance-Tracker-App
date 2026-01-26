@@ -21,6 +21,6 @@ export abstract class BaseEntity implements IBaseAudit, IBaseEntityStub {
   @PrimaryGeneratedColumn('increment')
   id!: number;
 
-  @Column()
+  @Column({ nullable: true })
   isDeleted?: boolean;
 }

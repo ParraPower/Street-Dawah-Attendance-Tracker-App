@@ -1,8 +1,10 @@
-import jwt from 'jsonwebtoken';
+import jwt, { } from 'jsonwebtoken';
+import { StringValue } from 'ms'
 import { env } from '../config/env';
 import { getPrivateKey, getPublicKey } from './key-cache';
 import { randomUUID } from 'crypto';
 import { ScopeString } from '@/modules/auth/scopes';
+//import { promisify } from 'util';
 
 export type TokenType = 'access' | 'refresh';
 
@@ -22,9 +24,7 @@ export function signToken(
   audience?: string | string[],
 ) {
   const jti = randomUUID();
-  const expiresIn = type === 'access' ? env.accessTokenTtl : env.refreshTokenTtl;
-
-  console.log('expiresIn:', expiresIn);
+  const expiresIn = (type === 'access' ? env.accessTokenTtl : env.refreshTokenTtl) as StringValue;
 
   const payload: JwtPayload = {
     sub: userId,
@@ -40,7 +40,7 @@ export function signToken(
   return { token, jti, expiresIn };
 }
 
-export function signJwt(payload: object, expiresIn: string) {
+export function signJwt(payload: object, expiresIn: StringValue) {
   const { kid, key } = getPrivateKey();
 
     if (!key || typeof key !== 'string')
@@ -48,13 +48,13 @@ export function signJwt(payload: object, expiresIn: string) {
 
   return jwt.sign(payload, key, {
     algorithm: 'RS256',
-    expiresIn: '1H',
+    expiresIn,
     keyid: kid,
   });
 }
 
-export function verifyJwt(token: string) {
-  return jwt.verify(token, (header, callback) => {
+export function verifyJwt(token: string, action: (err: Error, decoded: never) => void): void {
+  jwt.verify(token, (header, callback) => {
     if (header.kid === undefined) {
       return callback(new Error('No key ID in token header'));
     }
@@ -64,5 +64,6 @@ export function verifyJwt(token: string) {
 
     if (!pub) return callback(new Error('Unknown key ID'));
     callback(null, pub);
-  });
+  }, ( err, decoded) => {
+    action(err as Error, decoded as never)});
 }
