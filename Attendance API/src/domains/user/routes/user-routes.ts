@@ -1,19 +1,19 @@
 import { Router } from "express";
-import { UserService } from "../services/user-service.js";
-import { RegisterUserDto } from "../dtos/register-user-dto.js";
-import { validateDto } from "../../../middleware/validateDto.js";
-import { authenticate } from "../../../middleware/authenticate.js";
-import { authorize } from "../../../middleware/authorize.js";
-import { asyncHandler } from "../../../middleware/asyncHandler.js";
+import { UserService } from "../services/user-service";
+import { RegisterUserDto } from "../dtos/register-user-dto";
+import { validateDto } from "../../../middleware/validateDto";
+import { authenticate } from "../../../modules/auth/authenticate";
+import { authorize } from "../../../modules/auth/authorize";
+import { asyncHandler } from "../../../middleware/asyncHandler";
+import { Scopes } from "@/modules/auth/scopes";
+import { userRateLimiter } from "@/middleware/userRateLimiter";
 
 const router = Router();
 const userService = new UserService();
 
-// CREATE
 router.post(
   "/register",
   authenticate,
-  authorize([]), // Only admins can create users
   validateDto(RegisterUserDto),
   asyncHandler(async (req, res) => {
     const user = await userService.createUser(req.body);
@@ -21,22 +21,21 @@ router.post(
   })
 );
 
-// READ ALL
 router.get(
   "/",
+  userRateLimiter,
   authenticate,
-  authorize(["ADMIN", "MANAGER"]),
+  authorize([ Scopes.Khaleef ]),
   asyncHandler(async (req, res) => {
     const users = await userService.getAllUsers();
     res.json(users);
   })
 );
 
-// READ ONE
 router.get(
   "/:id",
+  userRateLimiter,
   authenticate,
-  authorize(["ADMIN", "MANAGER"]),
   asyncHandler(async (req, res) => {
     const user = await userService.getUserById(Number(req.params.id));
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -44,29 +43,16 @@ router.get(
   })
 );
 
-// // UPDATE
-// router.put(
-//   "/:id",
-//   authenticate,
-//   authorize(["ADMIN"]),
-//   validateDto(RegisterUserDto, true), // allow partial updates
-//   asyncHandler(async (req, res) => {
-//     const updated = await userService.updateUser(Number(req.params.id), req.body);
-//     if (!updated) return res.status(404).json({ message: "User not found" });
-//     res.json(updated);
-//   })
-// );
-
-// // DELETE
-// router.delete(
-//   "/:id",
-//   authenticate,
-//   authorize(["ADMIN"]),
-//   asyncHandler(async (req, res) => {
-//     const success = await userService.deleteUser(Number(req.params.id));
-//     if (!success) return res.status(404).json({ message: "User not found" });
-//     res.status(204).send();
-//   })
-//);
+router.post(
+  "/admin-create",
+  userRateLimiter,
+  authenticate,
+  authorize([ Scopes.Khaleef ]), // Only admins can create users
+  asyncHandler(async (req, res) => {
+    const user = await userService.createAdminUser();
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user);
+  })
+);
 
 export default router;

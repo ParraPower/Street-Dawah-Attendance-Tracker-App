@@ -4,13 +4,22 @@
   "description": "",
   "main": "dist/server.js",
   "dependencies": {
+    "@automapper/classes": "^8.8.1",
+    "@automapper/core": "^8.8.1",
+    "@types/morgan": "^1.9.10",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
     "exceljs": "^4.4.0",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.2.1",
+    "helmet": "^8.1.0",
     "joi": "^18.0.2",
+    "jsonwebtoken": "^9.0.3",
+    "jwks-rsa": "^3.2.0",
+    "lodash": "^4.17.23",
+    "morgan": "^1.10.1",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.27",
@@ -19,23 +28,33 @@
   "devDependencies": {
     "@tsconfig/node20": "^20.1.6",
     "@types/express": "^5.0.5",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/lodash": "^4.17.21",
     "@types/node": "^24.10.1",
     "cross-env": "^10.1.0",
     "dotenv-cli": "^11.0.0",
     "jest": "^30.2.0",
-    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3"
   },
-  "type": "module",
+  "overrides": {
+    "reflect-metadata": "^0.2.2"
+  },
   "scripts": {
     "test": "npm jest",
     "build": "tsc",
-    "typeorm:generate": "npx typeorm-ts-node-esm migration:generate -d ./src/data-source.ts",
-    "typeorm:run": "npx typeorm-ts-node-esm migration:run -d ./src/data-source.ts",
-    "migration:generate": "bash ./src/scripts/generate-migration.sh",
+    "typeorm:generate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js  migration:generate -d ./src/data/data-source.ts",
+    "typeorm:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js  migration:run -d ./scripts/migration-data-source.ts",
+
+    "migration:generate": "bash ./scripts/generate-migration.sh",
     "migration:generate:win": "powershell -ExecutionPolicy Bypass -File ./scripts/generate-migration.ps1",
     "migration:run": "npm run typeorm:run",
-    "start": "npm run build && cross-env NODE_ENV=local node ./dist/server.js --loader ts-node/esm"
+    "migration:run:win": "powershell -ExecutionPolicy Bypass -File ./scripts/run-migration.ps1",
+    "migration:revert": "npm run typeorm:revert",
+    "migration:revert:win": "powershell -ExecutionPolicy Bypass -File ./scripts/revert-migration.ps1",
+
+    "start:dev": "npm run build && cross-env NODE_ENV=local ts-node-dev -r tsconfig-paths/register src/server.ts"
   },
   "author": "",
   "license": "ISC"

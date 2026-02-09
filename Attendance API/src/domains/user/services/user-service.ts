@@ -1,5 +1,5 @@
 // src/domains/user/services/User.service.ts
-import AppDataSource from "../../../data-source.js";
+import AppDataSource from "../../../data/data-source.js";
 import { User } from "../entities/user.js";
 import { Repository } from "typeorm";
 
@@ -40,5 +40,18 @@ export class UserService {
   async deleteUser(id: number): Promise<boolean> {
     const result = await this.userRepo.delete(id);
     return result.affected !== 0;
+  }
+
+
+  async createAdminUser(): Promise<User> {
+    const adminData: Partial<User> = {
+      name: "Admin User",
+      mobile: "0000000000",
+      passwordHash: "hashed_password", // Replace with actual hash
+      passwordSalt: "random_salt",   // Replace with actual salt
+      createdBy: 0, // System user
+      createdAt: new Date()
+    }
+    return this.createUser(adminData);
   }
 }

@@ -1,29 +1,28 @@
-// src/server.ts
-import "reflect-metadata";
-//import { createDataSource } from "./data-source.js";
-//import AppDataSource from "./data-source.js";
-import app from "./app.js";
+import path from "node:path";
+import dotenv from "dotenv";
 
-const PORT = Number(process.env.PORT ?? 3000);
+dotenv.config({ path: path.resolve(process.cwd(), `.env.${process.env.NODE_ENV}`) });
+
+import { env } from '@/config/env';
+import AppDataSource from '@/data/data-source';
+import { app } from '@/app';
 
 async function bootstrap() {
-  try {
-    // Initialize DB (deferred creation in data-source.ts)
-    // const dataSource = createDataSource();
-    // await dataSource.initialize();
+  await AppDataSource.initialize();
+  console.log('Database connected');
 
-    //AppDataSource.initialize();
+  // run migrations (if any)
+  // await AppDataSource.runMigrations(); 
+  // Note: In production, you might want to run migrations separately using CLI or a script instead of on app startup.
 
-    //console.log("DataSource initialized");
-
-    // Start HTTP server
-    app.listen(PORT, () => {
-      console.log(`Server listening on http://localhost:${PORT}`);
-    });
-  } catch (err) {
-    console.error("Failed to bootstrap app:", err);
-    process.exit(1);
-  }
+  // Start HTTP server
+  app.listen(env.port, () => {
+    console.log(`Auth API listening on port ${env.port}`);
+  });
 }
 
-bootstrap();
+bootstrap().catch((err) => {
+  console.error('Failed to start server', err);
+  process.exit(1);
+});
+

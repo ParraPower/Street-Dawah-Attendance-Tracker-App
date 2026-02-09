@@ -32,6 +32,7 @@ router.post(
 
 router.get("/:id", authenticate, authorize([Scopes.Emir]), async (req, res) => {
   const user = await userService.getUserById(parseInt(req.params.id));
+  if (!user) return res.status(404).json({ message: "User not found" });
   res.json(user);
 });
 

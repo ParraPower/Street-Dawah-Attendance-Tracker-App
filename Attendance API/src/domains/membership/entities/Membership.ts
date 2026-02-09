@@ -4,18 +4,18 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
+  //OneToMany,
   Index,
 } from "typeorm";
 import { IMembership } from './../interfaces/imembership.js';
-import { IUserMembership } from './../interfaces/iuser-membership.js';
-import { IAudit } from "../../../core/interfaces/iaudit.js";
-import { IBaseEntity } from "../../../core/interfaces/ibase-entity.js";
-import { MembershipTypeEnum } from "../enums/membership-type-enum.js";
+//import { IUserMembership } from './../interfaces/iuser-membership.js';
+// import { IAudit } from "../../../core/interfaces/iaudit.js";
+// import { IBaseEntity } from "../../../core/interfaces/ibase-entity.js";
+import { MembershipTypeEnum } from "@/domains/membership/enums/membership-type-enum";
 
 @Entity({ name: "memberships" })
 @Index(["isDeleted"])
-export class Membership implements IMembership, IAudit, IBaseEntity {
+export class Membership implements IMembership  {
 
   @PrimaryGeneratedColumn("increment")
   id!: number;
@@ -26,11 +26,11 @@ export class Membership implements IMembership, IAudit, IBaseEntity {
   @Column({ type: "boolean", default: false })
   isDeleted!: boolean;
 
-  @Column({ type: "integer", name: "membership_types_flag", default: () => MembershipTypeEnum.NONE.valueOf() })
+  @Column({ type: "integer", name: "membership_types_flag", default: () => MembershipTypeEnum.NONE.valueOf().toString() })
   membershipTypesFlag!: number;
 
-  @OneToMany("UserMembership", "membership")
-  userMemberships?: IUserMembership[];
+  // @OneToMany("UserMembership", "membership")
+  // userMemberships?: IUserMembership[];
 
   @CreateDateColumn({ type: "timestamptz" })
   createdAt!: Date;

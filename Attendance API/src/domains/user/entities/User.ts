@@ -1,15 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, //OneToMany, 
+  UpdateDateColumn } from 'typeorm';
 // import { Attendance } from "../../attendance/Attendance.module.js";
 // import { Session } from "../../session//Session.module.js";
 //import { UserMembership } from "../../membership/Membership.module.js";
 //import type { UserOutreachActivityLog } from "../../outreach/entities/UserOutreachActivityLog.js";
-import { IUserOutreachActivityLog } from '../../outreach/interfaces/iuser-outreach-activity-log.js';
+//import { IUserOutreachActivityLog } from '../../outreach/interfaces/iuser-outreach-activity-log.js';
 import { IUser } from '../interfaces/iuser.js';
-import { IBaseEntity } from '../../../core/interfaces/ibase-entity.js';
-import { IAudit } from '../../../core/interfaces/iaudit.js';
 
 @Entity()
-export class User implements IUser, IBaseEntity, IAudit {
+export class User implements IUser {
 
   @PrimaryGeneratedColumn()
   id!: number;
@@ -19,6 +18,9 @@ export class User implements IUser, IBaseEntity, IAudit {
 
   @Column()
   mobile!: string;
+
+  @Column({ nullable: true })
+  authUserId?: number;
 
   @Column({ select: false, length: 250 })
   passwordHash!: string;
@@ -35,11 +37,11 @@ export class User implements IUser, IBaseEntity, IAudit {
   // @OneToMany(() => UserMembership, (um) => um.user)
   // userMemberships?: UserMembership[];
 
-  @OneToMany("UserOutreachActivityLog", "volunteerUser")
-  volunteerOutreachLogs?: IUserOutreachActivityLog[];
+  // @OneToMany("UserOutreachActivityLog", "volunteerUser")
+  // volunteerOutreachLogs?: IUserOutreachActivityLog[];
 
-  @OneToMany("UserOutreachActivityLog", "managementOutreachUser")
-  managementOutreachLogs?: IUserOutreachActivityLog[];
+  // @OneToMany("UserOutreachActivityLog", "managementOutreachUser")
+  // managementOutreachLogs?: IUserOutreachActivityLog[];
 
   isDeleted?: boolean;
 
