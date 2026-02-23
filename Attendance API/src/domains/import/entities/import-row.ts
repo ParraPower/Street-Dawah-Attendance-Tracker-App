@@ -1,7 +1,7 @@
-import { IAudit } from "../../../core/interfaces/iaudit.js";
-import { IBaseEntity } from "../../../core/interfaces/ibase-entity.js";
+import { IBaseAudit } from "../../../core/interfaces/ibase-audit.js";
+import { IBaseEntityStub } from "../../../core/interfaces/ibase-entity-stub.js";
 
-export class Import implements IBaseEntity, IAudit{
+export class Import implements IBaseEntityStub, IBaseAudit{
     id!: number;
     uploadTimeStamp!: Date;
     isDeleted?: boolean | undefined;
@@ -12,7 +12,7 @@ export class Import implements IBaseEntity, IAudit{
 
 }
 
-export class ImportRow implements IBaseEntity, IAudit {
+export class ImportRow implements IBaseEntityStub, IBaseAudit {
   id: number;
 
   importId!: number;

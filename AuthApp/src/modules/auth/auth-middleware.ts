@@ -1,11 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyJwt } from '../../security/jwt';
 import { hasScopes, parseScopeStringFromJWT, ScopeList } from './scopes';
-import { UserJwtPayload } from '@/dtos/jwt/userJwtPayload.dto';
+import { UserJwtPayload } from '@/core/requests/userJwtPayload.dto';
+import { RequestWithUser } from '@/core/requests/request-with-user';
 // import { AppDataSource } from '../../config/ormconfig';
 // import { TokenBlacklist } from '../../domains/tokens/token-blacklist-entity';
 
-type RequestWithUser = Request & { user?: UserJwtPayload };
+
+
 
 export async function authenticate(
   req: RequestWithUser,

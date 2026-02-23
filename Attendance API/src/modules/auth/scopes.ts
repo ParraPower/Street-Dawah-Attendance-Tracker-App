@@ -1,4 +1,4 @@
-import { UserJwtPayload } from '@/dtos/jwt/userJwtPayload.dto';
+import { UserJwtPayload } from '@/modules/jwt/userJwtPayload.dto';
 import _ from 'lodash'
 
 export enum Scopes {
@@ -20,7 +20,6 @@ const ScopeRank: Record<Scopes, number> = {
 export function hasScope(userScope: Scopes, required: Scopes): boolean {
   return ScopeRank[userScope] >= ScopeRank[required];
 }
-
 
 export type Scope = typeof Scopes[keyof typeof Scopes];
 

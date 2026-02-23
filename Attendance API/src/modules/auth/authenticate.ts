@@ -1,5 +1,5 @@
-import { verifyAccessToken } from "@/core/modules/auth/verify-token.js";
-import { UserJwtPayload } from "@/dtos/jwt/userJwtPayload.dto";
+import { verifyAccessToken } from "@/modules/auth/verify-token.js";
+import { UserJwtPayload } from "@/modules/jwt/userJwtPayload.dto";
 import { RequestWithUser } from "@/middleware/requestWithUser";
 import { Response, NextFunction } from 'express';
 

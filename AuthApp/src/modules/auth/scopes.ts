@@ -1,4 +1,4 @@
-import { UserJwtPayload } from '@/dtos/jwt/userJwtPayload.dto';
+import { UserJwtPayload } from '@/core/requests/userJwtPayload.dto';
 import _ from 'lodash'
 
 export enum Scopes {

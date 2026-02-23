@@ -1,9 +1,9 @@
 import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
-import userRouter from "@/domains/user/routes/user-routes"; //  for NodeNext runtime
-import importRouter from "@/domains/import/routes/import-routes"; //  for NodeNext runtime
-import exportRouter from  "@/domains/import/routes/export-routes"
+import userRouter from "@/modules/user/routes/user-routes"; //  for NodeNext runtime
+import importRouter from "@/modules/import/routes/import-routes"; //  for NodeNext runtime
+import exportRouter from  "@/modules/import/routes/export-routes"
 //import { errorHandler } from "./middleware/errorHandler";
 //import { notFoundHandler } from "./middleware/notFoundHandler";
 import { env } from "@/config/env";

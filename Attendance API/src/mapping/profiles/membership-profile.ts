@@ -1,7 +1,7 @@
 import { createMap, forMember, mapFrom } from "@automapper/core";
 import { ImportGroupRow } from "@/domains/import/entities/import-group-row";
 import { Membership } from "@/domains/membership/entities/membership";
-import { mapImportGroupTypeToMembershipType } from "@/domains/membership/helpers/mapImportGroupTypeToMembershipType.js";
+import { mapImportGroupTypeToMembershipType } from "@/modules/membership/helpers/mapImportGroupTypeToMembershipType.js";
 import { mapper } from "../mapper";
 
 export function createMembershipProfile() {

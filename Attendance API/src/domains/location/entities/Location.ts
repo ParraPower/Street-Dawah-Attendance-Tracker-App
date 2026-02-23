@@ -1,12 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
-import { IAudit } from "../../../core/interfaces/iaudit.js";
-import { IBaseEntity } from "../../../core/interfaces/ibase-entity.js";
+import { IBaseAudit } from "../../../core/interfaces/ibase-audit.js";
+import { IBaseEntityStub } from "../../../core/interfaces/ibase-entity-stub.js";
 import { ILocation } from "../interfaces/ilocation.js";
 // import { Attendance } from "../../attendance/entities/Attendance.js";
 // import { Session } from "../../session/entities/Session.js";
 
 @Entity({ name: "locations" })
-export class Location implements ILocation, IAudit, IBaseEntity{
+export class Location implements ILocation, IBaseAudit, IBaseEntityStub{
   
   @PrimaryGeneratedColumn("increment")
   id!: number;
