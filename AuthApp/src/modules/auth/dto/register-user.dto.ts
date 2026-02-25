@@ -1,12 +1,27 @@
+import { IsEmail, IsString, IsOptional, IsPhoneNumber, MinLength } from "class-validator";
 import { UserEntity } from '@/domains/users/user-entity';
 
 // filepath: c:/Users/Ahmed/source/repos/Street-Dawah-Attendance-Tracker-App/AuthApp/src/modules/auth/dto/register-user.dto.ts
-
-
 export class RegisterUserDto {
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @IsEmail()
+  email!: string;
+
+  @IsPhoneNumber(undefined)
+  mobile!: string;
+
+  @IsString()
+  @MinLength(8)
+  password!: string;
+}
+
+export class RegisterUserResponseDto {
   email: string;
   username: string;
-  registeredAt: Date;
+  registeredAt?: Date;
 
   constructor(user: UserEntity) {
     this.email = user.email;

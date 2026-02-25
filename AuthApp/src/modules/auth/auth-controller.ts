@@ -1,18 +1,17 @@
 
-import { RequestHandler, Router } from 'express';
+import { Router } from 'express';
 import { DawahRequestHandler } from '@/core/requests/dawah-request-handler';
 import { AuthService } from './auth-service';
 import { UserDto } from '../../dtos/user/user.dto';
-import { RegisterUserDto } from './dto/register-user.dto';
+import { RegisterUserResponseDto } from './dto/register-user.dto';
+import { ClientCredentialsDto } from './dto/client-credentials.dto';
 
 export class AuthController {
   public readonly router = Router();
 
   constructor(private readonly authService: AuthService) {
-
     this.router.post('/register', this.register.bind(this));
     this.router.post('/login', this.login.bind(this)); 
-
   }
 
   public login: DawahRequestHandler<
@@ -32,7 +31,7 @@ export class AuthController {
 
   public register: DawahRequestHandler<
     any,
-    RegisterUserDto,
+    RegisterUserResponseDto,
     { email: string; username: string; password: string }
   > = async (req, res) => {
     const { email, username, password } = req.body;
@@ -42,6 +41,26 @@ export class AuthController {
     } catch (err: any) {
       res.status(400).json({ error: err.message });
     }
+  }
+
+  // generate method in same structure as login and register which issues client credentials token based on clientId and clientSecret
+  public issueClientCredentialsToken: DawahRequestHandler<
+    any, 
+    { accessToken: string; expiresIn: number },
+    ClientCredentialsDto
+  > = async (req, res) => { 
+    const clientCredentials = req.body;
+    try {
+      const token = await this.authService.generateTokenClientCredentials(clientCredentials);
+      if (token) {
+        res.json({ accessToken: token.accessToken, expiresIn: token.expiresIn });
+      } else {           
+        res.status(401).json({ error: 'Invalid client credentials' });  
+      }
+    } catch (err: any) {        
+      console.error(err); 
+      res.status(500).json({ error: 'Internal server error' });
+    }   
   }
 }
 

@@ -1,5 +1,5 @@
-import AppDataSource from '../config/data-source';
-import { JwtKey } from '../domains/keys/key-entity';
+import AppDataSource from '@/data/data-source';
+import { JwtKey } from '@/domains/keys/key-entity';
 
 let privateKeyCache: { kid: string; key: string } | null = null;
 let publicKeyCache: Record<string, string> = {};

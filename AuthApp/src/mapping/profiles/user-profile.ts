@@ -4,7 +4,7 @@ import { UserEntity } from '../../domains/users/user-entity';
 import { UserDto } from '../../dtos/user/user.dto';
 import { CreateUserDto } from '@/dtos/user/create-user.dto';
 import { getScopeesFromUserEntity } from '@/dtos/user/user.helper';
-import { RegisterUserDto } from '@/modules/auth/dto/register-user.dto';
+import { RegisterUserResponseDto } from '@/modules/auth/dto/register-user.dto';
 
 export function createUserProfile() {
   createMap(
@@ -43,7 +43,7 @@ export function createUserProfile() {
   createMap(
     mapper,
     UserEntity,
-    RegisterUserDto,
+    RegisterUserResponseDto,
     forMember(
       (dest) => dest.email,
       mapFrom((src) => src.email),

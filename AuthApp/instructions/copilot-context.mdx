@@ -1,0 +1,144 @@
+# Project Documentation Structure Topics
+
+1. **Project Overview** - A brief description of what AuthApp does and its primary purpose
+
+This project will be used to act as the auth api for other apis such as the Attendance API
+ 
+ Repository: https://github.com/ParraPower/Street-Dawah-Attendance-Tracker-App.git
+
+2. **Architecture Pattern** - The overall design pattern(s) used (MVC, layered, modular, etc.)
+
+Uses domain-driven design with domains and modules foroming the core.
+
+3. **Core Components** - Main modules/classes and their responsibilities
+
+# Domains (Entitys):
+UserEntity - represents users of the system
+ClientEntity - represents entry for Client Credentials
+KeyEntity - represents entry for Assymetric Key Pairs used for signing and decoding JWTs
+
+# Modules
+    * auth - holds authorization and authentication concerns
+    * user - holds user concerns 
+NOTE: all modules can contain DTOs, controllers, services, middleware
+
+4. **Authentication Flow** - How authentication is processed in the application
+
+For users: users register then call /auth/login endpoint to get JWT token
+
+5. **Directory Structure** - Organization of files and folders
+
+# The system is broken up into several key parts:
+    * domains - for holding the defintion of a concept in the code i.e. business rules, entities. Stuff which would not be affected by a tooling or dependency change.
+    * modules - for holding the implementation of a concept using tools and dependencies installed into the system such as mappings, controllers, services, middleware
+    * core - for holding infrastructure based classes for things as entities and controller requests. I suggest we break this up and move the concerns to either domains or modules (whichever is approrpriate)
+    * data - for holding database concerns include the definition of the dataSource but also the repo layer for entities
+    * mapping - for holding mappings between entities and DTOs
+    * security - for holding security concerns (maybe we can move to an infrastructure folder and place underneath)
+    * types - for holding redefitions of built-in nodejs types
+    * dtos - for holding DTOs. Need to be migrated to approrpriate module sub-folder
+    * config - for holding core-configuration of system. (Perhaps could be placed under infrastructure as a sub-folder?)
+    * migrations - for holding our database migrations generated via our ORM library
+
+
+6. **Key Dependencies** - External libraries and frameworks used
+    * Mapping - We use Automapper
+    * ORM - We use TypeORM to provide a database-agnostic wrapper to our data-access-layer operations and also for managing our migrations
+    * Express - We use as the framework for our NodeJS API
+    * JWT - We use jsonwebtoken for managing our JWT creation, signing and encoding
+    * Passwords and Hashing - We use bcrypt
+
+7. **Configuration** - How to configure the application
+
+we use the package cross-env to allow for a mult-environment configuration. We have defined .env files which contain the various things that can be configured. Current things which can be configured can be found in the env.ts file under the config folder at teh root of the project
+
+10. **Error Handling** - Strategy for error management and logging
+
+Nothing set yet
+
+11. **Security Considerations** - Important security practices and measures
+
+We have built our own authorization system which utilizes Scopes (found in scopes.ts file under the /modules/auth folder) to ensure only users with the right authority via scopes can perform certain actions
+
+12. **Testing Strategy** - How tests are organized and what coverage is expected
+
+Tests will be placed under a __tests__ folder of which then a folder structure which mimicks the rest of the project will exist. We will use Jest to run the tests and build the mocks and MSW to intercept any external web calls. 
+
+```md
+# Project documentation topics
+
+Before generating the documentation comment, define the key topics that should be covered for the AuthApp project. Below are recommended topics and concise descriptions you can use directly in documentation.
+
+1. **Project overview**
+
+AuthApp provides an authentication and authorization API for other services (for example, the Attendance API).
+
+2. **Architecture**
+
+Domain-driven design: code is organized into domains and modules. Modules contain controllers, services, DTOs, and middleware.
+
+3. **Core components**
+
+- Entities:
+  - `UserEntity`: represents application users.
+  - `ClientEntity`: stores client-credentials entries (client credentials flow).
+  - `KeyEntity`: stores asymmetric key pairs used for signing and verifying JWTs.
+- Modules:
+  - `auth`: authentication and authorization (controllers, services, middleware).
+  - `user`: user management (controllers, services, DTOs).
+
+Note: modules may contain DTOs, controllers, services, and middleware.
+
+4. **Authentication flow**
+
+For users: register, then call `POST /auth/login` to receive a JWT. The system also supports client credentials for machine-to-machine authentication.
+
+5. **Directory structure**
+
+- `domains`: business entities and domain logic (should be independent of tooling or infra).
+- `modules`: feature implementations (controllers, services, DTOs, middleware).
+- `core`: shared base classes and request/response abstractions.
+- `data`: database data-source, TypeORM setup, and repositories.
+- `mapping`: entity/DTO mapping profiles and AutoMapper configuration.
+- `security`: JWT, key cache, token blacklist/whitelist, and auth guards.
+- `types`: project type augmentations and custom type definitions.
+- `dtos`: DTOs (consider moving module-specific DTOs into their module folders).
+- `config`: environment and configuration loaders (see [config/env.ts](config/env.ts#L1)).
+- `migrations`: database migration files generated by TypeORM.
+
+6. **Key dependencies**
+
+- `TypeORM` — database ORM and migrations
+- `express` — HTTP framework
+- `jsonwebtoken` — JWT creation and verification
+- `bcrypt` — password hashing
+- `automapper` (or AutoMapper binding used) — entity/DTO mapping
+
+7. **Configuration**
+
+Uses `cross-env` and `.env` files for multi-environment configuration. See [config/env.ts](config/env.ts#L1) for the environment variables currently read by the application.
+
+8. **Error handling**
+
+Centralized error handling is not yet implemented. Recommended approach: a global error middleware that normalizes errors into a consistent HTTP response format, structured logging, and optional integration with an error-reporting system (Sentry, etc.).
+
+9. **Security considerations**
+
+- Authorization uses scopes defined in [modules/auth/scopes.ts](modules/auth/scopes.ts#L1) and enforced via guards/middleware.
+- Key management: store asymmetric keys securely and rotate when necessary; token blacklist/whitelist entities exist under `domains/tokens`.
+
+10. **Testing strategy**
+
+Tests should live under `__tests__` with a mirrored folder structure. Use `jest` for unit tests and `msw` for mocking external HTTP calls.
+
+11. **Migrations**
+
+Database migrations are managed with TypeORM and stored in the `migrations` folder.
+
+12. **Next steps / TODOs**
+
+- Implement centralized error handling and logging.
+- Consolidate `core` responsibilities into `domains` or `modules` where appropriate.
+- Move module-specific DTOs from `dtos` into their respective module folders.
+
+---

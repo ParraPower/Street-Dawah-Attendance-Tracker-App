@@ -8,7 +8,8 @@ import { ClientService } from '@/domains/clients/client-service';
 import { mapper } from '@/mapping/mapper';
 import { UserDto } from '@/dtos/user/user.dto';
 import { createUserProfile } from '@/mapping/profiles/user-profile';
-import { RegisterUserDto } from './dto/register-user.dto';
+import { RegisterUserResponseDto } from './dto/register-user.dto';
+import { ScopeList, Scopes } from './scopes';
 //import { TokenWhitelist } from '../../domains/tokens/token-whitelist-entity';
 //import { env } from '../../config/env';
 
@@ -16,11 +17,11 @@ export class AuthService {
   private userRepo = AppDataSource.getRepository(UserEntity);
   //private tokenWhitelistRepo = AppDataSource.getRepository(TokenWhitelist);
 
-  constructor(private readonly passwordService: PasswordService,private readonly clientService: ClientService,) {
+  constructor(private readonly passwordService: PasswordService, private readonly clientService: ClientService,) {
     createUserProfile();
   }
 
-  async register(email: string, username: string, password: string) : Promise<RegisterUserDto> {
+  async register(email: string, username: string, password: string) : Promise<RegisterUserResponseDto> {
     const passwordHash = await bcrypt.hash(password, 12);
     const user = this.userRepo.create({
       email,
@@ -29,7 +30,7 @@ export class AuthService {
       scopes: [], // default scopes on signup
     });
     const savedUser = await this.userRepo.save(user);
-    return mapper.map(savedUser, Object.getPrototypeOf(savedUser).constructor, RegisterUserDto);
+    return mapper.map(savedUser, Object.getPrototypeOf(savedUser).constructor, RegisterUserResponseDto);
   }
 
   async login(email: string, password: string) {
@@ -75,38 +76,37 @@ export class AuthService {
     };
   }
 
-//   async issueClientCredentialsToken(clientId: string, clientSecret: string) {
-//     // Implement client authentication logic here, e.g. check clientId and clientSecret against the database
-//     // For demonstration, we'll just check against hardcoded values
-//     await 
-//     if (clientId === 'my-client-id' && clientSecret === 'my-client-secret') {
-//       const token = signToken(clientId, ['client'], 'access');
-//       return token;
-//     }
-//     return null;
-//   }
+  private async issueClientCredentialsToken(clientId: string, clientSecret: string) {
+    // Implement client authentication logic here, e.g. check clientId and clientSecret against the database
+    // For demonstration, we'll just check against hardcoded values
+    const client = await this.clientService.validateClientCredentials(clientId, clientSecret); 
+    if (client) {
+      const token = signToken(clientId, client.scopes, 'access');
+      return token;
+    }
+    return null;
+  }
 
-//   async generateTokenClientCredentials(clientCredentials: ClientCredentialsDto) {
-// if (clientCredentials.grant_type !== "client_credentials") {
-//       return res.status(400).json({ error: "unsupported_grant_type" });
-//     }
+  async generateTokenClientCredentials(clientCredentials: ClientCredentialsDto) {
+    if (clientCredentials.grant_type !== "client_credentials") {
+      return null
+    }
 
-//     const token = await this.auth.issueClientCredentialsToken(
-//       clientCredentials.client_id,
-//       clientCredentials.client_secret
-//     );
+    const token = await this.issueClientCredentialsToken(
+      clientCredentials.client_id,
+      clientCredentials.client_secret
+    );
 
-//     if (!token) {
-//       return res.status(401).json({ error: "invalid_client" });
-//     }
+    if (!token) {
+      return null;
+    }
 
-//     return res.json({
-//       access_token: token,
-//       token_type: "Bearer",
-//       expires_in: 3600,
-//     });
-
-//   }
+    return {
+      accessToken: token,
+      tokenType: "Bearer",
+      expiresIn: 3600,
+    };
+  }
 
   // async revokeRefreshToken(jti: string) {
   //   await this.tokenWhitelistRepo.update({ jti }, { active: false });

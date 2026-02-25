@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { verifyJwt } from '../../security/jwt';
 import { hasScopes, parseScopeStringFromJWT, ScopeList } from './scopes';
 import { UserJwtPayload } from '@/core/requests/userJwtPayload.dto';

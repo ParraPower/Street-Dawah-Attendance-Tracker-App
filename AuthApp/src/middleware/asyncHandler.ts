@@ -1,5 +1,5 @@
 import { Response, NextFunction } from 'express';
-import { RequestWithUser } from "@/modules/auth/auth-middleware";
+import { RequestWithUser } from "@/core/requests/request-with-user";
 
 const asyncHandler = (fn: (req: RequestWithUser, res: Response, next: NextFunction) => Promise<void>) => {
   return (req: RequestWithUser, res: Response, next: NextFunction) => {
