@@ -23,8 +23,6 @@ export class JwtKeyService {
       isActive: true
     });
 
-    
-
     await this.repo.save(entity);
     return entity;
   }

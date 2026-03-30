@@ -9,7 +9,7 @@ import { mapper } from '@/mapping/mapper';
 import { UserDto } from '@/dtos/user/user.dto';
 import { createUserProfile } from '@/mapping/profiles/user-profile';
 import { RegisterUserResponseDto } from './dto/register-user.dto';
-import { ScopeList, Scopes } from './scopes';
+//import { ScopeList, Scopes } from './scopes';
 //import { TokenWhitelist } from '../../domains/tokens/token-whitelist-entity';
 //import { env } from '../../config/env';
 

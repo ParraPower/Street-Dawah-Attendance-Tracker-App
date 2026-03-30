@@ -1,7 +1,7 @@
 // app.ts (or modules/auth/auth.module.ts)
 import { DataSource } from "typeorm";
-import { ClientEntity } from "@/domains/clients/client-entity";
-import { ClientRepository } from "@/data/clients/client-repo";
+import { ClientEntity } from "@/features/clients/domains/entities/client-entity";
+import { ClientRepository } from "@/features/clients/infrastructure/persistence/typeorm/client-repo";
 import { PasswordService } from "@/domains/password/password-service";
 import { ClientService } from "@/domains/clients/client-service";
 // import { JwtService } from "../infrastructure/crypto/jwt.service";

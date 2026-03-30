@@ -5,6 +5,7 @@ import { UserEntity } from '@/domains/users/user-entity';
 //import { TokenWhitelist } from '../domains/tokens/token-whitelist-entity';
 import { JwtKey } from '@/domains/keys/key-entity';
 
+console.log("Creating data source with DB URL:", env.db.url);
 
 const createDataSource = () => new DataSource({
   type: 'postgres',

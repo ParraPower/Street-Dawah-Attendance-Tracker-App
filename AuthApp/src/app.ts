@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import { UserController } from './modules/user/user-controller';
 import { buildAuthController } from './modules/auth/auth-module';
 import { JwksController } from './modules/jwks/jwks-controller';
+import { buildClientCredentialsController } from './boostrap/controllers/client-credentials-module';
 import { authenticate } from './modules/auth/auth-middleware';
 import { registerProfiles } from './mapping/register-profiles';
 import { DataSource } from 'typeorm/data-source/DataSource';
@@ -20,9 +21,11 @@ app.use(morgan('dev'));
 
 export function buildControllers(app: Express, dataSource: DataSource) {
   const AuthController = buildAuthController(dataSource);
+  const ClientCredentialsController = buildClientCredentialsController(dataSource);
 
   app.use('/user', UserController);
   app.use('/auth', AuthController.router);
+  app.use('/client-credentials', ClientCredentialsController.router);
   app.use('/', JwksController);
 
   // example protected route

@@ -6,9 +6,6 @@ import { RequestWithUser } from '@/core/requests/request-with-user';
 // import { AppDataSource } from '../../config/ormconfig';
 // import { TokenBlacklist } from '../../domains/tokens/token-blacklist-entity';
 
-
-
-
 export async function authenticate(
   req: RequestWithUser,
   res: Response,

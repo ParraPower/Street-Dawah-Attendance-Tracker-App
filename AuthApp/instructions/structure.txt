@@ -1,0 +1,98 @@
+
+src/
+  bootstrap/                 # app wiring: express init, DI container, middleware pipeline
+    app.ts
+    http.ts
+    container.ts
+
+  shared/                    # cross-cutting code shared by multiple features
+    domain/
+      errors/
+      value-objects/
+      events/
+    application/
+      result.ts              # Result/Either helpers, base UseCase interface
+    infrastructure/
+      persistence/
+        typeorm/
+          data-source.ts
+          naming-strategy.ts
+      logging/
+    interfaces/
+      http/
+        middlewares/
+        error-handler.ts     # global error middleware
+        auth-guards.ts
+    config/
+      env.ts
+
+  features/
+    auth/
+      domain/
+        entities/
+          client.entity.ts
+          key.entity.ts
+          token.entity.ts          # (or tokens as separate feature if large)
+        services/
+          password-hasher.ts       # domain service interface
+          token-signer.ts          # domain service interface
+        policies/
+          scopes.ts                # domain rules about scopes (or application if purely use-case)
+        repositories/
+          client-repo.ts           # interfaces (ports)
+          key-repo.ts
+          token-repo.ts
+
+      application/
+        dtos/
+          login.request.ts
+          login.response.ts
+          client-credentials.request.ts
+        use-cases/
+          login.usecase.ts
+          issue-client-token.usecase.ts
+          rotate-keys.usecase.ts
+        mappers/
+          auth.mapper.ts           # mapping rules used by use cases
+
+      infrastructure/
+        persistence/
+          typeorm/
+            entities/              # TypeORM decorated persistence models if you separate them
+            client.repository.ts   # implements domain repo interface using TypeORM
+            key.repository.ts
+            token.repository.ts
+        security/
+          jwt-signer.impl.ts       # implements token-signer
+          bcrypt-hasher.impl.ts    # implements password-hasher
+          key-cache.ts
+          token-blocklist.ts
+
+      interfaces/
+        http/
+          routes.ts
+          controller.ts
+          validators.ts
+          middlewares.ts
+
+    users/
+      domain/
+        entities/
+          user.entity.ts
+        repositories/
+          user-repo.ts
+      application/
+        dtos/
+        use-cases/
+          register.usecase.ts
+          get-user.usecase.ts
+      infrastructure/
+        persistence/typeorm/
+          user.repository.ts
+      interfaces/http/
+        routes.ts
+        controller.ts
+
+  migrations/                 # TypeORM migrations
+  types/                      # global type augmentations (keep small)
+``
