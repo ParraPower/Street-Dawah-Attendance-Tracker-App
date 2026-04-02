@@ -55,12 +55,12 @@ export function signJwt(payload: object, expiresIn: StringValue) {
 
 export function verifyJwt(token: string, action: (err: Error, decoded: never) => void): void {
   jwt.verify(token, (header, callback) => {
+    //console.log("Verifying JWT...", header);
     if (header.kid === undefined) {
       return callback(new Error('No key ID in token header'));
     }
 
     const pub = getPublicKey(header.kid);
-
 
     if (!pub) return callback(new Error('Unknown key ID'));
     callback(null, pub);

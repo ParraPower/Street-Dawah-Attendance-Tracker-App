@@ -1,4 +1,4 @@
-import { UserEntity } from "@/domains/users/user-entity";
+import { UserEntity } from "@/features/users/domain/entities/user-entity";
 import { ScopeList, Scopes } from "@/modules/auth/scopes";
 
 export const getScopeesFromUserEntity = (user: UserEntity): ScopeList => {

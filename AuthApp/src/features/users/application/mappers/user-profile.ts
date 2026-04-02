@@ -1,10 +1,10 @@
 import { createMap, forMember, mapFrom } from '@automapper/core';
-import { mapper } from '../mapper';
-import { UserEntity } from '../../domains/users/user-entity';
-import { UserDto } from '../../dtos/user/user.dto';
+import { mapper } from '../../../../mapping/mapper';
+import { UserEntity } from '../../domain/entities/user-entity';
+import { UserDto } from '../../../../dtos/user/user.dto';
 import { CreateUserDto } from '@/dtos/user/create-user.dto';
 import { getScopeesFromUserEntity } from '@/dtos/user/user.helper';
-import { RegisterUserResponseDto } from '@/modules/auth/dto/register-user.dto';
+import { RegisterUserResponseDto } from '@/features/auth/application/dtos/register-user.dto';
 
 export function createUserProfile() {
   createMap(

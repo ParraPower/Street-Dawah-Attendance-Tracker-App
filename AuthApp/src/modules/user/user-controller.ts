@@ -3,7 +3,6 @@ import { authenticate, authorize } from "@/modules/auth/auth-middleware";
 import { Scopes } from "@/modules/auth/scopes";
 import { UserService } from "./user-service";
 import { CreateUserDto } from "@/dtos/user/create-user.dto";
-import asyncHandler from "@/middleware/asyncHandler";
 //import { createUserHandler, getUserHandler } from "./user.controller";
 
 const userService = new UserService();
@@ -40,11 +39,14 @@ router.get("/:id", authenticate, authorize([Scopes.Emir]), async (req, res) => {
 // TODO: Add route for bulk user creation, which will be used by the admin to create users en masse.
 router.post(
   "/bulk",
+  authenticate,
   authorize([Scopes.Mudeer, Scopes.Khaleef, Scopes.Emir]),
-  asyncHandler(async (req, res) => {
-    const users = req.body as CreateUserDto[];
-    const result = await userService.createUsers(users);
-    res.json(result);
-  })
+  async (req, res, next) => {
+    console.log("Bulk user creation request body:", req.body);
+    //const users = req.body as CreateUserDto[];
+    //const result = await userService.createUsers(users);
+    //res.json(result);
+    res.status(200).json({ message: "Bulk user creation endpoint is under construction" });
+  }
 );
 export { router as UserController };

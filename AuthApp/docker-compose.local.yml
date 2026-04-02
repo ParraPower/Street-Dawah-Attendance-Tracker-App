@@ -5,15 +5,15 @@ services:
     container_name: authapp-postgres-local
     restart: unless-stopped
     environment:
-      POSTGRES_USER: $DB_USER
-      POSTGRES_PASSWORD: $DB_PASSWORD
-      POSTGRES_DB: $DB_NAME
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
       - "5433:5432"
     volumes:
       - postgres-data-local:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $DB_USER"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -23,6 +23,8 @@ services:
       context: .
       dockerfile: Dockerfile
       target: build  
+    env_file:
+      - .env.local
     container_name: authapp-migrate-local
     depends_on:
       postgres:
@@ -31,9 +33,9 @@ services:
       NODE_ENV: local
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_USER: $DB_USER
-      DB_PASSWORD: $DB_PASSWORD
-      DB_NAME: $DB_NAME
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
     # Run your existing migration script
     command: npm run migration:run local
     restart: "no"
@@ -44,6 +46,8 @@ services:
       context: .
       dockerfile: Dockerfile
       target: runtime
+    env_file:
+      - .env.local
     container_name: authapp-api-local
     depends_on:
       postgres:
@@ -52,9 +56,9 @@ services:
       NODE_ENV: local
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_USER: $DB_USER
-      DB_PASSWORD: $DB_PASSWORD
-      DB_NAME: $DB_NAME
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
     ports:
       - "4001:4001"
     volumes:

@@ -1,4 +1,4 @@
-import { UserEntity } from '@/domains/users/user-entity';
+import { UserEntity } from '@/features/users/domain/entities/user-entity';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto'
 import _ from 'lodash'

@@ -18,7 +18,8 @@
     "migration:revert:win": "powershell -ExecutionPolicy Bypass -File ./scripts/revert-migration.ps1",
 
     "start:local": "npm run build && cross-env NODE_ENV=local ts-node-dev -r tsconfig-paths/register src/server.ts",
-    
+    "start:dev": "npm run build && cross-env NODE_ENV=develop ts-node-dev -r tsconfig-paths/register src/server.ts",
+
     "admin:password:hash": "ts-node -r tsconfig-paths/register ./scripts/generate-password-hash.ts",
 
     "docker:db:local": "docker compose -f docker-compose.local.yml --env-file .env.local up --build -d postgres",

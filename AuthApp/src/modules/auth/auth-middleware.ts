@@ -39,6 +39,7 @@ export async function authenticate(
 export const authorize = (requiredScopes: ScopeList) => (req: RequestWithUser, res: Response, next: NextFunction) => {
   try {
     const userJwtPayload = req.user as UserJwtPayload
+
     if (!userJwtPayload)
       throw new Error("user for authorization not assigned");
 
@@ -53,7 +54,6 @@ export const authorize = (requiredScopes: ScopeList) => (req: RequestWithUser, r
         error: "insufficient_scope",
         requiredScopes
       });
-
     }
 
     next();

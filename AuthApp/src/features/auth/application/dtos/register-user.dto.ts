@@ -1,5 +1,5 @@
 import { IsEmail, IsString, IsOptional, IsPhoneNumber, MinLength } from "class-validator";
-import { UserEntity } from '@/domains/users/user-entity';
+import { UserEntity } from '@/features/users/domain/entities/user-entity';
 
 // filepath: c:/Users/Ahmed/source/repos/Street-Dawah-Attendance-Tracker-App/AuthApp/src/modules/auth/dto/register-user.dto.ts
 export class RegisterUserDto {

@@ -1,6 +1,6 @@
 import { UserDto } from "@/dtos/user/user.dto";
 import AppDataSource from '@/data/data-source';
-import { UserEntity } from "@/domains/users/user-entity";
+import { UserEntity } from "@/features/users/domain/entities/user-entity";
 import { CreateUserDto } from "@/dtos/user/create-user.dto";
 import { mapper } from "@/mapping/mapper";
 import { Repository } from "typeorm/repository/Repository";
