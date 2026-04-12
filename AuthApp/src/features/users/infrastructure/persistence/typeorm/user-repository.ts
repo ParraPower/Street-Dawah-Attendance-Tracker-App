@@ -1,28 +1,67 @@
-import { Repository } from "typeorm";
-import { IUserRepository } from "../../../domain/repositories/iuser-repository";
-import { UserEntity } from "../../../domain/entities/user-entity";
+import { Repository, In } from "typeorm";
+import { BaseRepository } from "@/shared/infrastructure/persistence/typeorm/base-repository";
+import { UserEntity } from "@/features/users/domain/entities/user-entity";
+import { IUserRepository } from "@/features/users/domain/repositories/iuser-repository";
+import { ILike } from 'typeorm'
 
-export class UserRepository implements IUserRepository {
-  constructor(private readonly repo: Repository<UserEntity>) {}
-  findByEmail(email: string): Promise<UserEntity | null> {
-    return this.repo.findOne({ where: { email } });
+export class UserRepository
+  extends BaseRepository<UserEntity>
+  implements IUserRepository
+{
+  constructor(repo: Repository<UserEntity>) {
+    super(repo);
+  }
+  findByTemporaryPasswordGuid(temporaryPasswordGuid: string): Promise<UserEntity | null> {
+    return this.findOne({
+      where: { temporaryPasswordGuid }
+    })
+  }
+
+  private prepUserForUpsert(user: Partial<UserEntity> | UserEntity) {
+    return {...user, email: user.email?.toLowerCase(), username: user.username?.toLowerCase() }
+  }
+
+  async findByUsernamesAndEmails(
+    usernames: string[],
+    emails: string[]
+  ): Promise<UserEntity[]> {
+    return this.find({
+      where: [
+        { email: In(emails.map(e => e.toLowerCase())) },
+        { username: In(usernames.map(u => u.toLowerCase())) }
+      ]
+    });
+  }
+
+  async createBulk(entities: UserEntity[]): Promise<UserEntity[]> {
+    return await this.repo.manager.transaction(async (trx) => {
+      const prepped = entities.map(e => this.prepUserForUpsert(e) as UserEntity);
+
+      return await trx.save(UserEntity, prepped);
+    });
+  }
+
+  async findByEmail(email: string): Promise<UserEntity | null> {
+    return this.findOne({
+      where: { email: ILike(email.toLowerCase()) }
+    });
   }
 
   async findById(id: number): Promise<UserEntity | null> {
-    const record = await this.repo.findOne({ where: { id } });
-    if (!record) return null;
-
-    return record
+    return this.findOne({
+      where: { id }
+    });
   }
 
   async findByUsername(username: string): Promise<UserEntity | null> {
-    const record = await this.repo.findOne({ where: { username } });
-    if (!record) return null;
-
-    return record
+    return this.findOne({
+      where: { username: ILike(username.toLowerCase()) }
+    });
   }
 
   async create(user: Partial<UserEntity>): Promise<UserEntity> {
+    user = this.prepUserForUpsert(user)
+
     const entity = this.repo.create(user);
     return await this.repo.save(entity);
   }
@@ -31,18 +70,19 @@ export class UserRepository implements IUserRepository {
     const existing = await this.findById(id);
     if (!existing) return null;
 
+    user = this.prepUserForUpsert(user)
+
     Object.assign(existing, user);
     return await this.repo.save(existing);
   }
 
   async delete(id: number): Promise<boolean> {
-    const result = await this.repo.delete(id);
-    return (result.affected ?? 0) > 0;
+    // Use soft delete from BaseRepository
+    await this.softDelete(id);
+    return true;
   }
 
   async findAll(): Promise<UserEntity[]> {
-    return await this.repo.find({
-      where: { isDeleted: false },
-    });
+    return this.find();
   }
 }

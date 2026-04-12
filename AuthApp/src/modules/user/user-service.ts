@@ -1,12 +1,13 @@
-import { UserDto } from "@/dtos/user/user.dto";
+
 import AppDataSource from '@/data/data-source';
 import { UserEntity } from "@/features/users/domain/entities/user-entity";
-import { CreateUserDto } from "@/dtos/user/create-user.dto";
 import { mapper } from "@/mapping/mapper";
 import { Repository } from "typeorm/repository/Repository";
 import _ from 'lodash'
-import { PasswordService } from "../../domains/password/password-service";
+import { PasswordService } from "@/features/auth/domains/services/password-service";
 import crypto from 'crypto'
+import { CreateUserDto } from '@/features/users/application/dtos/create-user.dto';
+import { UserDto } from '@/features/users/application/dtos/user.dto';
 
 export class UserService {
   private userRepo: Repository<UserEntity>;
@@ -19,54 +20,24 @@ export class UserService {
 
   private generateTempPasswordForCreateUser = (createUser: CreateUserDto): CreateUserDto => {
 
-   const temp = _.trim(createUser.tempPassword);
+   const temp = _.trim(createUser.password);
     const needsGeneratedPassword =
-      _.isEmpty(temp) || !this.passwordService.isValidTempPassword(temp);
+      _.isEmpty(temp) || !this.passwordService.isValidPassword(temp);
 
     if (needsGeneratedPassword) {
-      createUser.tempPassword = this.passwordService.generateTempPassword();
+      createUser.password = this.passwordService.generateTempPassword();
     }
 
     return createUser;
-  }
-
-  createUsers = async (users: CreateUserDto[]) => {
-    let result: UserDto[] = []
-    // re-implement this method to use bulk insert for better performance, currently it creates users one by one which is inefficient for large batches.
-    this.userRepo.manager.transaction(async transactionalEntityManager => {
-      const userEntities = users.map(user => {
-        const createUserDtoWithTempPassword = this.generateTempPasswordForCreateUser(user)
-        const entity = mapper.map(createUserDtoWithTempPassword, Object.getPrototypeOf(createUserDtoWithTempPassword).constructor, UserEntity)
-        return entity
-      })
-      const createdUserEntities = await transactionalEntityManager.save(userEntities) 
-
-      result = createdUserEntities.map((entity, index) => {
-        return mapper.map(entity, Object.getPrototypeOf(users[index]).constructor, UserDto)
-      })
-    })
-    return result
-  }
-
-  resetPassword = async (temporaryPasswordGuid: string, newPassword: string): Promise<boolean> => {
-    const user = await this.userRepo.findOneBy({ temporaryPaswordGuid: temporaryPasswordGuid })
-    if (!user) {
-      return false
-    }
-    const newPasswordHash = await this.passwordService.generatePasswordHash(newPassword)
-    user.passwordHash = newPasswordHash
-    user.temporaryPaswordGuid = null
-    await this.userRepo.save(user)
-    return true
   }
 
   createUser = async (user: CreateUserDto): Promise<UserDto> => {
     this.generateTempPasswordForCreateUser(user)
 
     const entity = mapper.map(user, Object.getPrototypeOf(user).constructor, UserEntity)
-    const passwordHash = await this.passwordService.generatePasswordHash(user.tempPassword!)
+    const passwordHash = await this.passwordService.generatePasswordHash(user.password!)
     entity.passwordHash = passwordHash
-    entity.temporaryPaswordGuid = crypto.randomUUID()
+    entity.temporaryPasswordGuid = crypto.randomUUID()
     const createdUser = await this.userRepo.create(entity)
     const savedUser = await this.userRepo.save(createdUser)
 

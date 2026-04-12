@@ -6,17 +6,17 @@ import { BaseEntity } from '@/core/abstracts/base-entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity implements IUserEntity {
-  @Column({ unique: true })
+  @Column()
   email!: string;
 
-  @Column({ unique: true })
+  @Column()
   username!: string;
 
-  @Column()
-  passwordHash!: string;
+  @Column('varchar', { default: null })
+  passwordHash?: string | null;
 
   @Column('uuid', { unique: true, default: null })
-  temporaryPaswordGuid?: string | null;
+  temporaryPasswordGuid?: string | null;
 
   @Column('simple-array', { default: '' })
   scopes!: string[]; // e.g. ['user-read', 'user-write']

@@ -7,7 +7,7 @@ export class ClientService {
   ) { }
 
   async generateClientSecretHash(secret: string): Promise<string> {
-    return await this.hasherService.generateHash(secret);
+    return await this.hasherService.generate(secret);
   }
 
   async generateClientSecret(): Promise<string> {

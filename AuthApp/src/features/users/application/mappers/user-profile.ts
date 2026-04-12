@@ -1,10 +1,20 @@
 import { createMap, forMember, mapFrom } from '@automapper/core';
 import { mapper } from '../../../../mapping/mapper';
 import { UserEntity } from '../../domain/entities/user-entity';
-import { UserDto } from '../../../../dtos/user/user.dto';
-import { CreateUserDto } from '@/dtos/user/create-user.dto';
-import { getScopeesFromUserEntity } from '@/dtos/user/user.helper';
 import { RegisterUserResponseDto } from '@/features/auth/application/dtos/register-user.dto';
+import { CreateUserDto } from '../dtos/create-user.dto';
+import { UserDto } from '../dtos/user.dto';
+import { ScopeList, Scopes } from '@/modules/auth/scopes';
+
+const getScopeesFromUserEntity = (user: UserEntity): ScopeList => {
+  const response = user?.scopes.map(scope =>
+    Object.values(Scopes).includes(scope as Scopes)
+      ? (scope as Scopes)
+      : undefined
+  ) ?? [];
+
+  return response as ScopeList;
+}
 
 export function createUserProfile() {
   createMap(
@@ -37,6 +47,18 @@ export function createUserProfile() {
     mapper,
     CreateUserDto,
     UserEntity,
+    forMember(
+      (dest) => dest.email,
+      mapFrom((src) => src.email)
+    ),
+    forMember(
+      (dest) => dest.username,
+      mapFrom((src) => src.username)
+    ),
+    forMember(
+      (dest) => dest.scopes,
+      mapFrom((src) => src.scopes)
+    )
   );
 
   // If you want to map UserEntity to RegisterUserDto, you can create another map

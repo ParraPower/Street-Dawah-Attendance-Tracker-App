@@ -1,5 +1,3 @@
-console.log(process.env);
-
 export const env = {
   env: process.env.NODE_ENV || 'local',
   port: Number(process.env.PORT) || 4001,

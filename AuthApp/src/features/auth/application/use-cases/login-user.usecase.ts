@@ -5,7 +5,8 @@ import { UserEntity } from "@/features/users/domain/entities/user-entity";
 import { IUserRepository } from "@/features/users/domain/repositories/iuser-repository";
 import { IHasherService } from "../../domains/services/hasher-service";
 import { AuthService } from "../../domains/services/auth-service";
-import { UserDto } from "@/dtos/user/user.dto";
+import { UserDto } from "../../../users/application/dtos/user.dto";
+import { UserService } from "@/features/users/domain/services/user-service";
 
 
 export class LoginUserUseCase {
@@ -13,6 +14,7 @@ export class LoginUserUseCase {
     private readonly repo: IUserRepository,
     private readonly hashService: IHasherService,
     private readonly authService: AuthService,
+    private readonly userService: UserService
   ) { }
 
   async execute(email: string, password: string): Promise<UserTokenResponseDto | null> {
@@ -22,7 +24,7 @@ export class LoginUserUseCase {
         id: 'some-uuid',
         email: email,
         username: 'testuser',
-        passwordHash: await this.hashService.generateHashWithSize('password123', 12),
+        passwordHash: await this.hashService.generateWithSize('password123', 12),
         scopes: ['user-read', 'user-write'],
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -33,7 +35,9 @@ export class LoginUserUseCase {
     }
     if (!user) throw new Error('Invalid credentials');
 
-    const ok = await this.hashService.verify(password, user.passwordHash);
+    if (!this.userService.isUserActive(user)) new Error('Invalid user')
+
+    const ok = await this.hashService.verify(password, user.passwordHash!);
     if (!ok) throw new Error('Invalid credentials');
 
     const access = this.authService.signAccessToken(user.id.toString(), user.scopes);

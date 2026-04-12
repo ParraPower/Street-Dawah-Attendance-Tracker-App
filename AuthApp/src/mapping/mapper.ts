@@ -8,3 +8,5 @@ export const mapper = createMapper({
 });
 
 
+console.log('Registering profiles on mapper:', mapper)
+

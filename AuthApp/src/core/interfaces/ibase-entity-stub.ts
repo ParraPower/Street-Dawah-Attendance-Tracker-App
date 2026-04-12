@@ -1,5 +1,5 @@
 export interface IBaseEntityStub 
 {
     id: number;
-    isDeleted?: boolean;
+    isDeleted?: boolean | null;
 }

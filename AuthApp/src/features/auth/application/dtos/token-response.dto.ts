@@ -1,4 +1,4 @@
-import { UserDto } from "@/dtos/user/user.dto";
+import { UserDto } from "../../../users/application/dtos/user.dto"
 
 export class TokenResponseDto {
   accessToken!: string;

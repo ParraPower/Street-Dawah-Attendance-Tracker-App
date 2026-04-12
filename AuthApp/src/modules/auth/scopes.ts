@@ -8,7 +8,10 @@ export enum Scopes {
   Khaleef = 'khaleef'
 }
 
-// Define hierarchy
+// #region consts
+
+const VALID_SCOPES = new Set<Scope>(Object.values(Scopes));
+
 const ScopeRank: Record<Scopes, number> = {
   [Scopes.Jundi]: 1,
   [Scopes.Emir]: 2,
@@ -16,17 +19,9 @@ const ScopeRank: Record<Scopes, number> = {
   [Scopes.Khaleef]: 4,
 };
 
-// Check if a user has a scope (directly or implicitly)
-export function hasScopeByRank(userScope: Scopes, required: Scopes): boolean {
-  console.log(`Checking if user scope "${userScope}" satisfies required scope "${required}"`);
-  return ScopeRank[userScope] >= ScopeRank[required];
-}
+// #endregion
 
-const handleScopeStr = (scopeStr: string): Scopes | null => {
-  const trimmed = trim(scopeStr).toLowerCase();
-  return VALID_SCOPES.has(trimmed as Scopes) ? trimmed as Scopes : null;
-}
-
+// #region types
 
 export type Scope = typeof Scopes[keyof typeof Scopes];
 
@@ -41,7 +36,19 @@ type JoinScopes<T extends readonly Scope[]> =
 
 export type ScopeString = JoinScopes<ScopeList>;
 
-const VALID_SCOPES = new Set<Scope>(Object.values(Scopes));
+// #endregion
+
+// #region functions
+export function hasScopeByRank(userScope: Scopes, required: Scopes): boolean {
+  console.log(`Checking if user scope "${userScope}" satisfies required scope "${required}"`);
+  return ScopeRank[userScope] >= ScopeRank[required];
+}
+
+const handleScopeStr = (scopeStr: string): Scopes | null => {
+  const trimmed = trim(scopeStr).toLowerCase();
+  return VALID_SCOPES.has(trimmed as Scopes) ? trimmed as Scopes : null;
+}
+
 
 export function parseScopeStringFromJWT(payload: UserJwtPayload): ScopeList {
   const scopeStr = payload.scope;
@@ -112,3 +119,5 @@ export function hasScopes(
 
   return true;
 }
+
+// #endregion
