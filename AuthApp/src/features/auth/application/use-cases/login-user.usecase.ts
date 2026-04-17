@@ -1,10 +1,10 @@
 
 import { UserTokenResponseDto } from "../dtos/token-response.dto";
-import { mapper } from "@/mapping/mapper";
+import { mapper } from "@/shared/infrastructure/mapping/mapper";
 import { UserEntity } from "@/features/users/domain/entities/user-entity";
 import { IUserRepository } from "@/features/users/domain/repositories/iuser-repository";
-import { IHasherService } from "../../domains/services/hasher-service";
-import { AuthService } from "../../domains/services/auth-service";
+import { IHasherService } from "../../domain/services/hasher-service";
+import { AuthService } from "../../domain/services/auth-service";
 import { UserDto } from "../../../users/application/dtos/user.dto";
 import { UserService } from "@/features/users/domain/services/user-service";
 

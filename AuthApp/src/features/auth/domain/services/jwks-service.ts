@@ -33,8 +33,6 @@ export class JwksService {
   }
 
   public convertPEMToJWK(pem: string/*, kid: string*/) {
-    // const pubKey = crypto.createPublicKey(pem);
-    // const der = pubKey.export({ format: 'der', type: 'spki' }) as Buffer;  
     // Convert PEM to a Node.js KeyObject
     const { isValid, pubKey } = this.useValidatePemPublicKey(pem);
     if (!isValid || !pubKey) {

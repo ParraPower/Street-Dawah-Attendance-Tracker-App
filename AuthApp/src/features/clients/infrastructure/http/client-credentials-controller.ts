@@ -1,53 +1,42 @@
 import { Router } from 'express';
-import { DawahRequestHandler } from '@/core/requests/dawah-request-handler';
-import { authenticate, authorize } from '@/modules/auth/auth-middleware';
-import { Scopes } from '@/modules/auth/scopes';
+import { DawahRequestHandler } from '@/shared/infrastructure/http/dawah-request-handler';
+import { Scopes } from '@/features/auth/domain/policies/scope-types';
 import { ClientCredentialsResponseDto } from '../../application/dtos/client-credentials-response.dto';
 import { CreateClientCredentialsDto } from '../../application/dtos/create-client-credentials.dto';
 import { UpdateClientCredentialsDto } from '../../application/dtos/update-client-credentials.dto';
 import { CreateClientCredentialsUseCase, DeleteClientCredentialsUseCase, UpdateClientCredentialsUseCase } from '../../application/use-cases';
 import { ClientEntity } from '../../domains/entities/client-entity';
+import { BaseController } from '@/shared/infrastructure/http/base-controller';
+import { ScopeService } from '@/features/auth/domain/services/scope-service';
+import { IJwtService } from '@/features/auth/domain/services/jwt-service';
 
-export class ClientCredentialsController {
+export class ClientCredentialsController extends BaseController {
   public readonly router = Router();
 
   constructor(
+    protected readonly jwtService: IJwtService,
+    protected readonly scopeService: ScopeService,
     private readonly createUseCase: CreateClientCredentialsUseCase, 
     private readonly updateUseCase: UpdateClientCredentialsUseCase, 
     private readonly deleteUseCase: DeleteClientCredentialsUseCase) {
-    this.setupRoutes();
-  }
+    super(jwtService, scopeService);
 
-  private setupRoutes() {
-    // // GET all client credentials - Authenticated users only
+    this.registerRoute('post', '/', this.createCredentials.bind(this), {
+      authorizeScopes: [Scopes.Khaleef],
+    });
+
+    this.registerRoute('put', '/:id', this.updateCredentials.bind(this), {
+      authorizeScopes: [Scopes.Khaleef],
+    });
+    this.registerRoute('delete', '/:id', this.deleteCredentials.bind(this), {
+      authorizeScopes: [Scopes.Khaleef],
+    });
+    
+        // // GET all client credentials - Authenticated users only
     // this.router.get('/', authenticate, this.getAllCredentials.bind(this));
 
     // // GET single client credentials by ID - Authenticated users only
     // this.router.get('/:id', authenticate, this.getCredentialsById.bind(this));
-
-    // POST create client credentials - Khaleef scope only
-    this.router.post(
-      '/',
-      authenticate,
-      authorize([Scopes.Khaleef]),
-      this.createCredentials.bind(this)
-    );
-
-    // PUT update client credentials - Khaleef scope only
-    this.router.put(
-      '/:id',
-      authenticate,
-      authorize([Scopes.Khaleef]),
-      this.updateCredentials.bind(this)
-    );
-
-    // DELETE client credentials - Khaleef scope only
-    this.router.delete(
-      '/:id',
-      authenticate,
-      authorize([Scopes.Khaleef]),
-      this.deleteCredentials.bind(this)
-    );
   }
 
   // private getAllCredentials: DawahRequestHandler<

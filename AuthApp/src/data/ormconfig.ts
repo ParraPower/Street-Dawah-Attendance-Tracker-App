@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { env } from '@/config/env';
+import { env } from '@/shared/infrastructure/config/env';
 import { UserEntity } from '@/features/users/domain/entities/user-entity';
 // import { TokenBlacklist } from '../domains/tokens/token-blacklist-entity';
 //import { TokenWhitelist } from '../domains/tokens/token-whitelist-entity';

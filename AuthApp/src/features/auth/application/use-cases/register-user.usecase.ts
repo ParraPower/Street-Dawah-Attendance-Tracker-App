@@ -1,9 +1,9 @@
 import { IUserRepository } from "@/features/users/domain/repositories/iuser-repository";
-import { IHasherService } from "../../domains/services/hasher-service";
-import { mapper } from "@/mapping/mapper";
+import { IHasherService } from "../../domain/services/hasher-service";
+import { mapper } from "@/shared/infrastructure/mapping/mapper";
 import { RegisterUserResponseDto } from "../dtos/register-user.dto";
 import { UserEntity } from "../../../users/domain/entities/user-entity";
-import { ScopeService } from "../../domains/services/scope-service";
+import { ScopeService } from "../../domain/services/scope-service";
 
 export class RegisterUserUseCase {
   constructor(

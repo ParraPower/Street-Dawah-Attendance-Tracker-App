@@ -1,10 +1,9 @@
 // src/domain/keys/key.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import { BaseEntity } from '@/shared/infrastructure/persistence/typeorm/abstracts/base-entity';
+import { Entity, Column } from 'typeorm';
 
 @Entity('jwt_keys')
-export class JwtKey {
-  @PrimaryGeneratedColumn()
-  id!: number;
+export class JwtKey extends BaseEntity {
 
   @Column({ unique: true })
   kid!: string;
@@ -20,7 +19,4 @@ export class JwtKey {
 
   @Column({ type: 'text' })
   algorithm!: string;
-
-  @CreateDateColumn()
-  createdAt!: Date;
 }

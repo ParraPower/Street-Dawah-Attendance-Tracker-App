@@ -1,7 +1,7 @@
 import { Repository, In } from "typeorm";
 import { BaseRepository } from "@/shared/infrastructure/persistence/typeorm/base-repository";
-import { UserEntity } from "@/features/users/domain/entities/user-entity";
-import { IUserRepository } from "@/features/users/domain/repositories/iuser-repository";
+import { UserEntity } from "../../../domain/entities/user-entity";
+import { IUserRepository } from "../../../domain/repositories/iuser-repository";
 import { ILike } from 'typeorm'
 
 export class UserRepository

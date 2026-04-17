@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: path.resolve(process.cwd(), `.env.${process.env.NODE_ENV}`) });
 
-import { env } from './config/env';
+import { env } from './shared/infrastructure/config/env';
 import AppDataSource from './data/data-source';
 import { app, buildControllers } from './app';
 import { loadKeysIntoCache } from './security/key-cache';

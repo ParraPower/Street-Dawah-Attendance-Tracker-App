@@ -1,11 +1,12 @@
 import { IClientRepository } from "../../../clients/domains/repositories/iclient-repo";
 import { ClientService } from "../../../clients/domains/services/client-service";
-import { signToken } from "@/security/jwt";
+import { IJwtService } from "../../domain/services/jwt-service";
 import { TokenResponseDto } from "../dtos/token-response.dto";
 
 
 export class IssueClientCredentialsTokenUseCase {
   constructor(
+    private readonly jwtService: IJwtService,
     private readonly repo: IClientRepository,
     private readonly clientService: ClientService,
   ) { }
@@ -17,7 +18,7 @@ export class IssueClientCredentialsTokenUseCase {
     const isValid = await this.clientService.validateClientCredentials(client, clientSecret);
     if (!isValid) return null; // #TODO: custom error for this case
 
-    const token = await signToken(client.name, client.scopes, 'access');
+    const token = this.jwtService.signToken(client.name, client.scopes, 'access');
     const response: TokenResponseDto = {
       accessToken: token.token,
       accessTokenExpiresIn: token.expiresIn.toString(),

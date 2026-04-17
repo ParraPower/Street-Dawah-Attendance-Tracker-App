@@ -1,10 +1,10 @@
 import { createMap, forMember, mapFrom } from '@automapper/core';
-import { mapper } from '../../../../mapping/mapper';
+import { mapper } from '../../../../shared/infrastructure/mapping/mapper';
 import { UserEntity } from '../../domain/entities/user-entity';
 import { RegisterUserResponseDto } from '@/features/auth/application/dtos/register-user.dto';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { UserDto } from '../dtos/user.dto';
-import { ScopeList, Scopes } from '@/modules/auth/scopes';
+import { ScopeList, Scopes } from '@/features/auth/domain/policies/scope-types';
 
 const getScopeesFromUserEntity = (user: UserEntity): ScopeList => {
   const response = user?.scopes.map(scope =>

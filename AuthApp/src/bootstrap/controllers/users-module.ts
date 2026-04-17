@@ -2,12 +2,15 @@ import { DataSource } from 'typeorm';
 import { UsersController } from '../../features/users/infrastructure/http/users-controller';
 import { UserRepository } from '@/features/users/infrastructure/persistence/typeorm/user-repository';
 import { UserEntity } from '@/features/users/domain/entities/user-entity';
-import { UserService } from '@/modules/user/user-service';
 import { UserService as FeatureUserService } from '@/features/users/domain/services/user-service';
-import { PasswordService } from '@/features/auth/domains/services/password-service';
+import { PasswordService } from '@/features/auth/domain/services/password-service';
 import { CreateBulkUsersUseCase } from '@/features/users/application/use-cases/create-bulk-users.usecase';
 import { BcryptHasherService } from '@/shared/infrastructure/password/bcrypt-hasher-service';
-import { ScopeService } from '@/features/auth/domains/services/scope-service';
+import { ScopeService } from '@/features/auth/domain/services/scope-service';
+import { AuthService } from '@/features/auth/domain/services/auth-service';
+import { CreateUserUseCase } from '@/features/users/application/use-cases/create-user.usecase';
+import { GetUserUseCase } from '@/features/users/application/use-cases/get-user.usecase';
+import { JwtService } from '@/shared/infrastructure/auth/jwt-service';
 
 
 export function buildUsersController(dataSource: DataSource) {
@@ -19,14 +22,24 @@ export function buildUsersController(dataSource: DataSource) {
   const passwordService = new PasswordService();
   const bcryptHasherService = new BcryptHasherService()
   const scopeService = new ScopeService()
+  const jwtService = new JwtService()
 
   // 2. Domain services
-  const userService = new UserService();
-  const featureUserService = new FeatureUserService(passwordService)
+  const featureUserService = new FeatureUserService()
+  const authService = new AuthService(jwtService, passwordService);
 
-  // 3. Controller
+
+  // 3. Application service
+  const createBulkUsersUseCase = new CreateBulkUsersUseCase(featureUserService, userRepo, bcryptHasherService, passwordService, authService, scopeService)
+  const getUserUseCase = new GetUserUseCase(featureUserService, userRepo)
+  const createUserUseCase = new CreateUserUseCase(userRepo, passwordService)
+
+  // 4. Controller
   return new UsersController(
-    new CreateBulkUsersUseCase(featureUserService, userRepo, bcryptHasherService, passwordService, scopeService),
-    userService
+    jwtService,
+    scopeService,
+    createBulkUsersUseCase,
+    getUserUseCase,
+    createUserUseCase,
   );
 }

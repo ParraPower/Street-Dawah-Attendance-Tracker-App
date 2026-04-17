@@ -5,6 +5,8 @@ import { ClientCredentialsController } from '../../features/clients/infrastructu
 import { ClientService } from '@/features/clients/domains/services/client-service';
 import { BcryptHasherService } from '@/shared/infrastructure/password/bcrypt-hasher-service';
 import { CreateClientCredentialsUseCase, DeleteClientCredentialsUseCase, UpdateClientCredentialsUseCase } from '@/features/clients/application/use-cases';
+import { ScopeService } from '@/features/auth/domain/services/scope-service';
+import { JwtService } from '@/shared/infrastructure/auth/jwt-service';
 
 export function buildClientCredentialsController(dataSource: DataSource) {
   // 1. Infrastructure
@@ -13,12 +15,16 @@ export function buildClientCredentialsController(dataSource: DataSource) {
   );
 
   const hasherService = new BcryptHasherService();
+  const scopeService = new ScopeService();
+  const jwtService = new JwtService();
 
   // 2. Domain services
   const clientService = new ClientService(hasherService);
 
   // 3. Controller
   return new ClientCredentialsController(
+    jwtService,
+    scopeService,
     new CreateClientCredentialsUseCase(clientRepo, clientService),
     new UpdateClientCredentialsUseCase(clientRepo),
     new DeleteClientCredentialsUseCase(clientRepo),

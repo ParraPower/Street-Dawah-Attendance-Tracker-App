@@ -1,7 +1,7 @@
 import { IUserRepository } from "@/features/users/domain/repositories/iuser-repository";
-import { IHasherService } from "../../domains/services/hasher-service";
+import { IHasherService } from "../../domain/services/hasher-service";
 import { ValidationError } from "@/shared/infrastructure/middleware/global-error-handler";
-import { PasswordService } from "../../domains/services/password-service";
+import { PasswordService } from "../../domain/services/password-service";
 import { validate as validateUUID } from 'uuid'
 
 export class ResetUserPasswordUseCase {

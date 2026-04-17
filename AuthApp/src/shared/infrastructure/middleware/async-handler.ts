@@ -1,6 +1,6 @@
 // import { Response, NextFunction } from 'express';
 // import { RequestWithUser } from "@/core/requests/request-with-user";
-import { DawahRequestHandler } from '@/core/requests/dawah-request-handler';
+import { DawahRequestHandler } from '@/shared/infrastructure/http/dawah-request-handler';
 
 // const asyncHandler = (fn: (req: RequestWithUser, res: Response, next: NextFunction) => Promise<void>) => {
 //   return (req: RequestWithUser, res: Response, next: NextFunction) => {

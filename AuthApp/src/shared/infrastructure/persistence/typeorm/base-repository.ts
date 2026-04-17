@@ -5,7 +5,7 @@ import {
   Repository,
   SelectQueryBuilder,
 } from "typeorm";
-import { BaseEntity } from "@/core/abstracts/base-entity";
+import { BaseEntity } from "@/shared/infrastructure/persistence/typeorm/abstracts/base-entity";
 import { IsNull } from "typeorm";
 
 export abstract class BaseRepository<T extends BaseEntity> {

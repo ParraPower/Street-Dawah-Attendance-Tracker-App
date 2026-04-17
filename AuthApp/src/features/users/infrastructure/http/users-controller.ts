@@ -1,38 +1,42 @@
 import { Router } from "express";
-import { authenticate, authorize } from "@/modules/auth/auth-middleware";
-import { Scopes } from "@/modules/auth/scopes";
-import { UserService } from "../../../../modules/user/user-service";
+import { Scopes } from "@/features/auth/domain/policies/scope-types";
 import { CreateUserDto } from "@/features/users/application/dtos/create-user.dto";
 import { CreateBulkUsersUseCase } from "../../application/use-cases/create-bulk-users.usecase";
-import { DawahRequestHandler } from "@/core/requests/dawah-request-handler";
+import { GetUserUseCase } from "../../application/use-cases/get-user.usecase";
+import { CreateUserUseCase } from "../../application/use-cases/create-user.usecase";
+import { DawahRequestHandler } from "@/shared/infrastructure/http/dawah-request-handler";
 import { UserDto } from "../../application/dtos/user.dto";
-import { asyncHandler } from "@/shared/infrastructure/middleware/async-handler";
 import { CreateBulkUsersResponseDto } from "../../application/dtos/create-bulk-users-response.dto";
+import { BaseController } from "@/shared/infrastructure/http/base-controller";
+import { ScopeService } from "@/features/auth/domain/services/scope-service";
+import { IJwtService } from "@/features/auth/domain/services/jwt-service";
 
-export class UsersController {
+export class UsersController extends BaseController {
   public readonly router = Router();
 
   constructor(
+    protected readonly jwtService: IJwtService,
+    protected readonly scopeService: ScopeService,
     private readonly createBulkUsersUseCase: CreateBulkUsersUseCase,
-    private readonly userService: UserService) {
-    this.router.post(
-      '/',
-      authenticate,
-      authorize([Scopes.Emir, Scopes.Mudeer, Scopes.Khaleef]), 
-      this.create.bind(this)
-    );
-    this.router.post(
-      '/bulk',
-      authenticate,
-      authorize([Scopes.Emir, Scopes.Mudeer, Scopes.Khaleef]),
-      asyncHandler(this.createBulk.bind(this))
-    );
-    this.router.get(
-      '/:id',
-      authenticate,
-      authorize([Scopes.Mudeer, Scopes.Khaleef]),
-       this.get.bind(this)
-    ); 
+    private readonly getUserUseCase: GetUserUseCase,
+    private readonly createUserUseCase: CreateUserUseCase) {
+    
+    super(jwtService, scopeService);
+
+    this.registerRoute('post', '/', this.create, {
+      authenticate: true,
+      authorizeScopes: [Scopes.Emir, Scopes.Mudeer, Scopes.Khaleef],
+    });
+
+    this.registerRoute('post', '/bulk', this.createBulk, {
+      authenticate: true,
+      authorizeScopes: [Scopes.Emir, Scopes.Mudeer, Scopes.Khaleef],
+    });
+
+    this.registerRoute('get', '/:id', this.get, {
+      authenticate: true,
+      authorizeScopes: [Scopes.Mudeer, Scopes.Khaleef],
+    });
   }
   
   public create: DawahRequestHandler<
@@ -42,7 +46,7 @@ export class UsersController {
   > = async (req, res) => {
     try {
       const requestBody = req.body as CreateUserDto;
-      const user = await this.userService.createUser(requestBody);
+      const user = await this.createUserUseCase.execute(requestBody);
       res.json(user);
     }
     catch (err: any) {
@@ -62,10 +66,9 @@ export class UsersController {
 
   public get: DawahRequestHandler<
     { id: string },
-    boolean
+    UserDto
   > = async (req, res) => {
-    const user = await this.userService.getUserById(parseInt(req.params.id));
-    if (!user) return res.status(404).json({ message: "User not found" });
+    const user = await this.getUserUseCase.execute(parseInt(req.params.id));
     res.json(user);
   }
 }

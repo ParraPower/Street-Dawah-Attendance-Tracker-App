@@ -1,7 +1,7 @@
 // src/modules/jwks/jwks.controller.ts
 import { Router } from 'express';
-import { getAllPublicKeys } from '../../security/key-cache';
-import { JwksService } from './jwks-service';
+import { getAllPublicKeys } from '../../../../security/key-cache';
+import { JwksService } from '../../domain/services/jwks-service';
 
 export const JwksController = Router();
 

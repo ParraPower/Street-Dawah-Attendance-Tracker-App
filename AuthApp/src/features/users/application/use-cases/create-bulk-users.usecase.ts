@@ -1,16 +1,17 @@
 import { CreateUserDto } from "../dtos/create-user.dto"
 import { IUserRepository } from "../../domain/repositories/iuser-repository"
 import { UserService } from "../../domain/services/user-service"
-import { mapper } from "@/mapping/mapper"
+import { mapper } from "@/shared/infrastructure/mapping/mapper"
 import { UserEntity } from "../../domain/entities/user-entity"
 import { UserDto } from "../dtos/user.dto"
-import { IHasherService } from "../../../auth/domains/services/hasher-service"
-import { PasswordService } from "../../../auth/domains/services/password-service"
+import { IHasherService } from "../../../auth/domain/services/hasher-service"
+import { PasswordService } from "../../../auth/domain/services/password-service"
 import { isNotNullOrEmtpy } from "@/utils/strings"
 import { v4 as UUID } from 'uuid';
 import { ValidationError } from "@/shared/infrastructure/middleware/global-error-handler"
 import { CreateBulkUsersResponseDto } from "../dtos/create-bulk-users-response.dto"
-import { ScopeService } from "../../../auth/domains/services/scope-service"
+import { ScopeService } from "../../../auth/domain/services/scope-service"
+import { AuthService } from "@/features/auth/domain/services/auth-service"
 
 export class CreateBulkUsersUseCase {
   constructor(
@@ -18,6 +19,7 @@ export class CreateBulkUsersUseCase {
     private readonly repo: IUserRepository,
     private readonly hasherService: IHasherService,
     private readonly passwordService: PasswordService,
+    private readonly authService: AuthService,
     private readonly scopeService: ScopeService
   ) { }
   execute = async (users: CreateUserDto[]) => {
@@ -40,11 +42,12 @@ export class CreateBulkUsersUseCase {
     const includedUsersFromBulkInsert = users.filter(x => !activeUsersUsernames.includes(x.username.toLowerCase()) && !activeUsersEmails.includes(x.email))
 
     const userEntitiesCreate = await Promise.all(includedUsersFromBulkInsert.map(async user => {  
-      const password = user.password  
-      const createUserDtoWithTempPassword = this.userService.generateTempPasswordForCreateUser(user)
-      const entity = mapper.map(createUserDtoWithTempPassword, CreateUserDto, UserEntity) as UserEntity
-      if (this.passwordService.isValidPassword(password))
-        entity.passwordHash = await this.hasherService.generate(createUserDtoWithTempPassword.password!)
+      const initialPassword = user.password  
+      const tempPassword = this.authService.generateTempPassword(initialPassword)
+      user.password = tempPassword
+      const entity = mapper.map(user, CreateUserDto, UserEntity) as UserEntity
+      if (this.passwordService.isValidPassword(initialPassword))
+        entity.passwordHash = await this.hasherService.generate(user.password!)
       else
         entity.temporaryPasswordGuid = UUID()
       entity.scopes = entity.scopes.map(x => this.scopeService.normalizeString(x))
