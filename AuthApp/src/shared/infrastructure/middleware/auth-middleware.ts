@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import { ScopeList } from '@/features/auth/domain/policies/scope-types';
 
-import { UserJwtPayload } from '@/core/requests/userJwtPayload.dto';
+import { UserJwtPayload } from '@/shared/infrastructure/http/userJwtPayload.dto';
 import { RequestWithUser } from '@/shared/infrastructure/http/request-with-user';
 import { ScopeService } from '@/features/auth/domain/services/scope-service';
 import { IJwtService } from '@/features/auth/domain/services/jwt-service';

@@ -1,5 +1,6 @@
 import { StringValue } from "ms";
 import { TokenType } from "../types/jwt.types";
+import { UUID } from "crypto";
 
 export interface IJwtService {
   signToken(
@@ -12,4 +13,6 @@ export interface IJwtService {
   signJwt(payload: object, expiresIn: StringValue): string;
 
   verifyJwt(token: string, action: (err: Error, decoded: never) => void): void;
+
+  generateJwtKeyPair(): { kid: UUID, publicKey: string, privateKey: string };
 }

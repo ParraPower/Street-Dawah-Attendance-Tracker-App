@@ -6,6 +6,8 @@ import { asyncHandler } from '@/shared/infrastructure/middleware/async-handler';
 import { HttpMethod, IController } from './controller.interface';
 import { DawahRequestHandler } from '@/shared/infrastructure/http/dawah-request-handler';
 import { IJwtService } from '@/features/auth/domain/services/jwt-service';
+import { requireAudience } from '@/shared/infrastructure/middleware/audience-guard';
+import { env } from '../config/env';
 
 export abstract class BaseController implements IController {
   public readonly router = Router();
@@ -19,13 +21,23 @@ export abstract class BaseController implements IController {
     options?: {
       authenticate?: boolean;
       authorizeScopes?: ScopeList;
+      requiredAudience?: string;
       middleware?: RequestHandler | RequestHandler[];
     }
   ): void {
     const routeHandlers: RequestHandler[] = [];
 
-    if (options?.authenticate ?? true) {
+    const shouldAuthenticate = (options?.authenticate ?? true) || Boolean(options?.requiredAudience) || Boolean(options?.authorizeScopes?.length);
+
+    if (shouldAuthenticate) {
       routeHandlers.push(authenticate(this.jwtService));
+    }
+
+    if (options?.requiredAudience) {
+      routeHandlers.push(requireAudience(options.requiredAudience));
+    }
+    else if (shouldAuthenticate) {
+      routeHandlers.push(requireAudience(env.jwtDefaultAudience))
     }
 
     if (options?.authorizeScopes?.length) {

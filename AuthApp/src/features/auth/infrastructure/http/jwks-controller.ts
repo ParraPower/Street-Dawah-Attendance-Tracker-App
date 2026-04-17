@@ -1,27 +1,43 @@
-// src/modules/jwks/jwks.controller.ts
 import { Router } from 'express';
-import { getAllPublicKeys } from '../../../../security/key-cache';
 import { JwksService } from '../../domain/services/jwks-service';
+import { BaseController } from '@/shared/infrastructure/http/base-controller';
+import { ScopeService } from '@/features/auth/domain/services/scope-service';
+import { IJwtService } from '@/features/auth/domain/services/jwt-service';
+import { DawahRequestHandler } from '@/shared/infrastructure/http/dawah-request-handler';
+import { KeyCacheService } from '../jwt/key-cache.service';
 
-export const JwksController = Router();
+export class JwksController extends BaseController {
+  public readonly router = Router();
 
-const jwksService = new JwksService();
+  constructor(
+    protected readonly jwtService: IJwtService,
+    protected readonly scopeService: ScopeService,
+    private readonly jwksService: JwksService,
+    private readonly keyCacheService: KeyCacheService
+    
+  ) {
+    super(jwtService, scopeService);
 
-JwksController.get('/.well-known/jwks.json', (req, res) => {
-  const keys = getAllPublicKeys();
+    this.registerRoute('get', '/.well-known/jwks.json', this.getJwks, {
+      authenticate: false,
+    });
+  }
 
-  res.json({
-    keys: Object.entries(keys).map(([kid, pub]) => {
-      const x5c = jwksService.convertPEMToJWK(pub);  
-      return {
-        kid,
-        alg: 'RS256',
-        use: 'sig',
-        kty: 'RSA',
-        n: x5c.n,
-        e: x5c.e,
-      }
-    })
-  });
-});
+  public getJwks: DawahRequestHandler = async (req, res) => {
+    const keys = this.keyCacheService.getAllPublicKeys();
 
+    res.json({
+      keys: Object.entries(keys).map(([kid, pub]) => {
+        const x5c = this.jwksService.convertPEMToJWK(pub);
+        return {
+          kid,
+          alg: 'RS256',
+          use: 'sig',
+          kty: 'RSA',
+          n: x5c.n,
+          e: x5c.e,
+        };
+      }),
+    });
+  };
+}

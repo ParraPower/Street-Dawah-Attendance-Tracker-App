@@ -7,6 +7,7 @@ import { BcryptHasherService } from '@/shared/infrastructure/password/bcrypt-has
 import { CreateClientCredentialsUseCase, DeleteClientCredentialsUseCase, UpdateClientCredentialsUseCase } from '@/features/clients/application/use-cases';
 import { ScopeService } from '@/features/auth/domain/services/scope-service';
 import { JwtService } from '@/shared/infrastructure/auth/jwt-service';
+import { KeyCacheService } from '@/features/auth/infrastructure/jwt/key-cache.service';
 
 export function buildClientCredentialsController(dataSource: DataSource) {
   // 1. Infrastructure
@@ -16,7 +17,7 @@ export function buildClientCredentialsController(dataSource: DataSource) {
 
   const hasherService = new BcryptHasherService();
   const scopeService = new ScopeService();
-  const jwtService = new JwtService();
+  const jwtService = new JwtService(new KeyCacheService());
 
   // 2. Domain services
   const clientService = new ClientService(hasherService);

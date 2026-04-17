@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { UserJwtPayload } from '@/core/requests/userJwtPayload.dto';
+import { UserJwtPayload } from '@/shared/infrastructure/http/userJwtPayload.dto';
 
 export interface RequestWithUser<
   P = any,

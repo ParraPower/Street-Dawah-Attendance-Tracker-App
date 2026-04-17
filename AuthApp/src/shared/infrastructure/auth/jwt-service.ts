@@ -1,12 +1,27 @@
 import jwt from 'jsonwebtoken';
 import { StringValue } from 'ms';
 import { env } from '../config/env';
-import { getPrivateKey, getPublicKey } from '../../../security/key-cache';
-import { randomUUID } from 'crypto';
+import { randomUUID, UUID } from 'crypto';
 import { TokenType, JwtPayload } from '@/features/auth/domain/types/jwt.types';
 import { IJwtService } from '@/features/auth/domain/services/jwt-service';
+import crypto from "crypto"
+import { KeyCacheService } from '@/features/auth/infrastructure/jwt/key-cache.service';
 
 export class JwtService implements IJwtService {
+  constructor(private readonly keyCacheService: KeyCacheService) {
+    
+  }
+
+  generateJwtKeyPair(): { kid: UUID, publicKey: string; privateKey: string; } {
+      const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
+        modulusLength: 2048,
+        publicKeyEncoding: { type: "spki", format: "pem" },
+        privateKeyEncoding: { type: "pkcs8", format: "pem" }
+      });
+
+      return { kid: crypto.randomUUID(), publicKey, privateKey }
+  }
+
   signToken(
     userId: string,
     scopes: string[],
@@ -31,7 +46,7 @@ export class JwtService implements IJwtService {
   }
 
   signJwt(payload: object, expiresIn: StringValue) {
-    const { kid, key } = getPrivateKey();
+    const { kid, key } = this.keyCacheService.getPrivateKey();
 
     if (!key || typeof key !== 'string') {
       throw new Error('JWT private key not configured');
@@ -51,7 +66,7 @@ export class JwtService implements IJwtService {
         return callback(new Error('No key ID in token header'));
       }
   
-      const pub = getPublicKey(header.kid);
+      const pub = this.keyCacheService.getPublicKey(header.kid);
   
       if (!pub) return callback(new Error('Unknown key ID'));
       callback(null, pub);
