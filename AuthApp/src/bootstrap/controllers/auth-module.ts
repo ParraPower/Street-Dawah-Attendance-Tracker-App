@@ -14,7 +14,7 @@ import { UserEntity } from "@/features/users/domain/entities/user-entity";
 import { UserService } from "@/features/users/domain/services/user-service";
 import { PasswordService } from "@/features/auth/domain/services/password-service";
 import { ScopeService } from "@/features/auth/domain/services/scope-service";
-import { JwtService } from "@/shared/infrastructure/auth/jwt-service";
+import { AuthAppJwtService } from "@/shared/infrastructure/auth/jwt-service";
 import { KeyCacheService } from "@/features/auth/infrastructure/jwt/key-cache.service";
 
 export function buildAuthController(dataSource: DataSource) {
@@ -29,7 +29,7 @@ export function buildAuthController(dataSource: DataSource) {
 
   const bcryptHasher = new BcryptHasherService();
   const scopeService = new ScopeService();
-  const jwtService = new JwtService(new KeyCacheService());
+  const jwtService = new AuthAppJwtService(new KeyCacheService());
 
   // 2. Domain services
   const passwordService = new PasswordService();

@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "name": "street-dawah-monorepo",
+  "version": "1.0.0",
+  "workspaces": [
+    "AuthApp",
+    "Attendance API",
+    "StreetDawahAppFramework"
+  ],
+  "scripts": {
+    "bootstrap": "npm install --legacy-peer-deps",
+    "build": "npm run build --workspaces"
+  }
+}

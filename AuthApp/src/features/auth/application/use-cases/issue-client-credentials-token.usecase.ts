@@ -1,12 +1,12 @@
 import { IClientRepository } from "../../../clients/domains/repositories/iclient-repo";
 import { ClientService } from "../../../clients/domains/services/client-service";
-import { IJwtService } from "../../domain/services/jwt-service";
+import { IAuthAppJwtService } from "../../domain/services/jwt-service";
 import { TokenResponseDto } from "../dtos/token-response.dto";
 
 
 export class IssueClientCredentialsTokenUseCase {
   constructor(
-    private readonly jwtService: IJwtService,
+    private readonly jwtService: IAuthAppJwtService,
     private readonly repo: IClientRepository,
     private readonly clientService: ClientService,
   ) { }

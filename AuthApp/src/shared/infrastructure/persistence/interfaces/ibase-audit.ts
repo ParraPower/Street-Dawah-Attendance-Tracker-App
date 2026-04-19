@@ -1,7 +1,1 @@
-export interface IBaseAudit 
-{
-    createdAt: Date;
-    createdBy?: number;
-    updatedAt?: Date;
-    updatedBy?: number;
-}
+export { IBaseAudit } from "@street-dawah/app-framework";

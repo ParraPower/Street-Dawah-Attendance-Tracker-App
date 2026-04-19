@@ -23,7 +23,8 @@
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.27",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "@street-dawah/app-framework": "file:../StreetDawahAppFramework"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.6",

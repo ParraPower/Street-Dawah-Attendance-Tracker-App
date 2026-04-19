@@ -1,5 +1,1 @@
-export interface IBaseEntityStub 
-{
-    id: number;
-    isDeleted?: boolean;
-}
+export { IBaseEntityStub } from '@street-dawah/app-framework';

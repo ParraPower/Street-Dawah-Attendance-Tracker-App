@@ -10,18 +10,19 @@ import { ResetUserPasswordUseCase } from '../../application/use-cases/reset-user
 import { ResetUserPasswordResponseDto } from '../../application/dtos/reset-user-password.dto';
 import { BaseController } from '@/shared/infrastructure/http/base-controller';
 import { ScopeService } from '../../domain/services/scope-service';
-import { IJwtService } from '../../domain/services/jwt-service';
+import { IAuthAppJwtService } from '../../domain/services/jwt-service';
+import { env } from '@/shared/infrastructure/config/env';
 
 export class AuthController extends BaseController {
   public readonly router = Router();
 
   constructor(
-    protected readonly jwtService: IJwtService,
+    protected readonly jwtService: IAuthAppJwtService,
     protected readonly scopeService: ScopeService,
     private readonly generateTokenUserCase: GenerateTokenUseCase,
     private readonly registerUserUseCase: RegisterUserUseCase,
     private readonly resetUserPasswordUseCase: ResetUserPasswordUseCase) {
-    super(jwtService, scopeService);
+    super(jwtService, scopeService, { jwtDefaultAudience: env.jwtDefaultAudience });
 
     this.registerRoute('post', '/register', this.register.bind(this), {
       authenticate: false,

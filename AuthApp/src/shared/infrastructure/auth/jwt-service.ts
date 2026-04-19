@@ -1,25 +1,14 @@
-import jwt from 'jsonwebtoken';
 import { StringValue } from 'ms';
 import { env } from '../config/env';
-import { randomUUID, UUID } from 'crypto';
+import { randomUUID } from 'crypto';
 import { TokenType, JwtPayload } from '@/features/auth/domain/types/jwt.types';
-import { IJwtService } from '@/features/auth/domain/services/jwt-service';
-import crypto from "crypto"
 import { KeyCacheService } from '@/features/auth/infrastructure/jwt/key-cache.service';
+import { IAuthAppJwtService } from '@/features/auth/domain/services/jwt-service';
+import { JwtService } from '@street-dawah/app-framework'
 
-export class JwtService implements IJwtService {
-  constructor(private readonly keyCacheService: KeyCacheService) {
-    
-  }
-
-  generateJwtKeyPair(): { kid: UUID, publicKey: string; privateKey: string; } {
-      const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
-        modulusLength: 2048,
-        publicKeyEncoding: { type: "spki", format: "pem" },
-        privateKeyEncoding: { type: "pkcs8", format: "pem" }
-      });
-
-      return { kid: crypto.randomUUID(), publicKey, privateKey }
+export class AuthAppJwtService extends JwtService implements IAuthAppJwtService {
+  constructor(keyCacheService: KeyCacheService) {
+    super(keyCacheService)
   }
 
   signToken(
@@ -43,34 +32,5 @@ export class JwtService implements IJwtService {
     const token = this.signJwt(payload, expiresIn);
 
     return { token, jti, expiresIn };
-  }
-
-  signJwt(payload: object, expiresIn: StringValue) {
-    const { kid, key } = this.keyCacheService.getPrivateKey();
-
-    if (!key || typeof key !== 'string') {
-      throw new Error('JWT private key not configured');
-    }
-
-    return jwt.sign(payload, key, {
-      algorithm: 'RS256',
-      expiresIn,
-      keyid: kid,
-    });
-  }
-
-  verifyJwt(token: string, action: (err: Error, decoded: never) => void): void {
-    jwt.verify(token, (header, callback) => {
-      //console.log("Verifying JWT...", header);
-      if (header.kid === undefined) {
-        return callback(new Error('No key ID in token header'));
-      }
-  
-      const pub = this.keyCacheService.getPublicKey(header.kid);
-  
-      if (!pub) return callback(new Error('Unknown key ID'));
-      callback(null, pub);
-    }, ( err, decoded) => {
-      action(err as Error, decoded as never)});
   }
 }

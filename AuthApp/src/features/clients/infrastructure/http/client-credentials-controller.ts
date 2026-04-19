@@ -8,18 +8,19 @@ import { CreateClientCredentialsUseCase, DeleteClientCredentialsUseCase, UpdateC
 import { ClientEntity } from '../../domains/entities/client-entity';
 import { BaseController } from '@/shared/infrastructure/http/base-controller';
 import { ScopeService } from '@/features/auth/domain/services/scope-service';
-import { IJwtService } from '@/features/auth/domain/services/jwt-service';
+import { IAuthAppJwtService } from '@/features/auth/domain/services/jwt-service';
+import { env } from '@/shared/infrastructure/config/env';
 
 export class ClientCredentialsController extends BaseController {
   public readonly router = Router();
 
   constructor(
-    protected readonly jwtService: IJwtService,
+    protected readonly jwtService: IAuthAppJwtService,
     protected readonly scopeService: ScopeService,
     private readonly createUseCase: CreateClientCredentialsUseCase, 
     private readonly updateUseCase: UpdateClientCredentialsUseCase, 
     private readonly deleteUseCase: DeleteClientCredentialsUseCase) {
-    super(jwtService, scopeService);
+    super(jwtService, scopeService, { jwtDefaultAudience: env.jwtDefaultAudience });
 
     this.registerRoute('post', '/', this.createCredentials.bind(this), {
       authorizeScopes: [Scopes.Khaleef],

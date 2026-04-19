@@ -1,12 +1,12 @@
 import { mapper } from "@/shared/infrastructure/mapping/mapper";
 import { IJwtKeyRepository } from "../../domain/repositories/ijwtkey-repository";
-import { IJwtService } from "../../domain/services/jwt-service";
+import { IAuthAppJwtService } from "../../domain/services/jwt-service";
 import { GeneratedKeyPairDTO } from "../dtos/generated-key-pair.dto";
 import { JwtKey } from "../../domain/entities/key-entity";
 
 export class GenerateActiveKeyPairUseCase {
   constructor(
-    private readonly jwtService: IJwtService,
+    private readonly jwtService: IAuthAppJwtService,
     private readonly jwtKeyRepo: IJwtKeyRepository
   ) {}
 

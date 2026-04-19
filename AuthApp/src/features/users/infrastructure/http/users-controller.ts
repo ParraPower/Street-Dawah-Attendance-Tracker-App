@@ -9,19 +9,20 @@ import { UserDto } from "../../application/dtos/user.dto";
 import { CreateBulkUsersResponseDto } from "../../application/dtos/create-bulk-users-response.dto";
 import { BaseController } from "@/shared/infrastructure/http/base-controller";
 import { ScopeService } from "@/features/auth/domain/services/scope-service";
-import { IJwtService } from "@/features/auth/domain/services/jwt-service";
+import { IAuthAppJwtService } from "@/features/auth/domain/services/jwt-service";
+import { env } from "@/shared/infrastructure/config/env";
 
 export class UsersController extends BaseController {
   public readonly router = Router();
 
   constructor(
-    protected readonly jwtService: IJwtService,
+    protected readonly jwtService: IAuthAppJwtService,
     protected readonly scopeService: ScopeService,
     private readonly createBulkUsersUseCase: CreateBulkUsersUseCase,
     private readonly getUserUseCase: GetUserUseCase,
     private readonly createUserUseCase: CreateUserUseCase) {
     
-    super(jwtService, scopeService);
+    super(jwtService, scopeService, { jwtDefaultAudience: env.jwtDefaultAudience });
 
     this.registerRoute('post', '/', this.create, {
       authenticate: true,

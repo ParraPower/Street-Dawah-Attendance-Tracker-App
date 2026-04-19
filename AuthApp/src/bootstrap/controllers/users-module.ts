@@ -10,7 +10,7 @@ import { ScopeService } from '@/features/auth/domain/services/scope-service';
 import { AuthService } from '@/features/auth/domain/services/auth-service';
 import { CreateUserUseCase } from '@/features/users/application/use-cases/create-user.usecase';
 import { GetUserUseCase } from '@/features/users/application/use-cases/get-user.usecase';
-import { JwtService } from '@/shared/infrastructure/auth/jwt-service';
+import { AuthAppJwtService } from '@/shared/infrastructure/auth/jwt-service';
 import { KeyCacheService } from '@/features/auth/infrastructure/jwt/key-cache.service';
 
 
@@ -23,7 +23,7 @@ export function buildUsersController(dataSource: DataSource) {
   const passwordService = new PasswordService();
   const bcryptHasherService = new BcryptHasherService()
   const scopeService = new ScopeService()
-  const jwtService = new JwtService(new KeyCacheService())
+  const jwtService = new AuthAppJwtService(new KeyCacheService())
 
   // 2. Domain services
   const featureUserService = new FeatureUserService()
