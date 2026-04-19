@@ -10,13 +10,13 @@ import {
 } from "typeorm";
 import { IMembership } from "../interfaces/imembership.js";
 import { IUserMembership } from "../interfaces/iuser-membership.js";
-import { IBaseEntity } from "../../../core/interfaces/ibase-entity.js";
-import { IAudit } from "../../../core/interfaces/iaudit.js";
+import { IBaseEntityStub } from "../../../core/interfaces/ibase-entity-stub.js";
+import { IBaseAudit } from "../../../core/interfaces/ibase-audit.js";
 
 @Entity({ name: "user_memberships" })
 @Index(["userId"])
 @Index(["membershipId"])
-export class UserMembership implements IUserMembership, IBaseEntity, IAudit {
+export class UserMembership implements IUserMembership, IBaseEntityStub, IBaseAudit {
   @PrimaryGeneratedColumn("increment")
   id!: number;
 

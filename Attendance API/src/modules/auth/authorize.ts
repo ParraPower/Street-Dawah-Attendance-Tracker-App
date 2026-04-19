@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { UserJwtPayload } from '@/dtos/jwt/userJwtPayload.dto';
+import { UserJwtPayload } from '@/modules/jwt/userJwtPayload.dto';
 import { hasScopes, parseScopeStringFromJWT, ScopeList } from './scopes';
 
 type RequestWithUser = Request & { user?: UserJwtPayload };

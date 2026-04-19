@@ -1,11 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, //OneToMany, 
-  UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, /*OneToMany,*/ UpdateDateColumn } from 'typeorm';
 // import { Attendance } from "../../attendance/Attendance.module.js";
 // import { Session } from "../../session//Session.module.js";
 //import { UserMembership } from "../../membership/Membership.module.js";
 //import type { UserOutreachActivityLog } from "../../outreach/entities/UserOutreachActivityLog.js";
 //import { IUserOutreachActivityLog } from '../../outreach/interfaces/iuser-outreach-activity-log.js';
-import { IUser } from '../interfaces/iuser.js';
+import { IUser } from '../interfaces/IUser';
 
 @Entity()
 export class User implements IUser {

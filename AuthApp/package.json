@@ -6,12 +6,27 @@
   "scripts": {
     "test": "test",
     "build": "tsc",
-    "typeorm:generate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:generate -d ./scripts/generate-migration-data-source.ts",
-    "typeorm:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js  migration:run -d ./scripts/generate-migration-data-source.ts",
-    "migration:generate": "bash ./scripts/generate-migration.sh",
+
+    "typeorm:generate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js  migration:generate -d ./src/data/data-source.ts",
+    "typeorm:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js  migration:run -d ./scripts/migration-data-source.ts",
+
+    "migration:generate": "sh ./scripts/generate-migration.sh",
     "migration:generate:win": "powershell -ExecutionPolicy Bypass -File ./scripts/generate-migration.ps1",
-    "migration:run": "npm run typeorm:run",
-    "start:dev": "npm run build && cross-env NODE_ENV=local ts-node-dev -r tsconfig-paths/register src/server.ts"
+    "migration:run": "sh ./scripts/run-migration.sh",
+    "migration:run:win": "powershell -ExecutionPolicy Bypass -File ./scripts/run-migration.ps1",
+    "migration:revert": "sh ./scripts/revert-migration.sh",
+    "migration:revert:win": "powershell -ExecutionPolicy Bypass -File ./scripts/revert-migration.ps1",
+
+    "start:local": "npm run build && cross-env NODE_ENV=local ts-node-dev -r tsconfig-paths/register src/server.ts",
+    "start:dev": "npm run build && cross-env NODE_ENV=develop ts-node-dev -r tsconfig-paths/register src/server.ts",
+
+    "admin:password:hash": "ts-node -r tsconfig-paths/register ./scripts/generate-password-hash.ts",
+
+    "docker:db:local": "docker compose -f docker-compose.local.yml --env-file .env.local up --build -d postgres",
+    "docker:db:dev": "docker compose -f docker-compose.dev.yml --env-file .env.development up --build -d postgres",
+    "docker:db:prod": "docker compose -f docker-compose.prod.yml --env-file .env.production up --build -d postgres",
+
+    "docker:start": "powershell -ExecutionPolicy Bypass -File ./scripts/docker-run.ps1"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +36,8 @@
     "@types/cors": "^2.8.19",
     "@types/morgan": "^1.9.10",
     "bcrypt": "^6.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.3",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",

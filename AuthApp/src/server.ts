@@ -3,25 +3,22 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: path.resolve(process.cwd(), `.env.${process.env.NODE_ENV}`) });
 
-import { env } from './config/env';
-import AppDataSource from './config/data-source';
-import { app } from './app';
-import { loadKeysIntoCache } from './security/key-cache';
-import { JwtKeyService } from "./modules/jwt-keys/jwt-key-service";
-import { JwtKey } from "./domains/keys/key-entity";
+import { env } from './shared/infrastructure/config/env';
+import AppDataSource from './data/data-source';
+import { app, buildControllers } from './app';
+import { useOnLoadKeyIntoKeyCache } from "./features/auth/infrastructure/jwt/useOnLoadKeyIntoCache.hook";
+import { useOnLoadEnsureKeyExists } from "./features/auth/infrastructure/jwt/useOnLoadEnsureKeyExists.hook";
 
 
 async function bootstrap() {
   await AppDataSource.initialize();
   console.log('Database connected');
   
-  const jwtKeyService = new JwtKeyService(
-    AppDataSource.getRepository(JwtKey)
-  );
+  buildControllers(app, AppDataSource);
 
-  await jwtKeyService.ensureKeyExists();
+  await new useOnLoadEnsureKeyExists().execute()
 
-  await loadKeysIntoCache();
+  await new useOnLoadKeyIntoKeyCache().execute()
 
   app.listen(env.port, () => {
     console.log(`Auth API listening on port ${env.port}`);

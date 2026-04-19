@@ -1,6 +1,6 @@
 // src/domains/user/dtos/CreateUserDto.ts
 import { IsEmail, IsString, IsOptional, IsPhoneNumber, MinLength, IsEnum } from "class-validator";
-import { MembershipTypeEnum } from "../../membership/membership-module.js";
+import { MembershipTypeEnum } from "../../membership/enums/membership-type-enum";
 
 export class RegisterUserDto {
   @IsOptional()
