@@ -1,6 +1,6 @@
 import { PasswordService } from "./password-service";
 import _ from 'lodash'
-import { isNotNullOrEmtpy } from "@/utils/strings";
+import { isNotNullOrEmtpy } from "@auth/utils/strings";
 import { IAuthAppJwtService } from "./jwt-service";
 
 export class AuthService {

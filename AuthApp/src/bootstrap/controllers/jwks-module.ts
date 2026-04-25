@@ -1,8 +1,8 @@
-import { ScopeService } from '@/features/auth/domain/services/scope-service';
-import { AuthAppJwtService } from '@/shared/infrastructure/auth/jwt-service';
-import { KeyCacheService } from '@/features/auth/infrastructure/jwt/key-cache.service';
-import { JwksController } from '@/features/auth/infrastructure/http/jwks-controller';
-import { JwksService } from '@/features/auth/domain/services/jwks-service';
+import { ScopeService } from "@shared/auth/services/scope-service";
+import { AuthAppJwtService } from '@auth/shared/infrastructure/auth/jwt-service';
+import { KeyCacheService } from '@auth/features/auth/infrastructure/jwt/key-cache.service';
+import { JwksController } from '@auth/features/auth/infrastructure/http/jwks-controller';
+import { JwksService } from '@auth/features/auth/domain/services/jwks-service';
 
 export function buildJwksController() {
   // 1. Infrastructure

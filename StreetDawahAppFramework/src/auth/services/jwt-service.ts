@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import { StringValue } from 'ms';
 import { randomUUID, UUID } from 'crypto';
-import { TokenType, JwtPayload } from '@/auth/types/jwt.types';
-import { IJwtService } from '@/auth/interfaces/jwt-service';
+import { TokenType, JwtPayload } from '@shared/auth/types/jwt.types';
+import { IJwtService } from '@shared/auth/interfaces/jwt-service';
 import crypto from "crypto"
 import { KeyCacheService } from './key-cache.service';
 

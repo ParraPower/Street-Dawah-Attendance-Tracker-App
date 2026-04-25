@@ -1,4 +1,4 @@
-import { mapper } from "@/shared/infrastructure/mapping/mapper";
+import { mapper } from "@auth/shared/infrastructure/mapping/mapper";
 import { IJwtKeyRepository } from "../../domain/repositories/ijwtkey-repository";
 import { IAuthAppJwtService } from "../../domain/services/jwt-service";
 import { GeneratedKeyPairDTO } from "../dtos/generated-key-pair.dto";

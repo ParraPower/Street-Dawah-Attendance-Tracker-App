@@ -1,9 +1,9 @@
-import AppDataSource from "@/data/data-source"
+import AppDataSource from "@auth/data/data-source"
 import { IJwtKeyRepository } from "../../domain/repositories/ijwtkey-repository"
 import { JwtKeyRepository } from "../persistence/typeorm/jwt-key-repository"
 import { JwtKey } from "../../domain/entities/key-entity"
 import { GenerateActiveKeyPairUseCase } from "../../application/use-cases/generate-key-pair.usecase"
-import { AuthAppJwtService } from "@/shared/infrastructure/auth/jwt-service"
+import { AuthAppJwtService } from "@auth/shared/infrastructure/auth/jwt-service"
 import { KeyCacheService } from "./key-cache.service"
 
 export class useOnLoadEnsureKeyExists {

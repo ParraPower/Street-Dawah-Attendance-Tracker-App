@@ -1,5 +1,5 @@
-import { ScopeList, Scopes, ScopeString, VALID_SCOPES, ScopeRank } from '../policies/scope-types';
-import { UserJwtPayload } from '../../http/user-jwt-payload.dto';
+import { ScopeList, Scopes, ScopeString, VALID_SCOPES, ScopeRank } from '@shared/auth/policies/scope-types';
+import { UserJwtPayload } from '@shared/http/user-jwt-payload.dto';
 import _, { isString, isEmpty, trim } from 'lodash';
 
 export class ScopeService {

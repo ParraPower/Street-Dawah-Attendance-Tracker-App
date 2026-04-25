@@ -1,17 +1,17 @@
 import { DataSource } from 'typeorm';
 import { UsersController } from '../../features/users/infrastructure/http/users-controller';
-import { UserRepository } from '@/features/users/infrastructure/persistence/typeorm/user-repository';
-import { UserEntity } from '@/features/users/domain/entities/user-entity';
-import { UserService as FeatureUserService } from '@/features/users/domain/services/user-service';
-import { PasswordService } from '@/features/auth/domain/services/password-service';
-import { CreateBulkUsersUseCase } from '@/features/users/application/use-cases/create-bulk-users.usecase';
-import { BcryptHasherService } from '@/shared/infrastructure/password/bcrypt-hasher-service';
-import { ScopeService } from '@/features/auth/domain/services/scope-service';
-import { AuthService } from '@/features/auth/domain/services/auth-service';
-import { CreateUserUseCase } from '@/features/users/application/use-cases/create-user.usecase';
-import { GetUserUseCase } from '@/features/users/application/use-cases/get-user.usecase';
-import { AuthAppJwtService } from '@/shared/infrastructure/auth/jwt-service';
-import { KeyCacheService } from '@/features/auth/infrastructure/jwt/key-cache.service';
+import { UserRepository } from '@auth/features/users/infrastructure/persistence/typeorm/user-repository';
+import { UserEntity } from '@auth/features/users/domain/entities/user-entity';
+import { UserService as FeatureUserService } from '@auth/features/users/domain/services/user-service';
+import { PasswordService } from '@auth/features/auth/domain/services/password-service';
+import { CreateBulkUsersUseCase } from '@auth/features/users/application/use-cases/create-bulk-users.usecase';
+import { BcryptHasherService } from '@auth/shared/infrastructure/password/bcrypt-hasher-service';
+import { ScopeService } from "@shared/auth/services/scope-service";
+import { AuthService } from '@auth/features/auth/domain/services/auth-service';
+import { CreateUserUseCase } from '@auth/features/users/application/use-cases/create-user.usecase';
+import { GetUserUseCase } from '@auth/features/users/application/use-cases/get-user.usecase';
+import { AuthAppJwtService } from '@auth/shared/infrastructure/auth/jwt-service';
+import { KeyCacheService } from '@auth/features/auth/infrastructure/jwt/key-cache.service';
 
 
 export function buildUsersController(dataSource: DataSource) {

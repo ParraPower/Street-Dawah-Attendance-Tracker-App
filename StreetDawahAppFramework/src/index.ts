@@ -8,6 +8,7 @@ export * from './auth/types/jwt.types';
 export * from './persistence/interfaces/ibase-audit';
 export * from './persistence/interfaces/ibase-entity-stub';
 export * from './persistence/typeorm/abstracts/base-repository';
+export * from './persistence/typeorm/createDataSource';
 export * from './persistence/abstracts/base-entity';
 export * from './http/base-controller';
 export * from './http/interfaces/controller';

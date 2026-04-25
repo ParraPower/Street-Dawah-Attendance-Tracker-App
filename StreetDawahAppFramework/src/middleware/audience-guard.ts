@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
-import { JwtPayload } from '@/auth/types/jwt.types';
-import { RequestWithUser } from '@/http/request-with-user';
+import { JwtPayload } from '@shared/auth/types/jwt.types';
+import { RequestWithUser } from '@shared/http/request-with-user';
 
 /**
  * Ensures the JWT contains the required audience.

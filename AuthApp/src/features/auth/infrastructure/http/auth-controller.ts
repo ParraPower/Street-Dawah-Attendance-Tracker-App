@@ -1,17 +1,17 @@
 
 import { Router } from 'express';
-import { DawahRequestHandler } from '@/shared/infrastructure/http/dawah-request-handler';
+import { DawahRequestHandler } from '@auth/shared/infrastructure/http/dawah-request-handler';
 import { RegisterUserResponseDto } from '../../application/dtos/register-user.dto';
 import { ClientCredentialsDto } from '../../application/dtos/client-credentials-token-request.dto';
-import { GenerateTokenUseCase, RegisterUserUseCase } from '@/features/auth/application/use-cases/index';
-import { LoginRequestDto } from '@/features/auth/application/dtos/login-request.dto';
-import { UserDto } from '@/features/users/application/dtos/user.dto';
+import { GenerateTokenUseCase, RegisterUserUseCase } from '@auth/features/auth/application/use-cases/index';
+import { LoginRequestDto } from '@auth/features/auth/application/dtos/login-request.dto';
+import { UserDto } from '@auth/features/users/application/dtos/user.dto';
 import { ResetUserPasswordUseCase } from '../../application/use-cases/reset-user-password.usecase';
 import { ResetUserPasswordResponseDto } from '../../application/dtos/reset-user-password.dto';
-import { BaseController } from '@/shared/infrastructure/http/base-controller';
-import { ScopeService } from '../../domain/services/scope-service';
+import { BaseController } from '@auth/shared/infrastructure/http/base-controller';
+import { ScopeService } from "@shared/auth/services/scope-service";
 import { IAuthAppJwtService } from '../../domain/services/jwt-service';
-import { env } from '@/shared/infrastructure/config/env';
+import { env } from '@auth/shared/infrastructure/config/env';
 
 export class AuthController extends BaseController {
   public readonly router = Router();

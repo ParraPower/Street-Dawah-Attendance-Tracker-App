@@ -19,8 +19,9 @@ PROJECT_ROOT="$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)"
 echo "$PROJECT_ROOT"
 cd "$PROJECT_ROOT"
 
-echo "Running migration with cmd: NODE_ENV=$ENV_NAME ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d ./scripts/migration-data-source.ts"
+echo "Running migration with cmd: NODE_ENV=$ENV_NAME TS_NODE_PROJECT=./tsconfig.json ts-node -r tsconfig-paths/register ../node_modules/.bin/typeorm/cli.js migration:run -d ./scripts/migration-data-source.ts"
 
 # Option A (recommended on Linux): set env var directly (no cross-env needed on POSIX)
 NODE_ENV="$ENV_NAME" \
-npx ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d ./scripts/migration-data-source.ts
+TS_NODE_PROJECT=./tsconfig.json \
+npx ts-node -r tsconfig-paths/register ../node_modules/.bin/typeorm/cli.js migration:run -d ./scripts/migration-data-source.ts

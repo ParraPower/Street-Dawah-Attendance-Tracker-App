@@ -1,4 +1,4 @@
-import { ScopeList } from "@/features/auth/domain/policies/scope-types";
+import { ScopeList } from "@auth/features/auth/domain/policies/scope-types";
 
 export class UserDto {
   id!: string;

@@ -1,9 +1,9 @@
 import { Response, NextFunction } from 'express';
-import { ScopeList } from '@/auth/policies/scope-types'
-import { UserJwtPayload } from '@/http/user-jwt-payload.dto';
-import { RequestWithUser } from '@/http/request-with-user';
-import { ScopeService } from '@/auth/services/scope-service';
-import { IJwtService } from '@/auth/interfaces/jwt-service';
+import { ScopeList } from '@shared/auth/policies/scope-types'
+import { UserJwtPayload } from '@shared//http/user-jwt-payload.dto';
+import { RequestWithUser } from '@shared/http/request-with-user';
+import { ScopeService } from '@shared/auth/services/scope-service';
+import { IJwtService } from '@shared/auth/interfaces/jwt-service';
 
 export const authenticate = (jwtKeyService: IJwtService) => (
   req: RequestWithUser,

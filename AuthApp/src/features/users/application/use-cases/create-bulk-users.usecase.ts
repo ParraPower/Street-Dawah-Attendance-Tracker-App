@@ -1,17 +1,17 @@
 import { CreateUserDto } from "../dtos/create-user.dto"
 import { IUserRepository } from "../../domain/repositories/iuser-repository"
 import { UserService } from "../../domain/services/user-service"
-import { mapper } from "@/shared/infrastructure/mapping/mapper"
+import { mapper } from "@auth/shared/infrastructure/mapping/mapper"
 import { UserEntity } from "../../domain/entities/user-entity"
 import { UserDto } from "../dtos/user.dto"
 import { IHasherService } from "../../../auth/domain/services/hasher-service"
 import { PasswordService } from "../../../auth/domain/services/password-service"
-import { isNotNullOrEmtpy } from "@/utils/strings"
+import { isNotNullOrEmtpy } from "@auth/utils/strings"
 import { v4 as UUID } from 'uuid';
-import { ValidationError } from "@/shared/infrastructure/middleware/global-error-handler"
+import { ValidationError } from "@auth/shared/infrastructure/middleware/global-error-handler"
 import { CreateBulkUsersResponseDto } from "../dtos/create-bulk-users-response.dto"
-import { ScopeService } from "../../../auth/domain/services/scope-service"
-import { AuthService } from "@/features/auth/domain/services/auth-service"
+import { ScopeService } from "@shared/auth/services/scope-service";
+import { AuthService } from "@auth/features/auth/domain/services/auth-service"
 
 export class CreateBulkUsersUseCase {
   constructor(

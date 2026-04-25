@@ -7,8 +7,8 @@
     "test": "test",
     "build": "tsc",
 
-    "typeorm:generate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js  migration:generate -d ./src/data/data-source.ts",
-    "typeorm:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js  migration:run -d ./scripts/migration-data-source.ts",
+    "typeorm:generate": "cross-env TS_NODE_PROJECT=./tsconfig.json ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:generate -d ./src/data/data-source.ts",
+    "typeorm:run": "cross-env TS_NODE_PROJECT=./tsconfig.json ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d ./scripts/migration-data-source.ts",
 
     "migration:generate": "sh ./scripts/generate-migration.sh",
     "migration:generate:win": "powershell -ExecutionPolicy Bypass -File ./scripts/generate-migration.ps1",

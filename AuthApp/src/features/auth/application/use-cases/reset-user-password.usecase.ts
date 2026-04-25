@@ -1,6 +1,6 @@
-import { IUserRepository } from "@/features/users/domain/repositories/iuser-repository";
+import { IUserRepository } from "@auth/features/users/domain/repositories/iuser-repository";
 import { IHasherService } from "../../domain/services/hasher-service";
-import { ValidationError } from "@/shared/infrastructure/middleware/global-error-handler";
+import { ValidationError } from "@auth/shared/infrastructure/middleware/global-error-handler";
 import { PasswordService } from "../../domain/services/password-service";
 import { validate as validateUUID } from 'uuid'
 

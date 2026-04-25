@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import crypto from 'crypto'
 import _ from 'lodash'
-import { isNotNullOrEmtpy } from '@/utils/strings';
+import { isNotNullOrEmtpy } from '@auth/utils/strings';
 
 
 export class PasswordService {
