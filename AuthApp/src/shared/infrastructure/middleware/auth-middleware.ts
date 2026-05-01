@@ -1,3 +1,3 @@
-import { authenticate, authorize } from '@street-dawah/app-framework';
+import { authenticate, authorize } from 'app-framework';
 
 export { authenticate, authorize };

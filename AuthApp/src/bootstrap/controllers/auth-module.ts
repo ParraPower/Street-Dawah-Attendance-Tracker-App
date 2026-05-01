@@ -13,7 +13,7 @@ import { UserRepository } from "@auth/features/users/infrastructure/persistence/
 import { UserEntity } from "@auth/features/users/domain/entities/user-entity";
 import { UserService } from "@auth/features/users/domain/services/user-service";
 import { PasswordService } from "@auth/features/auth/domain/services/password-service";
-import { ScopeService } from "@shared/auth/services/scope-service";
+import { ScopeService } from "app-framework"
 import { AuthAppJwtService } from "@auth/shared/infrastructure/auth/jwt-service";
 import { KeyCacheService } from "@auth/features/auth/infrastructure/jwt/key-cache.service";
 

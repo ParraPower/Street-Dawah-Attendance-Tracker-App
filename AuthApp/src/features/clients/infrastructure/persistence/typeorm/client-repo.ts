@@ -1,22 +1,19 @@
+import { BaseRepository } from "app-framework";
 import { Repository } from "typeorm";
 import { IClientRepository } from "../../../domains/repositories/iclient-repo";
 import { ClientEntity } from "../../../domains/entities/client-entity";
 
-export class ClientRepository implements IClientRepository {
-  constructor(private readonly repo: Repository<ClientEntity>) {}
+export class ClientRepository extends BaseRepository<ClientEntity> implements IClientRepository {
+  constructor(repo: Repository<ClientEntity>) {
+    super(repo);
+  }
 
   async findById(id: number): Promise<ClientEntity | null> {
-    const record = await this.repo.findOne({ where: { id } });
-    if (!record) return null;
-
-    return record
+    return this.findOneBy({ id } as never);
   }
 
   async findByName(name: string): Promise<ClientEntity | null> {
-    const record = await this.repo.findOne({ where: { name } });
-    if (!record) return null;
-
-    return record
+    return this.findOneBy({ name } as never);
   }
 
   async create(client: Partial<ClientEntity>): Promise<ClientEntity> {
@@ -38,8 +35,8 @@ export class ClientRepository implements IClientRepository {
   }
 
   async findAll(): Promise<ClientEntity[]> {
-    return await this.repo.find({
-      where: { isDeleted: false },
+    return this.find({
+      where: { isDeleted: false } as never,
     });
   }
 }

@@ -1,4 +1,4 @@
-import { ScopeService } from "@shared/auth/services/scope-service";
+import { ScopeService, CryptoCryptographyService } from "app-framework";
 import { AuthAppJwtService } from '@auth/shared/infrastructure/auth/jwt-service';
 import { KeyCacheService } from '@auth/features/auth/infrastructure/jwt/key-cache.service';
 import { JwksController } from '@auth/features/auth/infrastructure/http/jwks-controller';
@@ -10,7 +10,8 @@ export function buildJwksController() {
   const scopeService = new ScopeService()
   const jwtService = new AuthAppJwtService(new KeyCacheService())
   const keyCacheService = new KeyCacheService()
-  const jwksService = new JwksService()
+  const cryptoService = new CryptoCryptographyService()
+  const jwksService = new JwksService(cryptoService)
   // 2. Domain services
 
   // 3. Application service

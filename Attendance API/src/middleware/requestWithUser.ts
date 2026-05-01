@@ -1,1 +1,1 @@
-export { RequestWithUser } from '@street-dawah/app-framework';
+export { RequestWithUser } from 'app-framework';

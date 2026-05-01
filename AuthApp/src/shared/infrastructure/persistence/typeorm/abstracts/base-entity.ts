@@ -1,3 +1,3 @@
-import { BaseEntity } from "@street-dawah/app-framework";
+import { BaseEntity } from "app-framework";
 
 export { BaseEntity }

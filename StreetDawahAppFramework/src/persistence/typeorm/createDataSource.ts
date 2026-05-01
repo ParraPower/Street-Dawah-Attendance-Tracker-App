@@ -10,5 +10,5 @@ export const createDataSource =
   entities: entities,
   synchronize: false, // true only in dev
   logging: false,
-  migrations: [migrationsPath + "*.ts"],
+  migrations: [migrationsPath],
 })

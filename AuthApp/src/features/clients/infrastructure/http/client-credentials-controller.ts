@@ -7,7 +7,7 @@ import { UpdateClientCredentialsDto } from '../../application/dtos/update-client
 import { CreateClientCredentialsUseCase, DeleteClientCredentialsUseCase, UpdateClientCredentialsUseCase } from '../../application/use-cases';
 import { ClientEntity } from '../../domains/entities/client-entity';
 import { BaseController } from '@auth/shared/infrastructure/http/base-controller';
-import { ScopeService } from "@shared/auth/services/scope-service";
+import { ScopeService } from "app-framework";
 import { IAuthAppJwtService } from '@auth/features/auth/domain/services/jwt-service';
 import { env } from '@auth/shared/infrastructure/config/env';
 

@@ -9,7 +9,7 @@ import { UserDto } from '@auth/features/users/application/dtos/user.dto';
 import { ResetUserPasswordUseCase } from '../../application/use-cases/reset-user-password.usecase';
 import { ResetUserPasswordResponseDto } from '../../application/dtos/reset-user-password.dto';
 import { BaseController } from '@auth/shared/infrastructure/http/base-controller';
-import { ScopeService } from "@shared/auth/services/scope-service";
+import { ScopeService } from "app-framework";
 import { IAuthAppJwtService } from '../../domain/services/jwt-service';
 import { env } from '@auth/shared/infrastructure/config/env';
 

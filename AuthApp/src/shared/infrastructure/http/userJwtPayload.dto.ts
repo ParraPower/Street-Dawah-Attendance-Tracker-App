@@ -1,1 +1,1 @@
-export { UserJwtPayload } from '@street-dawah/app-framework';
+export { UserJwtPayload } from 'app-framework';

@@ -1,3 +1,3 @@
-import { BaseController  } from '@street-dawah/app-framework';
+import { BaseController  } from 'app-framework';
 
 export { BaseController };

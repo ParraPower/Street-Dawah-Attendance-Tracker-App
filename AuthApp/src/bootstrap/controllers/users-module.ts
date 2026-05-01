@@ -6,7 +6,7 @@ import { UserService as FeatureUserService } from '@auth/features/users/domain/s
 import { PasswordService } from '@auth/features/auth/domain/services/password-service';
 import { CreateBulkUsersUseCase } from '@auth/features/users/application/use-cases/create-bulk-users.usecase';
 import { BcryptHasherService } from '@auth/shared/infrastructure/password/bcrypt-hasher-service';
-import { ScopeService } from "@shared/auth/services/scope-service";
+import { ScopeService } from "app-framework";
 import { AuthService } from '@auth/features/auth/domain/services/auth-service';
 import { CreateUserUseCase } from '@auth/features/users/application/use-cases/create-user.usecase';
 import { GetUserUseCase } from '@auth/features/users/application/use-cases/get-user.usecase';

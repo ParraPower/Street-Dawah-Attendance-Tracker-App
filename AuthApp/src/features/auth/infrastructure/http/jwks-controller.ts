@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { JwksService } from '../../domain/services/jwks-service';
 import { BaseController } from '@auth/shared/infrastructure/http/base-controller';
-import { ScopeService } from "@shared/auth/services/scope-service";
+import { ScopeService } from "app-framework";
 import { IAuthAppJwtService } from '@auth/features/auth/domain/services/jwt-service';
 import { DawahRequestHandler } from '@auth/shared/infrastructure/http/dawah-request-handler';
 import { KeyCacheService } from '../jwt/key-cache.service';

@@ -1,1 +1,1 @@
-export { BaseEntity } from '@street-dawah/app-framework';
+export { BaseEntity } from 'app-framework';

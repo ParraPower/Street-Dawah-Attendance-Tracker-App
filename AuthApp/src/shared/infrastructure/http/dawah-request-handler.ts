@@ -1,1 +1,1 @@
-export { DawahRequestHandler } from '@street-dawah/app-framework';
+export { DawahRequestHandler } from 'app-framework';

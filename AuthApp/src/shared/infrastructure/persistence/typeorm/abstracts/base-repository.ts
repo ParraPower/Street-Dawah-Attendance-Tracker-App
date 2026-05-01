@@ -1,4 +1,4 @@
 
-import { BaseRepository } from "@street-dawah/app-framework";
+import { BaseRepository } from "app-framework";
 
 export { BaseRepository }

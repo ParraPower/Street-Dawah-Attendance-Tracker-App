@@ -10,5 +10,8 @@
   "scripts": {
     "bootstrap": "npm install --legacy-peer-deps",
     "build": "npm run build --workspaces"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2"
   }
 }

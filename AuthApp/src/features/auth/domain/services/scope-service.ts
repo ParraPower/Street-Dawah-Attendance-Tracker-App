@@ -1,3 +1,3 @@
-import { ScopeService } from '@street-dawah/app-framework';
+import { ScopeService } from 'app-framework';
 
 export { ScopeService }

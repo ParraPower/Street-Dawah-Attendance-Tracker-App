@@ -3,7 +3,7 @@ import { IHasherService } from "../../domain/services/hasher-service";
 import { mapper } from "@auth/shared/infrastructure/mapping/mapper";
 import { RegisterUserResponseDto } from "../dtos/register-user.dto";
 import { UserEntity } from "../../../users/domain/entities/user-entity";
-import { ScopeService } from "@shared/auth/services/scope-service";
+import { ScopeService } from "app-framework";
 export class RegisterUserUseCase {
   constructor(
     private readonly repo: IUserRepository,

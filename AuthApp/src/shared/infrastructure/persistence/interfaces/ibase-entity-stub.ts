@@ -1,3 +1,3 @@
-import { IBaseEntityStub } from '@street-dawah/app-framework'
+import { IBaseEntityStub } from 'app-framework'
 
 export { IBaseEntityStub }

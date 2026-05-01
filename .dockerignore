@@ -1,0 +1,16 @@
+**/node_modules
+**/dist
+# Keep pre-built StreetDawahAppFramework dist for Docker builds
+!StreetDawahAppFramework/dist
+**/.turbo
+**/.cache
+**/.DS_Store
+**/*.log
+
+.git
+.gitignore
+Dockerfile
+**/Dockerfile
+
+.env
+.env.*

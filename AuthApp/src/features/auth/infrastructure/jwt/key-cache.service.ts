@@ -1,2 +1,2 @@
-import { KeyCacheService } from "@street-dawah/app-framework"
+import { KeyCacheService } from "app-framework"
 export { KeyCacheService }

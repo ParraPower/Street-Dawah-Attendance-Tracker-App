@@ -9,12 +9,14 @@
     "build": "tsc -p tsconfig.json"
   },
   "peerDependencies": {
+    "bcrypt": "^6.0.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
     "typeorm": "^0.3.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.21",

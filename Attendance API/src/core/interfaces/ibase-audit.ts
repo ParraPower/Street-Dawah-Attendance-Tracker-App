@@ -1,1 +1,1 @@
-export { IBaseAudit } from '@street-dawah/app-framework';
+export { IBaseAudit } from 'app-framework';

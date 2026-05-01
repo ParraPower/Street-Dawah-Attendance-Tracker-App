@@ -4,7 +4,7 @@ import { randomUUID } from 'crypto';
 import { TokenType, JwtPayload } from '@auth/features/auth/domain/types/jwt.types';
 import { KeyCacheService } from '@auth/features/auth/infrastructure/jwt/key-cache.service';
 import { IAuthAppJwtService } from '@auth/features/auth/domain/services/jwt-service';
-import { JwtService } from '@street-dawah/app-framework'
+import { JwtService } from 'app-framework'
 
 export class AuthAppJwtService extends JwtService implements IAuthAppJwtService {
   constructor(keyCacheService: KeyCacheService) {

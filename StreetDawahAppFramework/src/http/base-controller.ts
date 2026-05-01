@@ -1,12 +1,12 @@
 import { Router, RequestHandler } from 'express';
-import { authenticate, authorize } from '@shared/middleware/auth-middleware';
-import { ScopeService } from '@shared/auth/services/scope-service';
-import { ScopeList } from '@shared/auth/policies/scope-types';
-import { asyncHandler } from '@shared/middleware/async-handler';
+import { authenticate, authorize } from '../middleware/auth-middleware';
+import { ScopeService } from '../auth/services/scope-service';
+import { ScopeList } from '../auth/policies/scope-types';
+import { asyncHandler } from '../middleware/async-handler';
 import { HttpMethod, IController } from './interfaces/controller';
-import { DawahRequestHandler } from '@shared/http/dawah-request-handler';
-import { IJwtService } from '@shared/auth/interfaces/jwt-service';
-import { requireAudience } from '@shared/middleware/audience-guard';
+import { DawahRequestHandler } from '../http/dawah-request-handler';
+import { IJwtService } from '../auth/interfaces/jwt-service';
+import { requireAudience } from '../middleware/audience-guard';
 
 
 export abstract class BaseController implements IController {

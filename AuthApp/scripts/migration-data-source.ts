@@ -14,8 +14,13 @@ if (existsSync(envPath)) {
   console.warn(`⚠️ Environment file ${envFile} not found. Falling back to process.env`);
 }
 
-import { createDataSource } from '@street-dawah/app-framework'
+import { createDataSource } from 'app-framework'
 import { UserEntity } from '../src/features/users/domain/entities/user-entity'
-const AppDataSource = createDataSource('blah', [ UserEntity ] as never, __dirname + "/../migrations/*.ts");
+import { JwtKey } from '../src/features/auth/domain/entities/key-entity'
+import { ClientEntity } from '../src/features/clients/domains/entities/client-entity'
+
+console.log(__dirname + "/../migrations/*.ts")
+
+const AppDataSource = createDataSource(process.env.DB_URL!, [ UserEntity, JwtKey, ClientEntity ] as never, __dirname + "/../src/migrations/*.ts");
 
 export default AppDataSource;

@@ -1,5 +1,5 @@
 import { Column, Entity } from "typeorm";
-import { BaseEntity } from '@auth/shared/infrastructure/persistence/typeorm/abstracts/base-entity';
+import { BaseEntity } from 'app-framework';
 
 @Entity('clients')
 export class ClientEntity extends BaseEntity {

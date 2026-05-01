@@ -5,7 +5,7 @@ import { ClientCredentialsController } from '../../features/clients/infrastructu
 import { ClientService } from '@auth/features/clients/domains/services/client-service';
 import { BcryptHasherService } from '@auth/shared/infrastructure/password/bcrypt-hasher-service';
 import { CreateClientCredentialsUseCase, DeleteClientCredentialsUseCase, UpdateClientCredentialsUseCase } from '@auth/features/clients/application/use-cases';
-import { ScopeService } from "@shared/auth/services/scope-service";
+import { ScopeService } from "app-framework";
 import { AuthAppJwtService } from '@auth/shared/infrastructure/auth/jwt-service';
 import { KeyCacheService } from '@auth/features/auth/infrastructure/jwt/key-cache.service';
 

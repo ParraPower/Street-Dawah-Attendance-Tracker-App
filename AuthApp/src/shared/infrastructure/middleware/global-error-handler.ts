@@ -1,1 +1,1 @@
-export { globalErrorHandler, ValidationError, NotFoundError, UnauthorizedError, ConflictError } from '@street-dawah/app-framework';
+export { globalErrorHandler, ValidationError, NotFoundError, UnauthorizedError, ConflictError } from 'app-framework';

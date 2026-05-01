@@ -2,7 +2,7 @@ import {
   Entity, Column,
 } from 'typeorm';
 import { IUserEntity } from './iuser-entity'
-import { BaseEntity } from '@street-dawah/app-framework';
+import { BaseEntity } from 'app-framework';
 
 @Entity('users')
 export class UserEntity extends BaseEntity implements IUserEntity {

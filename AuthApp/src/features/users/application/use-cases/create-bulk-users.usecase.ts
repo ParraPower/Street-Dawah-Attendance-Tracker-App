@@ -10,7 +10,7 @@ import { isNotNullOrEmtpy } from "@auth/utils/strings"
 import { v4 as UUID } from 'uuid';
 import { ValidationError } from "@auth/shared/infrastructure/middleware/global-error-handler"
 import { CreateBulkUsersResponseDto } from "../dtos/create-bulk-users-response.dto"
-import { ScopeService } from "@shared/auth/services/scope-service";
+import { ScopeService } from "app-framework";
 import { AuthService } from "@auth/features/auth/domain/services/auth-service"
 
 export class CreateBulkUsersUseCase {

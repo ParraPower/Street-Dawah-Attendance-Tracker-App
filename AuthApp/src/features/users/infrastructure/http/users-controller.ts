@@ -8,7 +8,7 @@ import { DawahRequestHandler } from "@auth/shared/infrastructure/http/dawah-requ
 import { UserDto } from "../../application/dtos/user.dto";
 import { CreateBulkUsersResponseDto } from "../../application/dtos/create-bulk-users-response.dto";
 import { BaseController } from "@auth/shared/infrastructure/http/base-controller";
-import { ScopeService } from "@shared/auth/services/scope-service";
+import { ScopeService } from "app-framework";
 import { IAuthAppJwtService } from "@auth/features/auth/domain/services/jwt-service";
 import { env } from "@auth/shared/infrastructure/config/env";
 

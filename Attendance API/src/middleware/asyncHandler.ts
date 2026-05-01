@@ -1,1 +1,1 @@
-export { asyncHandler } from "@street-dawah/app-framework";
+export { asyncHandler } from "app-framework";
