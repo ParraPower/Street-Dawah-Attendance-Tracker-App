@@ -24,7 +24,7 @@ export class GenerateActiveKeyPairUseCase {
       algorithm: "RS256"
     }
 
-    this.jwtKeyRepo.create({...key,
+    await this.jwtKeyRepo.create({...key,
       isActive: true,
     })
     

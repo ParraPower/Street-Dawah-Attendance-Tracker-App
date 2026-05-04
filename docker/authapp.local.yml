@@ -28,7 +28,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    working_dir: /repo/AuthApp   # 👈 THIS IS THE KEY LINE
+    working_dir: /repo/AuthApp
     environment:
       NODE_ENV: local
       DB_HOST: postgres
@@ -48,6 +48,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    working_dir: /repo/AuthApp
     environment:
       NODE_ENV: local
       DB_HOST: postgres
@@ -57,9 +58,7 @@ services:
       DB_NAME: ${DB_NAME}
     ports:
       - "4001:4001"
-    volumes:
-      - ../:/repo
-    command: npm run start:local -w AuthApp
+    command: npm run start:local
 
 volumes:
   postgres-data-local:
