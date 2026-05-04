@@ -1,25 +1,26 @@
 import { Router } from 'express';
-import { DawahRequestHandler } from '@/shared/infrastructure/http/dawah-request-handler';
-import { Scopes } from '@/features/auth/domain/policies/scope-types';
+import { DawahRequestHandler } from '@auth/shared/infrastructure/http/dawah-request-handler';
+import { Scopes } from '@auth/features/auth/domain/policies/scope-types';
 import { ClientCredentialsResponseDto } from '../../application/dtos/client-credentials-response.dto';
 import { CreateClientCredentialsDto } from '../../application/dtos/create-client-credentials.dto';
 import { UpdateClientCredentialsDto } from '../../application/dtos/update-client-credentials.dto';
 import { CreateClientCredentialsUseCase, DeleteClientCredentialsUseCase, UpdateClientCredentialsUseCase } from '../../application/use-cases';
 import { ClientEntity } from '../../domains/entities/client-entity';
-import { BaseController } from '@/shared/infrastructure/http/base-controller';
-import { ScopeService } from '@/features/auth/domain/services/scope-service';
-import { IJwtService } from '@/features/auth/domain/services/jwt-service';
+import { BaseController } from '@auth/shared/infrastructure/http/base-controller';
+import { ScopeService } from "app-framework";
+import { IAuthAppJwtService } from '@auth/features/auth/domain/services/jwt-service';
+import { env } from '@auth/shared/infrastructure/config/env';
 
 export class ClientCredentialsController extends BaseController {
   public readonly router = Router();
 
   constructor(
-    protected readonly jwtService: IJwtService,
+    protected readonly jwtService: IAuthAppJwtService,
     protected readonly scopeService: ScopeService,
     private readonly createUseCase: CreateClientCredentialsUseCase, 
     private readonly updateUseCase: UpdateClientCredentialsUseCase, 
     private readonly deleteUseCase: DeleteClientCredentialsUseCase) {
-    super(jwtService, scopeService);
+    super(jwtService, scopeService, { jwtDefaultAudience: env.jwtDefaultAudience });
 
     this.registerRoute('post', '/', this.createCredentials.bind(this), {
       authorizeScopes: [Scopes.Khaleef],

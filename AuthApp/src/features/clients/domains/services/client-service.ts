@@ -1,4 +1,4 @@
-import { IHasherService } from "@/features/auth/domain/services/hasher-service";
+import { IHasherService } from "@auth/features/auth/domain/services/hasher-service";
 import { ClientEntity } from "../entities/client-entity";
 
 export class ClientService {

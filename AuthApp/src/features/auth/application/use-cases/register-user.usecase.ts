@@ -1,10 +1,9 @@
-import { IUserRepository } from "@/features/users/domain/repositories/iuser-repository";
+import { IUserRepository } from "@auth/features/users/domain/repositories/iuser-repository";
 import { IHasherService } from "../../domain/services/hasher-service";
-import { mapper } from "@/shared/infrastructure/mapping/mapper";
+import { mapper } from "@auth/shared/infrastructure/mapping/mapper";
 import { RegisterUserResponseDto } from "../dtos/register-user.dto";
 import { UserEntity } from "../../../users/domain/entities/user-entity";
-import { ScopeService } from "../../domain/services/scope-service";
-
+import { ScopeService } from "app-framework";
 export class RegisterUserUseCase {
   constructor(
     private readonly repo: IUserRepository,

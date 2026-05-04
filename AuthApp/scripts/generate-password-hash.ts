@@ -1,4 +1,4 @@
-import { PasswordService } from '../src/domains/password/password-service';
+import { PasswordService } from '../src/features/auth/domain/services/password-service';
 
 const password = process.argv[2];
 if (!password) {

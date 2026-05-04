@@ -1,5 +1,5 @@
 import { UserEntity } from "../entities/user-entity";
-import { isNotNullOrEmtpy } from '@/utils/strings'
+import { isNotNullOrEmtpy } from '@auth/utils/strings'
 
 export class UserService {
   constructor() {

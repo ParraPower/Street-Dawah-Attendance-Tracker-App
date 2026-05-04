@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { BaseRepository } from "@/shared/infrastructure/persistence/typeorm/abstracts/base-repository";
+import { BaseRepository } from "@auth/shared/infrastructure/persistence/typeorm/abstracts/base-repository";
 import { JwtKey } from "../../../domain/entities/key-entity";
 import { IJwtKeyRepository } from "../../../domain/repositories/ijwtkey-repository";
 

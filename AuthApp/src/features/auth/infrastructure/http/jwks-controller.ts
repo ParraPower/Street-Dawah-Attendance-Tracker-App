@@ -1,22 +1,22 @@
 import { Router } from 'express';
 import { JwksService } from '../../domain/services/jwks-service';
-import { BaseController } from '@/shared/infrastructure/http/base-controller';
-import { ScopeService } from '@/features/auth/domain/services/scope-service';
-import { IJwtService } from '@/features/auth/domain/services/jwt-service';
-import { DawahRequestHandler } from '@/shared/infrastructure/http/dawah-request-handler';
+import { BaseController } from '@auth/shared/infrastructure/http/base-controller';
+import { ScopeService } from "app-framework";
+import { IAuthAppJwtService } from '@auth/features/auth/domain/services/jwt-service';
+import { DawahRequestHandler } from '@auth/shared/infrastructure/http/dawah-request-handler';
 import { KeyCacheService } from '../jwt/key-cache.service';
 
 export class JwksController extends BaseController {
   public readonly router = Router();
 
   constructor(
-    protected readonly jwtService: IJwtService,
+    protected readonly jwtService: IAuthAppJwtService,
     protected readonly scopeService: ScopeService,
     private readonly jwksService: JwksService,
     private readonly keyCacheService: KeyCacheService
     
   ) {
-    super(jwtService, scopeService);
+    super(jwtService, scopeService, { jwtDefaultAudience: ''});
 
     this.registerRoute('get', '/.well-known/jwks.json', this.getJwks, {
       authenticate: false,

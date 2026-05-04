@@ -7,11 +7,96 @@ Before generating the documentation comment, define the key topics that should b
 
 AuthApp provides an authentication and authorization API for other services (for example, the Attendance API).
 
-2. **Architecture**
+2. **Setup and installation**
+
+**Prerequisites:**
+- Node.js 18+ (tested with Node 20)
+- npm or yarn
+- PostgreSQL 15+ (for database)
+- Docker and Docker Compose (optional, for containerized development)
+
+**Installation steps:**
+1. Clone the repository and navigate to the AuthApp directory:
+   ```bash
+   cd AuthApp
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Set up environment variables:
+   - Copy `.env.example` to `.env.local` (or `.env.machine-local` for machine-specific setup)
+   - Update the values with your local configuration (database credentials, JWT settings, port, etc.)
+   - Required variables: `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `PORT`, `JWT_ISSUER`, `JWT_DEFAULT_AUDIENCE`, `JWT_EXPIRATION_TIME`
+
+**Build:**
+```bash
+npm run build
+```
+This compiles TypeScript to JavaScript in the `dist` folder.
+
+**Running locally (without Docker):**
+1. Ensure a PostgreSQL database is running and accessible
+2. Run migrations to set up the database schema:
+   ```bash
+   # On Windows
+   npm run migration:run:win
+   # On Linux/macOS
+   npm run migration:run
+   ```
+3. Start the development server:
+   ```bash
+   npm run start:dev
+   ```
+   Or for local environment:
+   ```bash
+   npm run start:local
+   ```
+   The server will start at the port specified in your `.env` file (default: 3000)
+
+**Running with Docker (local development):**
+1. Ensure Docker and Docker Compose are installed
+2. Set up environment variables in `.env.local` or `.env.machine-local`
+3. Start the Docker containers from the workspace root:
+   ```bash
+   npm run docker:start -w AuthApp -- authapp <env>
+   ```
+   Replace `<env>` with the environment name (e.g., `local`, `dev`). This PowerShell script will spin up a PostgreSQL container and the AuthApp service.
+4. Alternatively, manually start services from within the AuthApp directory:
+   ```bash
+   docker-compose -f docker-compose.machine-local.yml up -d
+   ```
+5. Run migrations inside the container:
+   ```bash
+   docker exec authapp npm run migration:run
+   ```
+   The API will be available at `http://localhost:3000` (or your configured port)
+
+**Deployment to Azure Web App (without Docker):**
+1. Build the application:
+   ```bash
+   npm run build
+   ```
+2. Ensure all dependencies are installed and `dist` folder is included
+3. Configure environment variables in Azure Web App settings (equivalent to `.env` variables)
+4. Set `NODE_ENV=production` in Azure settings
+5. The app startup command in Azure should point to the compiled entry point:
+   ```bash
+   node dist/server.js
+   ```
+   Or use:
+   ```bash
+   npm start
+   ```
+   (Configure the start script in `package.json` if needed)
+6. Ensure the PostgreSQL database on Azure is accessible and migrations have been run
+7. Set the port to match Azure's expected port (typically environment variable `PORT` is injected)
+
+4. **Architecture**
 
 Features-based architecture: code is organized into features (each containing domain, application, infrastructure, and interfaces layers) and shared cross-cutting concerns. Features encapsulate end-to-end functionality, while shared handles reusable logic like persistence, logging, and error handling.
 
-3. **Core components**
+5. **Core components**
 
 - Entities:
   - `UserEntity`: represents application users.
@@ -21,11 +106,11 @@ Features-based architecture: code is organized into features (each containing do
   - `auth`: authentication and authorization (domain entities/services, application use-cases/DTOs, infrastructure persistence/security, interfaces HTTP).
   - `users`: user management (similar layered structure).
 
-4. **Authentication flow**
+6. **Authentication flow**
 
 For users: register, then call `POST /auth/login` to receive a JWT. The system also supports client credentials for machine-to-machine authentication.
 
-5. **Directory structure**
+7. **Directory structure**
 
 - Root level:
   - `src/`: Main application source code, organized into features, shared components, and bootstrap.
@@ -40,7 +125,7 @@ For users: register, then call `POST /auth/login` to receive a JWT. The system a
   - `types/`: global type augmentations (keep small).
   (Obsolete folders: `domains`, `modules`, `core`, `data`, `mapping`, `security`, `dtos` have been reorganized into `shared` and `features`.)
 
-6. **Key dependencies**
+8. **Key dependencies**
 
 - `TypeORM` — database ORM and migrations
 - `express` — HTTP framework
@@ -48,28 +133,28 @@ For users: register, then call `POST /auth/login` to receive a JWT. The system a
 - `bcrypt` — password hashing
 - `automapper` (or AutoMapper binding used) — entity/DTO mapping
 
-7. **Configuration**
+9. **Configuration**
 
 Uses `cross-env` and `.env` files for multi-environment configuration. See [config/env.ts](config/env.ts#L1) for the environment variables currently read by the application.
 
-8. **Error handling**
+10. **Error handling**
 
 Centralized error handling is not yet implemented. Recommended approach: a global error middleware that normalizes errors into a consistent HTTP response format, structured logging, and optional integration with an error-reporting system (Sentry, etc.).
 
-9. **Security considerations**
+11. **Security considerations**
 
 - Authorization uses scopes defined in [features/auth/domain/policies/scopes.ts](features/auth/domain/policies/scopes.ts#L1) and enforced via guards/middleware.
 - Key management: store asymmetric keys securely and rotate when necessary; token blacklist/whitelist entities exist under `features/auth/domain/entities`.
 
-10. **Testing strategy**
+12. **Testing strategy**
 
 Tests should live under `__tests__` with a mirrored folder structure. Use `jest` for unit tests and `msw` for mocking external HTTP calls.
 
-11. **Migrations**
+13. **Migrations**
 
 Database migrations are managed with TypeORM and stored in the `migrations` folder.
 
-12. **Next steps / TODOs**
+14. **Next steps / TODOs**
 
 - Implement centralized error handling and logging.
 - Consolidate `core` responsibilities into `features` or `shared` where appropriate.

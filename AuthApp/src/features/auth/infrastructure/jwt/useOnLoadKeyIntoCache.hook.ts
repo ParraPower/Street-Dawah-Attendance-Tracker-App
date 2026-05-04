@@ -1,4 +1,4 @@
-import AppDataSource from "@/data/data-source";
+import AppDataSource from "@auth/data/data-source";
 import { IJwtKeyRepository } from "../../domain/repositories/ijwtkey-repository";
 import { JwtKeyRepository } from "../persistence/typeorm/jwt-key-repository";
 import { KeyCacheService } from "./key-cache.service";

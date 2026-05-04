@@ -1,5 +1,5 @@
 // src/domain/keys/key.entity.ts
-import { BaseEntity } from '@/shared/infrastructure/persistence/typeorm/abstracts/base-entity';
+import { BaseEntity } from 'app-framework';
 import { Entity, Column } from 'typeorm';
 
 @Entity('jwt_keys')

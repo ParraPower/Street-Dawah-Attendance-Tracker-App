@@ -1,22 +1,26 @@
-import path from "node:path";
-import fs from "node:fs";
-import dotenv from "dotenv";
+import { resolve } from "node:path";
+import { existsSync } from "node:fs";
+import { config } from "dotenv";
 
 const env = process.env.NODE_ENV || "local";
 const envFile = `.env.${env}`;
-const envPath = path.resolve(process.cwd(), envFile);
+const envPath = resolve(process.cwd(), envFile);
 
 // Load environment file if it exists
-if (fs.existsSync(envPath)) {
+if (existsSync(envPath)) {
   console.log(`🔧 Loading environment: ${envFile}`);
-  dotenv.config({ path: envPath });
+  config({ path: envPath });
 } else {
   console.warn(`⚠️ Environment file ${envFile} not found. Falling back to process.env`);
 }
 
+import { createDataSource } from 'app-framework'
+import { UserEntity } from '../src/features/users/domain/entities/user-entity'
+import { JwtKey } from '../src/features/auth/domain/entities/key-entity'
+import { ClientEntity } from '../src/features/clients/domains/entities/client-entity'
 
-import { createDataSource } from '../src/data/ormconfig';
+console.log(__dirname + "/../migrations/*.ts")
 
-const AppDataSource = createDataSource();
+const AppDataSource = createDataSource(process.env.DB_URL!, [ UserEntity, JwtKey, ClientEntity ] as never, __dirname + "/../src/migrations/*.ts");
 
 export default AppDataSource;

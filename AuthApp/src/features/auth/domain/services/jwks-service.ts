@@ -1,11 +1,28 @@
-import crypto from 'crypto';
+import { ICryptographyService } from 'app-framework';
+
+type KeyObjectExportOptions = {
+  format: string
+}
+
+type ExportedJwkPublicKey = {
+  kty: string,
+  n: string,
+  e: string
+}
+
+type PublicKeyObject = {
+  export: (options: KeyObjectExportOptions) => ExportedJwkPublicKey
+}
 
 export class JwksService {
+  constructor(private readonly cryptographyService: ICryptographyService) {
+
+  }
   // Jwks related business logic can be added here in the future
 
-  private isValidPublicKey(pem: string): { isValid: boolean; pubKey?: crypto.KeyObject } {
+  private isValidPublicKey(pem: string): { isValid: boolean; pubKey?: PublicKeyObject } {
     try {
-      const pubKey = crypto.createPublicKey(pem);
+      const pubKey = this.cryptographyService.createPublicKey(pem) as PublicKeyObject;
       return { isValid: true, pubKey };
     } catch (err) {
       return { isValid: false };
@@ -20,7 +37,7 @@ export class JwksService {
   }
 
 
-  private useValidatePemPublicKey(pem: string): {  isValid: boolean, pubKey?: crypto.KeyObject } {
+  private useValidatePemPublicKey(pem: string): {  isValid: boolean, pubKey?: PublicKeyObject } {
     if (!this.looksLikePemPublicKey(pem)) {
       return { isValid: false };
     }
@@ -39,7 +56,7 @@ export class JwksService {
       throw new Error('Invalid PEM public key');
     }
     // Export the key in JWK format
-    const jwk = pubKey.export({ format: 'jwk' }) as any;
+    const jwk = (pubKey as PublicKeyObject ).export({ format: 'jwk' });
 
     return {
       kty: jwk.kty,   // "RSA"

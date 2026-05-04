@@ -1,5 +1,1 @@
-import { JwtPayload } from 'jsonwebtoken';
-
-export interface UserJwtPayload extends JwtPayload {
-  scope: string;
-}
+export { UserJwtPayload } from 'app-framework';

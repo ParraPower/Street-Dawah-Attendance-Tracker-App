@@ -1,9 +1,9 @@
-import { mapper } from "@/shared/infrastructure/mapping/mapper";
+import { mapper } from "@auth/shared/infrastructure/mapping/mapper";
 import { IUserRepository } from "../../domain/repositories/iuser-repository";
 import { CreateUserDto } from "../dtos/create-user.dto";
 import { UserDto } from "../dtos/user.dto";
 import { UserEntity } from "../../domain/entities/user-entity";
-import { PasswordService } from "@/features/auth/domain/services/password-service";
+import { PasswordService } from "@auth/features/auth/domain/services/password-service";
 
 export class CreateUserUseCase {
   constructor(

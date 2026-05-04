@@ -1,5 +1,5 @@
 import { Repository, In } from "typeorm";
-import { BaseRepository } from "@/shared/infrastructure/persistence/typeorm/abstracts/base-repository";
+import { BaseRepository } from "@auth/shared/infrastructure/persistence/typeorm/abstracts/base-repository";
 import { UserEntity } from "../../../domain/entities/user-entity";
 import { IUserRepository } from "../../../domain/repositories/iuser-repository";
 import { ILike } from 'typeorm'

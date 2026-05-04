@@ -1,13 +1,13 @@
 import { DataSource } from 'typeorm';
-import { ClientEntity } from '@/features/clients/domains/entities/client-entity';
-import { ClientRepository } from '@/features/clients/infrastructure/persistence/typeorm/client-repo';
+import { ClientEntity } from '@auth/features/clients/domains/entities/client-entity';
+import { ClientRepository } from '@auth/features/clients/infrastructure/persistence/typeorm/client-repo';
 import { ClientCredentialsController } from '../../features/clients/infrastructure/http/client-credentials-controller';
-import { ClientService } from '@/features/clients/domains/services/client-service';
-import { BcryptHasherService } from '@/shared/infrastructure/password/bcrypt-hasher-service';
-import { CreateClientCredentialsUseCase, DeleteClientCredentialsUseCase, UpdateClientCredentialsUseCase } from '@/features/clients/application/use-cases';
-import { ScopeService } from '@/features/auth/domain/services/scope-service';
-import { JwtService } from '@/shared/infrastructure/auth/jwt-service';
-import { KeyCacheService } from '@/features/auth/infrastructure/jwt/key-cache.service';
+import { ClientService } from '@auth/features/clients/domains/services/client-service';
+import { BcryptHasherService } from '@auth/shared/infrastructure/password/bcrypt-hasher-service';
+import { CreateClientCredentialsUseCase, DeleteClientCredentialsUseCase, UpdateClientCredentialsUseCase } from '@auth/features/clients/application/use-cases';
+import { ScopeService } from "app-framework";
+import { AuthAppJwtService } from '@auth/shared/infrastructure/auth/jwt-service';
+import { KeyCacheService } from '@auth/features/auth/infrastructure/jwt/key-cache.service';
 
 export function buildClientCredentialsController(dataSource: DataSource) {
   // 1. Infrastructure
@@ -17,7 +17,7 @@ export function buildClientCredentialsController(dataSource: DataSource) {
 
   const hasherService = new BcryptHasherService();
   const scopeService = new ScopeService();
-  const jwtService = new JwtService(new KeyCacheService());
+  const jwtService = new AuthAppJwtService(new KeyCacheService());
 
   // 2. Domain services
   const clientService = new ClientService(hasherService);

@@ -12,15 +12,26 @@ if [ -z "$ENV_NAME" ]; then
   exit 1
 fi
 
-# Resolve project root (assumes this script is in ./scripts/)
-SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-PROJECT_ROOT="$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)"
+# # Detect if running in Docker (when /repo exists) or locally
+# if [ -d "/repo" ]; then
+#   # Docker environment: always work from /repo
+#   WORK_DIR="/repo"
+#   DS_PATH="./AuthApp/scripts/migration-data-source.ts"
+# else
+  # Local environment: resolve from script location  
+  SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+  WORK_DIR="$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)"
+  DS_PATH="./scripts/migration-data-source.ts"
+# fi
 
-echo "$PROJECT_ROOT"
-cd "$PROJECT_ROOT"
+cd "$WORK_DIR"
 
-echo "Running migration with cmd: NODE_ENV=$ENV_NAME ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d ./scripts/migration-data-source.ts"
+echo "📁 Working directory: $WORK_DIR"
+echo "🔧 Running TypeORM migrations with environment: $ENV_NAME"
 
-# Option A (recommended on Linux): set env var directly (no cross-env needed on POSIX)
+# Run TypeORM migration:run with proper module resolution
+# The tsconfig-paths/register loader reads path aliases from tsconfig.base.json 
+
 NODE_ENV="$ENV_NAME" \
-npx ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d ./scripts/migration-data-source.ts
+TS_NODE_PROJECT=./tsconfig.json \
+npx typeorm-ts-node-commonjs migration:run -d "$DS_PATH"

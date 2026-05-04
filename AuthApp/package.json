@@ -7,8 +7,8 @@
     "test": "test",
     "build": "tsc",
 
-    "typeorm:generate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js  migration:generate -d ./src/data/data-source.ts",
-    "typeorm:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js  migration:run -d ./scripts/migration-data-source.ts",
+    "typeorm:generate": "cross-env TS_NODE_PROJECT=./tsconfig.json ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:generate -d ./src/data/data-source.ts",
+    "typeorm:run": "cross-env TS_NODE_PROJECT=./tsconfig.json ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d ./scripts/migration-data-source.ts",
 
     "migration:generate": "sh ./scripts/generate-migration.sh",
     "migration:generate:win": "powershell -ExecutionPolicy Bypass -File ./scripts/generate-migration.ps1",
@@ -19,12 +19,7 @@
 
     "start:local": "npm run build && cross-env NODE_ENV=local ts-node-dev -r tsconfig-paths/register src/server.ts",
     "start:dev": "npm run build && cross-env NODE_ENV=develop ts-node-dev -r tsconfig-paths/register src/server.ts",
-
     "admin:password:hash": "ts-node -r tsconfig-paths/register ./scripts/generate-password-hash.ts",
-
-    "docker:db:local": "docker compose -f docker-compose.local.yml --env-file .env.local up --build -d postgres",
-    "docker:db:dev": "docker compose -f docker-compose.dev.yml --env-file .env.development up --build -d postgres",
-    "docker:db:prod": "docker compose -f docker-compose.prod.yml --env-file .env.production up --build -d postgres",
 
     "docker:start": "powershell -ExecutionPolicy Bypass -File ./scripts/docker-run.ps1"
   },
@@ -47,7 +42,8 @@
     "morgan": "^1.10.1",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
-    "typeorm": "^0.3.28"
+    "typeorm": "^0.3.28",
+    "app-framework": "file:../StreetDawahAppFramework"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
@@ -56,6 +52,7 @@
     "@types/lodash": "^4.17.21",
     "cross-env": "^10.1.0",
     "dotenv-cli": "^11.0.0",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3"

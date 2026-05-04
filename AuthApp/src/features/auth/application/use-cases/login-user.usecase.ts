@@ -1,12 +1,12 @@
 
 import { UserTokenResponseDto } from "../dtos/token-response.dto";
-import { mapper } from "@/shared/infrastructure/mapping/mapper";
-import { UserEntity } from "@/features/users/domain/entities/user-entity";
-import { IUserRepository } from "@/features/users/domain/repositories/iuser-repository";
+import { mapper } from "@auth/shared/infrastructure/mapping/mapper";
+import { UserEntity } from "@auth/features/users/domain/entities/user-entity";
+import { IUserRepository } from "@auth/features/users/domain/repositories/iuser-repository";
 import { IHasherService } from "../../domain/services/hasher-service";
 import { AuthService } from "../../domain/services/auth-service";
 import { UserDto } from "../../../users/application/dtos/user.dto";
-import { UserService } from "@/features/users/domain/services/user-service";
+import { UserService } from "@auth/features/users/domain/services/user-service";
 
 
 export class LoginUserUseCase {

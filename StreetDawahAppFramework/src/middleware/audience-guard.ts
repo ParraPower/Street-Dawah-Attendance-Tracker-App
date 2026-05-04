@@ -1,12 +1,13 @@
-import { Request, Response, NextFunction } from 'express';
-import { JwtPayload } from '@/features/auth/domain/types/jwt.types';
+import { Response, NextFunction } from 'express';
+import { JwtPayload } from '../auth/types/jwt.types';
+import { RequestWithUser } from '../http/request-with-user';
 
 /**
  * Ensures the JWT contains the required audience.
  * Works with both string and string[] audience formats.
  */
 export function requireAudience(requiredAudience: string) {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: RequestWithUser, res: Response, next: NextFunction) => {
     const payload = req.user as JwtPayload | undefined;
 
     if (!payload) {

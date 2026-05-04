@@ -1,5 +1,5 @@
 import { Router, RequestHandler } from 'express';
-import { ScopeList } from '@/features/auth/domain/policies/scope-types';
+import { ScopeList } from '@shared/auth/policies/scope-types';
 
 export type HttpMethod =
   | 'get'

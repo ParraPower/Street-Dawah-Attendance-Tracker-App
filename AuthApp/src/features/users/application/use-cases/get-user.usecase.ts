@@ -1,9 +1,9 @@
-import { mapper } from "@/shared/infrastructure/mapping/mapper";
+import { mapper } from "@auth/shared/infrastructure/mapping/mapper";
 import { IUserRepository } from "../../domain/repositories/iuser-repository";
 import { UserService } from "../../domain/services/user-service";
 import { UserDto } from "../dtos/user.dto";
 import { UserEntity } from "../../domain/entities/user-entity";
-import { NotFoundError } from "@/shared/infrastructure/middleware/global-error-handler";
+import { NotFoundError } from "@auth/shared/infrastructure/middleware/global-error-handler";
 
 export class GetUserUseCase {
   constructor(private readonly userService: UserService,
