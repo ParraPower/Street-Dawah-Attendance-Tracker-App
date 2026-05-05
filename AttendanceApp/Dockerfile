@@ -14,8 +14,8 @@ RUN npm ci --workspaces --legacy-peer-deps
 # Build StreetDawahAppFramework first (required dependency)
 RUN npm run build -w StreetDawahAppFramework --if-present
 
-# Build AuthApp
-RUN npm run build -w AuthApp --if-present
+# Build AttendanceApp
+RUN npm run build -w AttendanceApp --if-present
 
 # --------------------------
 # Runtime: minimal image for app + migrate
@@ -28,19 +28,19 @@ ENV NODE_ENV=production
 # Copy files from build stage
 COPY --from=build /repo/node_modules ./node_modules
 COPY package.json package-lock.json ./
-COPY AuthApp/package.json AuthApp/package.json
+COPY AttendanceApp/package.json AttendanceApp/package.json
 COPY StreetDawahAppFramework/package.json StreetDawahAppFramework/package.json
 
 # Copy compiled outputs
-COPY --from=build /repo/AuthApp/dist ./AuthApp/dist  
+COPY --from=build /repo/AttendanceApp/dist ./AttendanceApp/dist  
 COPY --from=build /repo/StreetDawahAppFramework/dist ./StreetDawahAppFramework/dist
 
 # Copy src and scripts for ts-node migration execution
-COPY --from=build /repo/AuthApp/src ./AuthApp/src
-COPY --from=build /repo/AuthApp/scripts ./AuthApp/scripts
+COPY --from=build /repo/AuthAttendanceAppApp/src ./AttendanceApp/src
+COPY --from=build /repo/AttendanceApp/scripts ./AttendanceApp/scripts
 
-EXPOSE 4001
+EXPOSE 4002
 
 # Default command (compose overrides for dev/migrate)
-CMD ["node", "AuthApp/dist/index.js"]
+CMD ["node", "AttendanceApp/dist/index.js"]
 

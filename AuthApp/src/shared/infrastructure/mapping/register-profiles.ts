@@ -1,4 +1,5 @@
 // src/mapping/register-profiles.ts
+import { createJwtKeyProfile } from '@auth/features/auth/application/mappers/jwtkey-profile';
 import { createClientProfile } from '@auth/features/clients/application/mappers/clients-profile';
 import { createUserProfile } from '@auth/features/users/application/mappers/user-profile';
 // import { createRoleProfile } from './profiles/role.profile';
@@ -9,6 +10,7 @@ export function registerProfiles() {
 
   createUserProfile();
   createClientProfile();
+  createJwtKeyProfile();
   // createRoleProfile();
   // createTokenProfile();
 

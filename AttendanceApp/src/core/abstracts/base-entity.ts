@@ -1,0 +1,1 @@
+export { BaseEntity } from 'app-framework';

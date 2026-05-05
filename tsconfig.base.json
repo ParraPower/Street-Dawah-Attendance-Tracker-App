@@ -15,6 +15,7 @@
     "baseUrl": ".",
     "paths": {
       "@auth/*": ["AuthApp/src/*"],
+      "@attendance/*": ["AttendanceApp/src/*"],
       "@shared/*": ["./StreetDawahAppFramework/dist/*"]
     }
   }
