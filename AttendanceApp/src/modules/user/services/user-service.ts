@@ -1,6 +1,6 @@
 // src/domains/user/services/User.service.ts
 import AppDataSource from "../../../data/data-source";
-import { UserEntity } from "../../../features/users/domain/entities/User";
+import { UserEntity } from "../../../features/users/domain/entities/user-entity";
 import { Repository } from "typeorm";
 
 export class UserService {

@@ -5,7 +5,7 @@ export const env = {
   authApiJwtAudience: process.env.AUTH_API_JWT_AUDIENCE || 'auth-api',   // PEM string
   authApiJwtIssuer: process.env.AUTH_API_JWT_ISSUER || 'auth-api',
   db: {
-    url: process.env.DATABASE_URL!,
+    url: process.env.DB_URL!,
   },
   logFormat: process.env.LOG_FORMAT || 'dev',
 };

@@ -15,7 +15,7 @@ if (existsSync(envPath)) {
 }
 
 import { createDataSource } from "app-framework";
-import { UserEntity } from '../src/features/users/domain/entities/User'
+import { UserEntity } from '../src/features/users/domain/entities/user-entity'
 
 console.log(__dirname + "/../migrations/*.ts")
 

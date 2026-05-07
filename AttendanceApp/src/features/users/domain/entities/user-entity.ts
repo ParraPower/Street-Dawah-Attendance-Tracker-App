@@ -4,7 +4,7 @@ import { Entity, Column, /*OneToMany,*/ } from 'typeorm';
 //import { UserMembership } from "../../membership/Membership.module.js";
 //import type { UserOutreachActivityLog } from "../../outreach/entities/UserOutreachActivityLog.js";
 //import { IUserOutreachActivityLog } from '../../outreach/interfaces/iuser-outreach-activity-log.js';
-import { IUserEntity } from './interfaces/IUser';
+import { IUserEntity } from './interfaces/user-entity';
 import { BaseEntity } from 'app-framework';
 
 

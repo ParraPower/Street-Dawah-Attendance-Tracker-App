@@ -1,4 +1,4 @@
-import { MembershipTypeEnum } from "../../../domains/membership/enums/membership-type-enum.js";
+import { MembershipTypeEnum } from "@attendance/domains/membership/enums/membership-type-enum";
 
 const membershipMap: Record<string, MembershipTypeEnum> = {
     "new": MembershipTypeEnum.NEW_VOLUNTEERS,

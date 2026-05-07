@@ -13,7 +13,7 @@ import {
 import { OutreachDirectionTypeEnum } from "../enums/outreach-direction-type-enum.js";
 import { OutreachActivityTypeEnum } from "../enums/outreach-activity-type-enum.js";
 import { IUserOutreachActivityLog } from "../interfaces/iuser-outreach-activity-log.js";
-import { IUserEntity } from "../../../features/users/domain/entities/interfaces/IUser.js";
+import { IUserEntity } from "../../../features/users/domain/entities/interfaces/user-entity.js";
 
 @Entity({ name: "user_outreach_activity_logs" })
 @Index(["volunteerUserId"])
