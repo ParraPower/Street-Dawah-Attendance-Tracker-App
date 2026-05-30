@@ -26,20 +26,20 @@ export class CreateBulkUsersUseCase {
     let result: UserDto[] = []
     
     let usernames = users.map(x => x.username)
-    let emails = users.map(x => x.email)
+    let emails = users.filter(x => isNotNullOrEmtpy(x.email)).map(x => x.email) as string[] // Filter out null or empty emails before mapping
     
     if (usernames.filter(x => !isNotNullOrEmtpy(x))?.length > 0 || emails.filter(x => !isNotNullOrEmtpy(x)).length > 0)
       throw new ValidationError('Invalid users where attempted to be inserted', {
         invalidUsers: users.filter(x => !isNotNullOrEmtpy(x.username) || !isNotNullOrEmtpy(x.email)),
     })
 
-    const existingUsers = await this.repo.findByUsernamesAndEmails(usernames, emails)
+    const existingUsers = await this.repo.findByUsernamesAndEmails(usernames, emails) 
     const activeUsers = existingUsers.filter(x => this.userService.isUserActive(x))
-    const activeUsersEmails = activeUsers.map(x => x.email)
+    const activeUsersEmails = activeUsers.filter(x => isNotNullOrEmtpy(x.email)).map(x => x.email) as string[]
     const activeUsersUsernames = activeUsers.map(x => x.username.toLocaleLowerCase())
 
-    const omittedUsersInBulkInsert = users.filter(x => activeUsersUsernames.includes(x.username.toLowerCase()) || activeUsersEmails.includes(x.email))
-    const includedUsersFromBulkInsert = users.filter(x => !activeUsersUsernames.includes(x.username.toLowerCase()) && !activeUsersEmails.includes(x.email))
+    const omittedUsersInBulkInsert = users.filter(x => activeUsersUsernames.includes(x.username.toLowerCase()) || (x.email && isNotNullOrEmtpy(x.email) && activeUsersEmails.includes(x.email)))
+    const includedUsersFromBulkInsert = users.filter(x => !activeUsersUsernames.includes(x.username.toLowerCase()) && (!x.email || !isNotNullOrEmtpy(x.email) || !activeUsersEmails.includes(x.email)))
 
     const userEntitiesCreate = await Promise.all(includedUsersFromBulkInsert.map(async user => {  
       const initialPassword = user.password  
@@ -56,7 +56,7 @@ export class CreateBulkUsersUseCase {
 
     const userEntitiesResponse = await this.repo.createBulk(userEntitiesCreate)
 
-    userEntitiesResponse.map((entity, index) => {
+    result = userEntitiesResponse.map((entity) => {
       return mapper.map(entity, UserEntity, UserDto)
     })
     

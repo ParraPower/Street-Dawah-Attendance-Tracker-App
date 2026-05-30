@@ -1,21 +1,5 @@
+import { ConflictError, GlobalError, NotFoundError, UnauthorizedError, ValidationError } from '@shared/errors/types';
 import { NextFunction, Response } from 'express';
-
-abstract class GlobalError {
-  constructor(message: string);
-  constructor(message: string, data?: object);
-  constructor(message: string, data?: object) {
-    this.message = message;
-    this.data = data;
-  }
-
-  data?: object;
-  message!: string;
-}
-
-export class ValidationError extends GlobalError {}
-export class NotFoundError extends GlobalError {}
-export class UnauthorizedError extends GlobalError {}
-export class ConflictError extends GlobalError {}
 
 export function globalErrorHandler(
   err: GlobalError,

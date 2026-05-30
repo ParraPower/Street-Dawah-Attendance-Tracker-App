@@ -5,14 +5,12 @@ import fs from "fs";
 // import { resolve } from "path";
 // import { parse as dateFnParse } from "date-fns";
 import ExcelJS from "exceljs";
-import { ImportRow } from "../../../domains/import/entities/import-row.js";
+import { ImportRow } from "../../../../domains/import/entities/import-row.js";
 import { UUID, randomUUID } from "crypto";
 
 export class ImportService {
-
     public readonly CURRENT_MEMBERS_SHEET = "Current"
     public readonly FORMER_MEMBERS_SHEET = "Former"
-
 
     public fileExists = async (): Promise<boolean> => {
         return new Promise<boolean>((resolve) => {

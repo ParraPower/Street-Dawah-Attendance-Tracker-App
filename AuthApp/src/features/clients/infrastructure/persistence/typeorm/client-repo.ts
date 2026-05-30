@@ -9,11 +9,11 @@ export class ClientRepository extends BaseRepository<ClientEntity> implements IC
   }
 
   async findById(id: number): Promise<ClientEntity | null> {
-    return this.findOneBy({ id } as never);
+    return await this.findOneBy({ id } as never);
   }
 
   async findByName(name: string): Promise<ClientEntity | null> {
-    return this.findOneBy({ name } as never);
+      return await this.findOneBy({ name } as never);
   }
 
   async create(client: Partial<ClientEntity>): Promise<ClientEntity> {
@@ -35,7 +35,7 @@ export class ClientRepository extends BaseRepository<ClientEntity> implements IC
   }
 
   async findAll(): Promise<ClientEntity[]> {
-    return this.find({
+    return await this.find({
       where: { isDeleted: false } as never,
     });
   }

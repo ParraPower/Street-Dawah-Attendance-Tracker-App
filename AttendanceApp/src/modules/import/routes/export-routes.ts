@@ -3,7 +3,7 @@ import { Router } from "express";
 // import { authenticate } from "../../../middleware/authenticate.js";
 // import { authorize } from "../../../middleware/authorize.js";
 import { asyncHandler } from "../../../middleware/asyncHandler.js";
-import { ImportService } from "../services/import-service.js";
+import { ImportService } from "../../../features/import/domain/services/fixed-import-service.js";
 import { ExportService } from "../services/export-service.js";
 
 const router = Router();

@@ -1,1 +1,1 @@
-export { globalErrorHandler, ValidationError, NotFoundError, UnauthorizedError, ConflictError } from 'app-framework';
+export { globalErrorHandler, ValidationError, NotFoundError, UnauthorizedError, ConflictError, createGlobalErrorHandler } from 'app-framework';

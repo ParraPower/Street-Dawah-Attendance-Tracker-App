@@ -18,7 +18,7 @@ export abstract class BaseRepository<T extends BaseEntity> {
   protected notDeletedFilter(): FindOptionsWhere<T>[] {
     return [
       { isDeleted: false } as FindOptionsWhere<T>,
-      { isDeleted: undefined } as FindOptionsWhere<T>,
+     // isDeleted: undefined } as FindOptionsWhere<T>,
       { isDeleted: IsNull() } as FindOptionsWhere<T>,
     ];
   }
@@ -35,37 +35,40 @@ export abstract class BaseRepository<T extends BaseEntity> {
     );
   }
 
-  find(options?: FindManyOptions<T>) {
-    return this.repo.find({
+  async find(options?: FindManyOptions<T>) {
+    return await this.repo.find({
       ...options,
       where: this.mergeWhere(options?.where),
     });
   }
 
-  findOne(options?: FindOneOptions<T>) {
-    return this.repo.findOne({
+  async findOne(options?: FindOneOptions<T>) {
+    return await this.repo.findOne({
       ...options,
       where: this.mergeWhere(options?.where),
     });
   }
 
-  findBy(where: FindOptionsWhere<T> | FindOptionsWhere<T>[]) {
-    return this.repo.findBy(this.mergeWhere(where));
+  async findBy(where: FindOptionsWhere<T> | FindOptionsWhere<T>[]) {
+    return await this.repo.findBy(this.mergeWhere(where));
   }
 
-  findOneBy(where: FindOptionsWhere<T>) {
-    return this.repo.findOneBy(this.mergeWhere(where)[0]);
+  async findOneBy(where: FindOptionsWhere<T>) : Promise<T | null> {
+    return await this.repo.find({
+    where: this.mergeWhere(where),
+    take: 1,
+  }).then(results => results[0] || null);
   }
 
-  count(options?: FindManyOptions<T>) {
-    return this.repo.count({
+  async count(options?: FindManyOptions<T>) {
+    return await this.repo.count({
       ...options,
       where: this.mergeWhere(options?.where),
     });
   }
 
-  exists(options?: FindManyOptions<T>) {
-    return this.repo.exists({
+  async exists(options?: FindManyOptions<T>) {
+    return await this.repo.exists({
       ...options,
       where: this.mergeWhere(options?.where),
     });

@@ -16,6 +16,7 @@ import { PasswordService } from "@auth/features/auth/domain/services/password-se
 import { ScopeService } from "app-framework"
 import { AuthAppJwtService } from "@auth/shared/infrastructure/auth/jwt-service";
 import { KeyCacheService } from "@auth/features/auth/infrastructure/jwt/key-cache.service";
+import { RefreshAccessTokenUseCase } from "@auth/features/auth/application/use-cases/refresh-access-token.usecase";
 
 export function buildAuthController(dataSource: DataSource) {
   // 1. Infrastructure
@@ -46,6 +47,7 @@ export function buildAuthController(dataSource: DataSource) {
   const generateTokenUserCase = new GenerateTokenUseCase(issueClientCredentialsTokenUseCase, loginUserUseCase);
   const registerUserUseCase = new RegisterUserUseCase(userRepo, bcryptHasher, scopeService);
   const resetUserPasswordUseCase = new ResetUserPasswordUseCase(userRepo, passwordService, bcryptHasher)
+  const refreshAccessTokenUseCase = new RefreshAccessTokenUseCase(jwtService, authService, userRepo, userService);
 
-  return new AuthController(jwtService, scopeService, generateTokenUserCase, registerUserUseCase, resetUserPasswordUseCase);
+  return new AuthController(jwtService, scopeService, generateTokenUserCase, registerUserUseCase, resetUserPasswordUseCase, refreshAccessTokenUseCase);
 }

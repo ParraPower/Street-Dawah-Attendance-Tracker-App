@@ -1,4 +1,4 @@
-import { isNotNullOrEmtpy } from "../../utils/strings";
+import { isNotNullOrEmpty } from "../../utils/strings";
 import { IPasswordService } from "../interfaces/password-service";
 import { ICryptographyService } from "../interfaces/cryptograpahy-service";
 import { CryptoCryptographyService } from "./crypto-cryptograhpy-service";
@@ -20,7 +20,7 @@ export class PasswordService implements IPasswordService {
   }
 
   isValidPassword(pwd: string | undefined | null): boolean {
-    return isNotNullOrEmtpy(pwd) && _.trim(pwd!).length >= this.MINIMUM_PASSWORD_LENGTH && /^[A-Za-z0-9]{1,}$/.test(pwd!);
+    return isNotNullOrEmpty(pwd) && _.trim(pwd!).length >= this.MINIMUM_PASSWORD_LENGTH && /^[A-Za-z0-9]{1,}$/.test(pwd!);
   }
   generateTempPassword(): string {
     const bytes = this.crytographyService.generateRandomBytes(this.TEMP_PASSWORD_LENGTH);

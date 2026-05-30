@@ -74,4 +74,21 @@ export class JwtService implements IJwtService {
       action(err as Error, decoded as never)
     });
   }
+
+  verifyJwtSync(token: string): never {
+    try {
+      const decoded = jwt.decode(token, { complete: true });
+      
+      if (!decoded || typeof decoded === 'string' || !decoded.header.kid) {
+        throw new Error('Invalid token format');
+      } 
+      const pub = this.keyCacheService.getPublicKey(decoded.header.kid);
+      if (!pub) {
+        throw new Error('Unknown key ID');
+      }
+      return jwt.verify(token, pub, { algorithms: ['RS256'] }) as never;
+    } catch (err) {
+      throw err instanceof Error ? err : new Error('Token verification failed');
+    }   
+  }
 }

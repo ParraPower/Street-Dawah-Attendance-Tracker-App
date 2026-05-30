@@ -17,12 +17,11 @@ export class LoginUserUseCase {
     private readonly userService: UserService
   ) { }
 
-  async execute(email: string, password: string): Promise<UserTokenResponseDto | null> {
+  async execute(username: string, password: string): Promise<UserTokenResponseDto | null> {
     let user: UserEntity | null = new UserEntity();
     if (process.env.NODE_ENV === 'development' && process.env.ALLOW_FAKE_LOGIN === 'true') {
       Object.assign(user, {
         id: 'some-uuid',
-        email: email,
         username: 'testuser',
         passwordHash: await this.hashService.generateWithSize('password123', 12),
         scopes: ['user-read', 'user-write'],
@@ -31,7 +30,7 @@ export class LoginUserUseCase {
       });
     }
     else {
-      user = await this.repo.findByEmail(email);
+      user = await this.repo.findByUsername(username);
     }
     if (!user) throw new Error('Invalid credentials');
 

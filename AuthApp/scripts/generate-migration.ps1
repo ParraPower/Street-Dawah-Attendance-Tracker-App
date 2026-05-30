@@ -24,4 +24,4 @@ Set-Location $projectRoot
 
 # Generate migration
 Write-Host "Generating migration with cmd: cross-env NODE_ENV=local TS_NODE_PROJECT=./tsconfig.json ts-node -r tsconfig-paths/register ../node_modules/typeorm/cli.js migration:generate -d ./scripts/migration-data-source.ts for environment: local and filename: $filename"
-npx cross-env NODE_ENV=local TS_NODE_PROJECT=./tsconfig.json ts-node -r tsconfig-paths/register ../node_modules/typeorm/cli.js migration:generate -d ./scripts/migration-data-source.ts -- "./src/migrations/$filename"
+npx cross-env NODE_ENV=local TS_NODE_PROJECT=./tsconfig.json ts-node -r tsconfig-paths/register ../node_modules/typeorm/cli.js migration:generate "./src/migrations/$filename" -d ./scripts/migration-data-source.ts

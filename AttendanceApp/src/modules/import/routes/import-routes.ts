@@ -1,50 +1,59 @@
 import { Router } from "express";
-//import { validateDto } from "../../../middleware/validateDto";
 import { authenticate } from "../../../modules/auth/authenticate";
 import { authorize } from "../../../modules/auth/authorize";
 import { asyncHandler } from "../../../middleware/asyncHandler";
-import { ImportService } from "../../../modules/import/services/import-service";
+import { ImportService } from "../../../features/import/domain/services/fixed-import-service";
 import { ImportGroupService } from "../services/import-groups-service";
 import { Scopes } from "../../../modules/auth/scopes";
+import { buildImportController } from "../../../bootstrap/import-module";
+import { apiClientProvider } from "../../../infrastructure/api";
 
 const router = Router();
-const importService = new ImportService();
-const importGroupsService = new ImportGroupService()
 
-// CREATE
+// Legacy import routes (attendance & groups from Excel files)
+const importService = new ImportService();
+const importGroupsService = new ImportGroupService();
+
+// New user import controller (bootstrapped with DI)
+const importController = buildImportController(apiClientProvider);
+
+// LEGACY: CREATE - Import attendance records from Excel
 router.post(
   "/run",
   authenticate,
-  authorize([ Scopes.Khaleef ]), // Only admins can create users
+  authorize([Scopes.Khaleef]),
   asyncHandler(async (req, res) => {
     const user = await importService.run();
     res.status(201).json(user);
   })
 );
 
-// CREATE
+// LEGACY: CREATE - Import groups from Excel
 router.post(
   "/run/groups",
   authenticate,
-  authorize([ Scopes.Khaleef ]), // Only admins can create users
+  authorize([Scopes.Khaleef]),
   asyncHandler(async (req, res) => {
     const user = await importGroupsService.run();
     res.status(201).json(user);
   })
 );
 
-// FILE EXISTS
+// LEGACY: FILE EXISTS - Check if import file exists
 router.get(
   "/fileExists",
   authenticate,
-  authorize([ Scopes.Khaleef ]), // Only admins can create users
+  authorize([Scopes.Khaleef]),
   asyncHandler(async (req, res) => {
     const response = await importService.fileExists();
     res.status(201).json({
-      response
+      response,
     });
   })
 );
 
+// NEW: Mount user import controller routes
+// This will handle POST /import/users with proper BaseController scaffolding
+router.use("/", importController.router);
 
 export default router;
