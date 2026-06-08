@@ -49,9 +49,9 @@ export class UserFileParserService implements IFileParser {
 
   /**
    * Parse Excel file using ExcelJS
-   * Expects columns in this order:
-   * A: Name, B: Number, C: WhatsappLink, D: JoinedDate, E: Reference,
-   * F: LastAttendance, G: LastAttendedBefore60Days, H: Location, I: RegularLocation,
+   * Expects columns in this order (matching ImportRowRequestDto):
+   * A: Name, B: Reference, C: JoinedDate, D: LastAttendance, E: Location,
+   * F: RegularLocation, G: Number, H: WhatsappLink, I: LastAttendedBefore60Days,
    * J: Status, K: OutreachDate, L: WhoReachedOut, M: Socials, N: University, O: Outcome
    */
   private async parseExcelFileWithExcelJS(buffer: Buffer): Promise<ImportRowRequestDto[]> {
@@ -78,20 +78,21 @@ export class UserFileParserService implements IFileParser {
 
         // Map cells to fields based on ImportRow structure
         dto.name = this.getCellValue(row.getCell(1));
-        dto.number = this.getCellValue(row.getCell(2));
-        dto.whatsappLink = this.getCellValue(row.getCell(3));
-        dto.joinedDate = this.getCellDateValue(row.getCell(4));
-        dto.reference = this.getCellValue(row.getCell(5));
-        dto.lastAttendance = this.getCellDateValue(row.getCell(6));
+        dto.reference = this.getCellValue(row.getCell(2));
+        dto.joinedDate = this.getCellDateValue(row.getCell(3));
+        dto.lastAttendance = this.getCellDateValue(row.getCell(4));
+        dto.location = this.getCellValue(row.getCell(5));
+        dto.regularLocation = this.getCellValue(row.getCell(6));
         dto.lastAttendedBefore60Days = this.getCellValue(row.getCell(7));
-        dto.location = this.getCellValue(row.getCell(8));
-        dto.regularLocation = this.getCellValue(row.getCell(9));
+        dto.number = this.getCellValue(row.getCell(8));
+        dto.whatsappLink = this.getCellValue(row.getCell(9));
         dto.status = this.getCellValue(row.getCell(10));
-        dto.outreachDate = this.getCellValue(row.getCell(11));
-        dto.whoReachedOut = this.getCellValue(row.getCell(12));
-        dto.socials = this.getCellBooleanValue(row.getCell(13));
-        dto.university = this.getCellBooleanValue(row.getCell(14));
-        dto.outcome = this.getCellValue(row.getCell(15));
+        dto.managementFeedbackrequiredtoremove = this.getCellValue(row.getCell(11));
+        dto.outreachDate =  this.normalizeOutreachDate(this.getCellValue(row.getCell(12)));
+        dto.whoReachedOut = this.getCellValue(row.getCell(13));
+        dto.socials = this.getCellBooleanValue(row.getCell(14));
+        dto.university = this.getCellBooleanValue(row.getCell(15));
+        dto.outcome = this.getCellValue(row.getCell(16));
 
         rows.push(dto);
       });
@@ -105,6 +106,48 @@ export class UserFileParserService implements IFileParser {
       throw new Error(`Failed to parse Excel file: ${error.message}`);
     }
   }
+
+  
+  normalizeOutreachDate = (value: string | Date | number | null | undefined) : Date | null => {
+  if (!value) return null;
+
+  // Already a valid Date object
+  if (value instanceof Date && !isNaN(value.getTime())) {
+    return value;
+  }
+
+  // Excel serial number (very common!)
+  if (typeof value === "number") {
+    const excelEpoch = new Date(Date.UTC(1899, 11, 30));
+    return new Date(excelEpoch.getTime() + value * 86400000);
+  }
+
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (!trimmed) return null;
+
+    // dd.MM.yyyy
+    const dotMatch = trimmed.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+    if (dotMatch) {
+      const [, d, m, y] = dotMatch;
+      return new Date(`${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`);
+    }
+
+    // d/MM/yyyy
+    const slashMatch = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (slashMatch) {
+      const [, d, m, y] = slashMatch;
+      return new Date(`${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`);
+    }
+
+    // fallback for ISO or others
+    const parsed = new Date(trimmed);
+    if (!isNaN(parsed.getTime())) return parsed;
+  }
+
+  return null; // invalid date
+};
+
 
   /**
    * Parse CSV file
@@ -191,16 +234,17 @@ export class UserFileParserService implements IFileParser {
       const dto = new ImportRowRequestDto();
       // Support flexible column naming (camelCase, PascalCase, snake_case)
       dto.name = this.normalizeField(row.name || row.Name);
-      dto.number = this.normalizeField(row.number || row.Number);
-      dto.whatsappLink = this.normalizeField(row.whatsapplink || row.whatsappLink || row.WhatsappLink);
-      dto.joinedDate = this.parseDate(row.joineddate || row.joinedDate || row.JoinedDate);
       dto.reference = this.normalizeField(row.reference || row.Reference);
+      dto.joinedDate = this.parseDate(row.joineddate || row.joinedDate || row.JoinedDate);
       dto.lastAttendance = this.parseDate(row.lastattendance || row.lastAttendance || row.LastAttendance);
-      dto.lastAttendedBefore60Days = this.normalizeField(row.lastattendedBefore60Days || row.LastAttendedBefore60Days);
       dto.location = this.normalizeField(row.location || row.Location);
       dto.regularLocation = this.normalizeField(row.regularlocation || row.regularLocation || row.RegularLocation);
+      dto.lastAttendedBefore60Days = this.normalizeField(row.lastattendedBefore60Days || row.LastAttendedBefore60Days);
+      dto.number = this.normalizeField(row.number || row.Number);
+      dto.whatsappLink = this.normalizeField(row.whatsapplink || row.whatsappLink || row.WhatsappLink);
       dto.status = this.normalizeField(row.status || row.Status);
-      dto.outreachDate = this.normalizeField(row.outreachdate || row.outreachDate || row.OutreachDate);
+      dto.managementFeedbackrequiredtoremove = this.normalizeField(row.managementFeedbackrequiredtoremove || row.ManagementFeedbackrequiredtoremove);
+      dto.outreachDate = this.normalizeOutreachDate(row.outreachdate || row.outreachDate || row.OutreachDate);
       dto.whoReachedOut = this.normalizeField(row.whoreachedout || row.whoReachedOut || row.WhoReachedOut);
       dto.socials = this.parseBoolean(row.socials || row.Socials);
       dto.university = this.parseBoolean(row.university || row.University);

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { BaseController, IJwtService } from "app-framework";
+import { BaseController, GlobalError, IJwtService } from "app-framework";
 import { DawahRequestHandler } from "app-framework";
 import { ScopeService, Scopes } from "app-framework";
 import multer from "multer";
@@ -18,7 +18,7 @@ import { ImportBulkUsersByFileUseCase } from "../../application/use-cases/import
 export class ImportController extends BaseController {
   public readonly router = Router();
   private readonly upload: multer.Multer;
-  private readonly uploadFileRunnerFn: (req: any, res: any, next: Function) => Promise<false | object>;
+  private readonly uploadFileRunnerFn: (req: any, res: any, next: Function) => Promise<{ result: boolean; file: object; exception?: GlobalError }>;
 
   constructor(
     protected readonly scopeService: ScopeService,
@@ -46,11 +46,11 @@ export class ImportController extends BaseController {
     any
   > = async (req, res) => {
     const result = await this.uploadFileRunnerFn(req, res, () => {});
-    if (result === false) {
-      throw new FileUploadError("File upload failed");
+    if (!result.result) {
+      throw result.exception || new FileUploadError("File upload failed");
     }
 
-    const importResult = await this.importUsersUseCase.execute(result as Express.Multer.File);
+    const importResult = await this.importUsersUseCase.execute(result.file as Express.Multer.File);
 
     res.status(200).json(importResult);
   };

@@ -54,7 +54,9 @@ export class CreateBulkUsersUseCase {
       return entity
     }))
 
-    const userEntitiesResponse = await this.repo.createBulk(userEntitiesCreate)
+    console.log(`Creating ${userEntitiesCreate.length} users. Omitted ${omittedUsersInBulkInsert.length} users due to existing active users with same username or email.`)
+
+    const userEntitiesResponse = [] as UserEntity[] //await this.repo.createBulk(userEntitiesCreate)
 
     result = userEntitiesResponse.map((entity) => {
       return mapper.map(entity, UserEntity, UserDto)

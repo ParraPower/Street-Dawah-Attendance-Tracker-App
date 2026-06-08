@@ -16,6 +16,7 @@ export class ImportUsersUseCase {
     // Validate each user
     for (let index = 0; index < requestDto.users.length; index++) {
       const user = requestDto.users[index];
+      console.log(`📋 Validating user at row ${index + 1}:`, user);
       const { error, value } = importUserSchema.validate(user, { convert: true });
 
       if (error) {
@@ -25,8 +26,22 @@ export class ImportUsersUseCase {
 
         invalidUsers.push({
           success: false,
-          email: user.email || "unknown",
-          username: user.username || "unknown",
+          username: user.number || "unknown",
+          name: user.name || "unknown",
+          number: user.number || "unknown",
+          whatsappLink: user.whatsappLink || "unknown",
+          joinedDate: user.joinedDate || undefined,
+          reference: user.reference || undefined,
+          lastAttendance: user.lastAttendance || undefined,
+          lastAttendedBefore60Days: user.lastAttendedBefore60Days || undefined,
+          location: user.location || undefined,
+          regularLocation: user.regularLocation || undefined,
+          status: user.status || undefined,
+          outreachDate: user.outreachDate || undefined,
+          whoReachedOut: user.whoReachedOut || undefined,
+          socials: user.socials || undefined,
+          university: user.university || undefined,
+          outcome: user.outcome || undefined,
           error: errorDetails,
         });
 

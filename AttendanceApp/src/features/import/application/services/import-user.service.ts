@@ -19,9 +19,9 @@ export class ImportUserService {
       const usersForBulkImport = users
         .filter(user => isNotNullOrEmpty(user.username))
         .map(user => ({
-          email: user.email,
+          //email: user.email,
           username: user.username!,
-          password: user.password,
+          //password: user.password,
           scopes: [], // Default empty scopes, can be customized as needed
         }));
 
@@ -31,7 +31,7 @@ export class ImportUserService {
           createdUsers: [],
           omittedUsers: users.map(u => ({
             success: false,
-            email: u.email,
+            //email: u.email,
             username: u.username,
             error: "Missing required fields: email, username, and password are required",
           })),
@@ -46,7 +46,7 @@ export class ImportUserService {
       }
 
       console.log(`📤 Sending ${usersForBulkImport.length} users to bulk endpoint`);
-      
+
       const headers: Record<string, string> = {};
       if (authToken) {
         headers["Authorization"] = `Bearer ${authToken}`;
@@ -60,9 +60,24 @@ export class ImportUserService {
         for (const createdUser of response.data.createdUsers) {
           const importedUser: ImportUserResponseDto = {
             success: true,
-            userId: createdUser.id,
-            email: createdUser.email,
+            //;userId: createdUser.id,
+            //;email: createdUser.email,
             username: createdUser.username,
+            name: createdUser.name,
+            number: createdUser.number,
+            whatsappLink: createdUser.whatsappLink,
+            joinedDate: createdUser.joinedDate,
+            reference: createdUser.reference,
+            lastAttendance: createdUser.lastAttendance,
+            lastAttendedBefore60Days: createdUser.lastAttendedBefore60Days,
+            location: createdUser.location,
+            regularLocation: createdUser.regularLocation,
+            status: createdUser.status,
+            outreachDate: createdUser.outreachDate,
+            whoReachedOut: createdUser.whoReachedOut,
+            socials: createdUser.socials,
+            university: createdUser.university,
+            outcome: createdUser.outcome,
           };
           createdUsers.push(importedUser);
           console.log(`✅ User created: ${createdUser.email} (ID: ${createdUser.id})`);
@@ -74,8 +89,29 @@ export class ImportUserService {
         for (const omittedUser of response.data.omittedUsers) {
           const importedUser: ImportUserResponseDto = {
             success: false,
-            email: omittedUser.email,
-            username: omittedUser.username,
+            //email: omittedUser.email ?? "unknown",
+            username: omittedUser.number ?? "unknown",
+            name: omittedUser.name ?? "unknown",
+            number: omittedUser.number ?? "unknown",
+
+            whatsappLink: omittedUser.whatsappLink ?? "unknown",
+            joinedDate: omittedUser.joinedDate ?? undefined,
+
+            reference: omittedUser.reference ?? undefined,
+            lastAttendance: omittedUser.lastAttendance ?? undefined,
+
+            lastAttendedBefore60Days: omittedUser.lastAttendedBefore60Days ?? undefined,
+            location: omittedUser.location ?? undefined,
+            regularLocation: omittedUser.regularLocation ?? undefined,
+
+            status: omittedUser.status ?? undefined,
+            outreachDate: omittedUser.outreachDate ?? undefined,
+            whoReachedOut: omittedUser.whoReachedOut ?? undefined,
+            socials: omittedUser.socials ?? undefined,
+            university: omittedUser.university ?? undefined,
+            outcome: omittedUser.outcome ?? undefined,
+
+
             error: `User already exists or validation failed`,
           };
           omittedUsers.push(importedUser);
@@ -93,8 +129,25 @@ export class ImportUserService {
       for (const user of users) {
         omittedUsers.push({
           success: false,
-          email: user.email,
+          //email: user.email,
+          //password: user.password,
           username: user.username,
+          name: user.name,
+          number: user.number,
+          whatsappLink: user.whatsappLink,
+          joinedDate: user.joinedDate,
+          reference: user.reference,
+          lastAttendance: user.lastAttendance,
+          lastAttendedBefore60Days: user.lastAttendedBefore60Days,  
+          location: user.location,
+          regularLocation: user.regularLocation,
+          status: user.status,
+          outreachDate: user.outreachDate,  
+          whoReachedOut: user.whoReachedOut,
+          socials: user.socials,
+          university: user.university,
+          outcome: user.outcome,
+          
           error: `Bulk import failed: ${errorMessage}`,
         });
       }

@@ -1,6 +1,7 @@
 import { UploadFileServiceFactory as IUploadFileServiceFactory } from "@attendance/features/import/application/services/upload-file-service";
 import multer, { Multer } from "multer";
 import { NoFileProvidedError, UploadFileError } from "../errors/import-errors";
+import { GlobalError } from "@shared/errors/types";
 
 export class UploadFileServiceFactory implements IUploadFileServiceFactory {
   constructor(
@@ -32,20 +33,23 @@ export class UploadFileServiceFactory implements IUploadFileServiceFactory {
     });
   }
 
-  createUploadFileRunnerFn(upload: Multer): (req: any, res: any, next: Function) => Promise<false | object> {
+  createUploadFileRunnerFn(upload: Multer): (req: any, res: any, next: Function) => Promise<{ result: boolean; file: object; exception?: GlobalError }> {
     return async (req: any, res: any, next: Function) => {
-      return new Promise<false | object>((resolve) => {
+      return new Promise<{ result: boolean; file: object; exception?: GlobalError }>((resolve) => {
         upload.single("file")(req, res, async (err: any) => {
           if (err) {
             console.error("❌ File upload error:", err.message);
-            throw new UploadFileError(err.message || "File upload failed");
+            return resolve({ result: false, file: {}, exception: new UploadFileError(err.message || "File upload failed") });
+            //throw new UploadFileError(err.message || "File upload failed");
           }
 
+          console.log("📁 File uploaded successfully, processing file...", req.file);
           const file = req.file;
           if (!file) 
-           throw new NoFileProvidedError("No file provided in the request -  Please upload an Excel (.xlsx, .xls) or CSV (.csv) file");
+           return resolve({ result: false, file: {}, exception: new NoFileProvidedError("No file provided in the request -  Please upload an Excel (.xlsx, .xls) or CSV (.csv) file") });
+           //throw new NoFileProvidedError("No file provided in the request -  Please upload an Excel (.xlsx, .xls) or CSV (.csv) file");
 
-          resolve(file as object);
+          return resolve({ result: true, file });
         });
       });
     };

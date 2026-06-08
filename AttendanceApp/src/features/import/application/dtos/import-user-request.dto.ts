@@ -5,26 +5,28 @@
  */
 export class ImportRowRequestDto {
   // User fields (for backward compatibility)
-  email?: string;
-  username!: string;
-  password?: string;
+  //email?: string;
+  //password?: string;
 
   // Full import row fields (from ImportRow entity)
   name?: string;
-  number?: string;
-  whatsappLink?: string;
-  joinedDate?: Date;
   reference?: string;
+  joinedDate?: Date;
   lastAttendance?: Date;
-  lastAttendedBefore60Days?: string;
   location?: string;
   regularLocation?: string;
+  number?: string;
+  whatsappLink?: string;
+  lastAttendedBefore60Days?: string;
   status?: string;
-  outreachDate?: string;
+    managementFeedbackrequiredtoremove?: string;
+  outreachDate?: Date | null;
   whoReachedOut?: string;
   socials?: boolean | null;
   university?: boolean | null;
   outcome?: string;
+
+  username!: string;
 }
 
 // Keep for bulk import requests
