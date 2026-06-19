@@ -10,6 +10,7 @@ import { registerProfiles } from './shared/infrastructure/mapping/register-profi
 import { DataSource } from 'typeorm/data-source/DataSource';
 import { buildJwksController } from './bootstrap/controllers/jwks-module';
 import { registerErrors } from './shared/infrastructure/errors/register-errors';
+//import { globalErrorHandler } from './shared/infrastructure/middleware/global-error-handler';
 
 export const app = express();
 
@@ -31,5 +32,7 @@ export function buildControllers(app: Express, dataSource: DataSource) {
   app.use('/client-credentials', ClientCredentialsController.router);
   app.use('/', JwksController.router);
 
-  app.use(registerErrors);
+  //registerErrors()
+  //app.use(() =>globalErrorHandler())
+  app.use(registerErrors()); 
 }

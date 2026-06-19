@@ -42,7 +42,6 @@ export class AuthController extends BaseController {
     this.registerRoute('post', '/refresh', this.refresh.bind(this), {
       authenticate: false,
     });
-
   }
 
   public token: DawahRequestHandler<

@@ -20,3 +20,4 @@ export class ValidationError extends GlobalError {}
 export class NotFoundError extends GlobalError {}
 export class UnauthorizedError extends GlobalError {}
 export class ConflictError extends GlobalError {}
+export class NotSupportedError extends GlobalError {}
