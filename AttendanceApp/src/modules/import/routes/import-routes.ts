@@ -5,17 +5,12 @@ import { asyncHandler } from "../../../middleware/asyncHandler";
 import { ImportService } from "../../../features/import/domain/services/fixed-import-service";
 import { ImportGroupService } from "../services/import-groups-service";
 import { Scopes } from "../../../modules/auth/scopes";
-import { buildImportController } from "../../../bootstrap/import-module";
-import { apiClientProvider } from "../../../infrastructure/api";
 
 const router = Router();
 
 // Legacy import routes (attendance & groups from Excel files)
 const importService = new ImportService();
 const importGroupsService = new ImportGroupService();
-
-// New user import controller (bootstrapped with DI)
-const importController = buildImportController(apiClientProvider);
 
 // LEGACY: CREATE - Import attendance records from Excel
 router.post(
@@ -51,9 +46,5 @@ router.get(
     });
   })
 );
-
-// NEW: Mount user import controller routes
-// This will handle POST /import/users with proper BaseController scaffolding
-router.use("/", importController.router);
 
 export default router;

@@ -2,7 +2,7 @@ import { Repository } from "typeorm";
 import { Membership } from "../../../domains/membership/entities/Membership";
 import AppDataSource from "../../../data/data-source";
 import { ImportGroupRow } from "../../../domains/import/entities/import-group-row";
-import { mapper } from "../../../mapping/mapper";
+import { mapper } from "../../../infrastructure/mapping/mapper";
 
 export class MembershipService {
     private membershipRepo: Repository<Membership>

@@ -1,6 +1,6 @@
 import ExcelJS from "exceljs";
-import { ImportRowRequestDto } from "../../application/dtos/import-user-request.dto";
-import { IFileParser } from "../../application/interfaces/file-parser.interface";
+import { ImportRowRequestDto } from "../../features/import/application/dtos/import-user-request.dto";
+import { IFileParser } from "../../features/import/domain/services/file-parser.interface";
 
 /**
  * Unified file parser service supporting Excel and CSV formats
@@ -84,7 +84,7 @@ export class UserFileParserService implements IFileParser {
         dto.location = this.getCellValue(row.getCell(5));
         dto.regularLocation = this.getCellValue(row.getCell(6));
         dto.lastAttendedBefore60Days = this.getCellValue(row.getCell(7));
-        dto.number = this.getCellValue(row.getCell(8));
+        dto.number = this.getCellValue(row.getCell(8))!;
         dto.whatsappLink = this.getCellValue(row.getCell(9));
         dto.status = this.getCellValue(row.getCell(10));
         dto.managementFeedbackrequiredtoremove = this.getCellValue(row.getCell(11));
@@ -93,7 +93,7 @@ export class UserFileParserService implements IFileParser {
         dto.socials = this.getCellBooleanValue(row.getCell(14));
         dto.university = this.getCellBooleanValue(row.getCell(15));
         dto.outcome = this.getCellValue(row.getCell(16));
-
+        dto.username = dto.number; 
         rows.push(dto);
       });
 
@@ -240,7 +240,7 @@ export class UserFileParserService implements IFileParser {
       dto.location = this.normalizeField(row.location || row.Location);
       dto.regularLocation = this.normalizeField(row.regularlocation || row.regularLocation || row.RegularLocation);
       dto.lastAttendedBefore60Days = this.normalizeField(row.lastattendedBefore60Days || row.LastAttendedBefore60Days);
-      dto.number = this.normalizeField(row.number || row.Number);
+      dto.number = this.normalizeField(row.number || row.Number)!;
       dto.whatsappLink = this.normalizeField(row.whatsapplink || row.whatsappLink || row.WhatsappLink);
       dto.status = this.normalizeField(row.status || row.Status);
       dto.managementFeedbackrequiredtoremove = this.normalizeField(row.managementFeedbackrequiredtoremove || row.ManagementFeedbackrequiredtoremove);

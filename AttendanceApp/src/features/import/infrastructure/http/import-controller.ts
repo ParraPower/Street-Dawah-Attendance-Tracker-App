@@ -8,7 +8,6 @@ import { env } from "../../../../infrastructure/config/env";
 import { UploadFileServiceFactory } from "@attendance/infrastructure/file/upload-file-service";
 import { FileUploadError } from "@attendance/infrastructure/errors/import-errors";
 import { ImportBulkUsersByFileUseCase } from "../../application/use-cases/import-bulk-users-by-file.usecase";
-
 /**
  * Stub JWT Service for ImportController
  * AttendanceApp delegates JWT validation to Auth API middleware,
@@ -53,5 +52,5 @@ export class ImportController extends BaseController {
     const importResult = await this.importUsersUseCase.execute(result.file as Express.Multer.File);
 
     res.status(200).json(importResult);
-  };
+  }
 }

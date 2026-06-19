@@ -1,4 +1,4 @@
-import { ImportRowRequestDto } from "../dtos/import-user-request.dto";
+import { ImportRowRequestDto } from "../../application/dtos/import-user-request.dto";
 
 /**
  * Interface defining the contract for file parsing services

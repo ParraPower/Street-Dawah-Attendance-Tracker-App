@@ -16,8 +16,8 @@ export const importUserSchema = Joi.object({
   whoReachedOut: Joi.string().allow(null, ""),
   socials: Joi.boolean().allow(null, ""),
   university: Joi.boolean().allow(null, ""),
-  outcome: Joi.string().allow(null, "")
-
+  outcome: Joi.string().allow(null, ""),
+  username: Joi.string().optional(),
 });
 
 export const importUsersSchema = Joi.object({

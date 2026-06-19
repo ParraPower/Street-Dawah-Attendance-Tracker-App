@@ -15,7 +15,7 @@ export class ImportRowRequestDto {
   lastAttendance?: Date;
   location?: string;
   regularLocation?: string;
-  number?: string;
+  number!: string;
   whatsappLink?: string;
   lastAttendedBefore60Days?: string;
   status?: string;
@@ -26,12 +26,16 @@ export class ImportRowRequestDto {
   university?: boolean | null;
   outcome?: string;
 
-  username!: string;
+  username?: string | undefined; // Optional username field for user creation
 }
 
 // Keep for bulk import requests
 export class ImportUsersRequestDto {
   users!: ImportRowRequestDto[];
+}
+
+export class NormalizedImportUserRequestDto extends ImportRowRequestDto {
+  normalizedNumber!: string;
 }
 
 // Alias for backward compatibility

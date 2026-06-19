@@ -2,7 +2,7 @@ import { ImportUsersRequestDto } from "../dtos/import-user-request.dto";
 import { ImportUsersUseCase } from "./import-users.usecase";
 import { ImportUsersBulkResponseDto } from "../dtos";
 import { FileParsingError } from "@attendance/infrastructure/errors/import-errors";
-import { IFileParser } from "../interfaces/file-parser.interface";
+import { IFileParser } from "../../domain/services/file-parser.interface";
 
 export class ImportBulkUsersByFileUseCase {
   constructor(
