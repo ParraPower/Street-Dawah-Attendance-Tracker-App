@@ -60,8 +60,6 @@ export class ImportUserService implements IImportUserService {
         headers["Authorization"] = `Bearer ${authToken}`;
       }
 
-      if (false) {
-
       const httpClient = this.apiClientProvider.getAuthClient();
       const response = await httpClient.post("/user/bulk", usersForBulkImport);
 
@@ -97,8 +95,6 @@ export class ImportUserService implements IImportUserService {
           omittedUsers.push(importedUser);
           console.log(`⏭️  User skipped: ${omittedUser.email}`);
         }
-      }
-
       }
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || error.message || "Unknown error";

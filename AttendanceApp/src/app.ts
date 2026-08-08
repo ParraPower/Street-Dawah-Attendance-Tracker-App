@@ -9,6 +9,10 @@ import { DataSource } from 'typeorm/data-source/DataSource';
 import { buildImportController } from './bootstrap/import-module';
 import { registerErrors } from './infrastructure/errors/register-errors';
 import { apiClientProvider } from './infrastructure/api';
+import { buildLocationController } from './bootstrap/location-module';
+import { buildSessionController } from './bootstrap/session-module';
+import { buildSessionOccurrenceController } from './bootstrap/session-occurrence-module';
+import { buildSessionAttendanceController } from './bootstrap/session-attendance-module';
 
 export const app = express();
 
@@ -23,8 +27,16 @@ app.use(morgan(env.logFormat ?? "dev"));
 
 export function buildControllers(app: Express, dataSource: DataSource) {
     const ImportController = buildImportController(apiClientProvider, dataSource);
+    const LocationController = buildLocationController(dataSource);
+    const SessionController = buildSessionController(dataSource);
+    const SessionOccurrenceController = buildSessionOccurrenceController(dataSource);
+    const SessionAttendanceController = buildSessionAttendanceController(dataSource);
 
     app.use('/import', ImportController.router);
+    app.use('/locations', LocationController.router);
+    app.use('/sessions', SessionController.router);
+    app.use('/session-occurrences', SessionOccurrenceController.router);
+    app.use('/session-attendances', SessionAttendanceController.router);
 
     // Centralized error handler (must be last)
     app.use(registerErrors());

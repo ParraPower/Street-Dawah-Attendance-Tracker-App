@@ -1,3 +1,5 @@
+//<project-root>/AttendanceApp/src/features/import/application/use-cases/import-users.usecase.ts
+
 import { ImportRowRequestDto, ImportUsersRequestDto, NormalizedImportUserRequestDto } from "../dtos/import-user-request.dto";
 import { ImportUserResponseDto, ImportUsersBulkResponseDto } from "../dtos/import-user-response.dto";
 import { IImportUserService } from "../../domain/services/import-user.service";
@@ -73,8 +75,7 @@ export class ImportUsersUseCase {
       mapper.map(importRow, ImportRowRequestDto, CreateUserDto)
     );
 
-    if (false) {
-    // Insert successfully created users into users entity table and map omitted users with error messages
+    // Insert successfully created users into users entity table before correlating results.
     const bulkCreateResult = await this.createBulkUsersUseCase.execute(createUserDtos);
 
     bulkCreateResult.createdUsers.forEach((createdUser) => {
@@ -101,7 +102,6 @@ export class ImportUsersUseCase {
         }
       }
     });
-  }
 
     // Combine results: validation failures go to omittedUsers
     return {

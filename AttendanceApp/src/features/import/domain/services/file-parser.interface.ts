@@ -12,4 +12,5 @@ export interface IFileParser {
    * @throws Error if file format is unsupported or parsing fails
    */
   parseFile(file: Express.Multer.File): Promise<ImportRowRequestDto[]>;
+
 }

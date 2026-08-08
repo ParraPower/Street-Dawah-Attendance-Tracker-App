@@ -2,72 +2,156 @@
 
 1. **Project overview**
 
-Attendance API provides an ability to manage User engagement in Street Dawah including tracking of attendance
+Attendance API provides an ability to manage user engagement in Street Dawah including tracking of attendance.
 
  Repository: https://github.com/ParraPower/Street-Dawah-Attendance-Tracker-App.git
 
-2. **Architecture**
+2. **Setup and installation**
 
-Domain-driven design: code is organized into domains and modules. Modules contain controllers, services, DTOs, and middleware.
+**Prerequisites:**
+- Node.js 18+ (Node 20 recommended)
+- npm or yarn
+- PostgreSQL 15+ (for database)
+- Docker and Docker Compose (optional, for containerized development)
 
-3. **Core components**
+**Installation steps:**
+1. Clone the repository and navigate to the AttendanceApp directory:
+```bash
+cd AttendanceApp
+```
+2. Install dependencies:
+```bash
+npm install
+```
+3. Set up environment variables:
+- Copy `.env.example` (if present) to `.env.local` (or `.env.machine-local` for machine-specific setup)
+- Update values with your local configuration (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `PORT`, `JWT_*`)
+
+**Build:**
+```bash
+npm run build
+```
+
+3. **Running locally (without Docker)**
+
+1. Ensure a PostgreSQL database is running and accessible.
+2. Run migrations to set up the database schema:
+```bash
+# On Windows
+npm run migration:run:win
+# On Linux/macOS
+npm run migration:run
+```
+3. Start the development server:
+```bash
+npm run start:dev
+```
+Or for a local environment:
+```bash
+npm run start:local
+```
+
+4. **Running with Docker (local development)**
+
+1. Ensure Docker and Docker Compose are installed.
+2. Set up environment variables in `.env.local` or `.env.machine-local`.
+3. From the workspace root you can use the provided scripts to start services (example pattern used across workspace):
+```bash
+npm run docker:start -w AttendanceApp -- attendanceapp <env>
+```
+Replace `<env>` with the environment name (e.g., `local`, `dev`).
+4. Alternatively, manually start services from within the AttendanceApp directory:
+```bash
+docker-compose -f docker/attendanceapp.local.yml up -d
+```
+5. Run migrations inside the container:
+```bash
+docker exec attendanceapp npm run migration:run
+```
+The API will be available at `http://localhost:PORT` (configured in your `.env`).
+
+5. **Deployment to Azure Web App (without Docker)**
+
+1. Build the application:
+```bash
+npm run build
+```
+2. Ensure all dependencies are installed and `dist` folder is included.
+3. Configure environment variables in Azure Web App settings (equivalent to `.env` variables).
+4. Set `NODE_ENV=production` in Azure settings.
+5. The app startup command in Azure should point to the compiled entry point:
+```bash
+node dist/server.js
+```
+Or use:
+```bash
+npm start
+```
+6. Ensure the PostgreSQL database on Azure is accessible and migrations have been run.
+
+6. **Architecture**
+
+Features-based architecture: code is organized into `features` (each containing domain, application, infrastructure, and interface layers) and shared cross-cutting concerns. The legacy `domains`/`modules` conversation is obsolete — the repo now uses a `features` folder as the canonical place for feature implementations.
+
+7. **Core components**
 
 - Entities:
   - `UserEntity`: represents application users.
   - `MembershipEntity`: stores user groups.
-- Modules:
-  - `auth`: authentication and authorization (controllers, services, middleware).
-  - `user`: user management (controllers, services, DTOs).
+- Features (examples):
+  - `auth`: authentication and authorization (domain/services, application use-cases, infrastructure, interfaces).
+  - `users`: user management (controllers, services, DTOs).
   - `membership`: membership management (controllers, services, DTOs).
 
-Note: modules may contain DTOs, controllers, services, and middleware.
+Note: feature folders contain entities, DTOs, controllers, services, middleware and related artifacts.
 
-4. **Authentication flow**
+8. **Directory structure**
 
-For users: register, then call `POST /auth/login` in AuthApp to receive a JWT. The system also supports client credentials for machine-to-machine authentication via getting a token from the AuthApp (endpoint yet to be defined).
-
-5. **Directory structure**
-
-- `domains`: business entities and domain logic (should be independent of tooling or infra).
-- `modules`: feature implementations (controllers, services, DTOs, middleware).
-- `core`: shared base classes and request/response abstractions.
-- `data`: database data-source, TypeORM setup, and repositories.
-- `mapping`: entity/DTO mapping profiles and AutoMapper configuration.
-- `types`: project type augmentations and custom type definitions.
-- `dtos`: DTOs (consider moving module-specific DTOs into their module folders).
-- `config`: environment and configuration loaders (see [config/env.ts](config/env.ts#L1)).
-- `migrations`: database migration files generated by TypeORM.
-
-6. **Key dependencies**
+- Root level:
+  - `src/`: Main application source code, organized into `features`, `shared` components, and `bootstrap`.
+  - `scripts/`: Utility scripts for Docker deployment and database migrations.
+  - `docker/`: Docker Compose configuration for local services.
+  - `instructions/`: Documentation and context files for development tools.
+- Under `src/`:
+  - `bootstrap/`: app wiring (express init, DI container, middleware pipeline).
+  - `infrastructure/`: cross-cutting code shared by multiple features (errors/, config/, file/, mapping/, etc.). Infrastructure will implement interfaces found in features that require importing of libraries. We want to ensure features is free of library imports.
+  - `features/`: feature-specific implementations (e.g., `auth/`, `users/` — each with domain/, application/, infrastructure/).
+  - `migrations/`: database migration files generated by TypeORM.
+  - `types/`: global type augmentations.
+  (Obsolete folders: `domains`, `modules`, `core`, `data`, `mapping`, `security`, `dtos` have been reorganized into `shared` and `features`.)
+  
+9. **Key dependencies**
 
 - `TypeORM` — database ORM and migrations
 - `express` — HTTP framework
+- `jsonwebtoken` — JWT creation and verification
+- `bcrypt` — password hashing
 - `automapper` (or AutoMapper binding used) — entity/DTO mapping
 
-7. **Configuration**
+10. **Configuration**
 
 Uses `cross-env` and `.env` files for multi-environment configuration. See [config/env.ts](config/env.ts#L1) for the environment variables currently read by the application.
 
-8. **Error handling**
+11. **Error handling**
 
-Centralized error handling is not yet implemented. Recommended approach: a global error middleware that normalizes errors into a consistent HTTP response format, structured logging, and optional integration with an error-reporting system (Sentry, etc.).
+Centralized error handling is recommended: a global error middleware that normalizes errors into a consistent HTTP response format, structured logging, and optional integration with an error-reporting system (Sentry, etc.).
 
-9. **Security considerations**
+12. **Security considerations**
 
-- Authorization uses scopes defined in [modules/auth/scopes.ts](modules/auth/scopes.ts#L1) and enforced via guards/middleware.
+- Authorization uses scopes defined in `features/auth` and enforced via guards/middleware.
 
-10. **Testing strategy**
+13. **Testing strategy**
 
 Tests should live under `__tests__` with a mirrored folder structure. Use `jest` for unit tests and `msw` for mocking external HTTP calls.
 
-11. **Migrations**
+14. **Migrations**
 
 Database migrations are managed with TypeORM and stored in the `migrations` folder.
 
-12. **Next steps / TODOs**
+15. **Next steps / TODOs**
 
 - Implement centralized error handling and logging.
-- Consolidate `core` responsibilities into `domains` or `modules` where appropriate.
-- Move module-specific DTOs from `dtos` into their respective module folders.
+- Consolidate `core` responsibilities into `shared` or `features` where appropriate.
+- Move feature-specific DTOs into `features/{feature}/application/dtos/`.
 
 ---
