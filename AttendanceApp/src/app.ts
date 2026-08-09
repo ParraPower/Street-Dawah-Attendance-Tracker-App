@@ -13,6 +13,8 @@ import { buildLocationController } from './bootstrap/location-module';
 import { buildSessionController } from './bootstrap/session-module';
 import { buildSessionOccurrenceController } from './bootstrap/session-occurrence-module';
 import { buildSessionAttendanceController } from './bootstrap/session-attendance-module';
+import { buildMembershipController } from './bootstrap/membership-module';
+import { buildUserMembershipController } from './bootstrap/user-membership-module';
 
 export const app = express();
 
@@ -31,12 +33,16 @@ export function buildControllers(app: Express, dataSource: DataSource) {
     const SessionController = buildSessionController(dataSource);
     const SessionOccurrenceController = buildSessionOccurrenceController(dataSource);
     const SessionAttendanceController = buildSessionAttendanceController(dataSource);
+    const MembershipController = buildMembershipController(dataSource);
+    const UserMembershipController = buildUserMembershipController(dataSource);
 
     app.use('/import', ImportController.router);
     app.use('/locations', LocationController.router);
     app.use('/sessions', SessionController.router);
     app.use('/session-occurrences', SessionOccurrenceController.router);
     app.use('/session-attendances', SessionAttendanceController.router);
+    app.use('/memberships', MembershipController.router);
+    app.use('/user-memberships', UserMembershipController.router);
 
     // Centralized error handler (must be last)
     app.use(registerErrors());

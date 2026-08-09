@@ -1,5 +1,5 @@
 import { NextFunction, Response } from 'express';
-import { ErrorHandlerEntry, GlobalError } from "@shared/errors/types";
+import { ErrorHandlerEntry, GlobalError } from "../errors/types";
 import { globalErrorHandler } from "./global-error-handler";
 
 

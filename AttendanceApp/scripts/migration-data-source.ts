@@ -20,9 +20,25 @@ import { LocationEntity } from '../src/features/locations/domain/entities/locati
 import { SessionEntity } from '../src/features/sessions/domain/entities/session-entity'
 import { SessionOccurrenceEntity } from '../src/features/session-occurrences/domain/entities/session-occurrence-entity'
 import { SessionAttendanceEntity } from '../src/features/session-attendance/domain/entities/session-attendance-entity'
+import { MembershipEntity } from '../src/features/memberships/domain/entities/membership-entity'
+import { UserMembershipEntity } from '../src/features/user-memberships/domain/entities/user-membership-entity'
 
 console.log(__dirname + "/../migrations/*.ts")
 
-const AppDataSource = createDataSource(process.env.DB_URL!, [ UserEntity, LocationEntity, SessionEntity, SessionOccurrenceEntity, SessionAttendanceEntity ] as never, __dirname + "/../src/migrations/*.ts");
+const entities = [
+  UserEntity,
+  LocationEntity,
+  SessionEntity,
+  SessionOccurrenceEntity,
+  SessionAttendanceEntity,
+  MembershipEntity,
+  UserMembershipEntity,
+];
+
+const AppDataSource = createDataSource(
+  process.env.DB_URL!,
+  entities,
+  __dirname + "/../src/migrations/*.ts",
+);
 
 export default AppDataSource;

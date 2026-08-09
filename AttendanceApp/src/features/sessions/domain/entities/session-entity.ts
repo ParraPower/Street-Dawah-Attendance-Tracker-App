@@ -1,6 +1,7 @@
 import { Column, Entity, Index } from "typeorm";
 import { BaseEntity } from "app-framework";
 import { ISessionEntity } from "./interfaces/session-entity";
+import { DayOfWeekEnum } from "../enums/day-of-week-enum";
 
 @Entity({ name: "sessions" })
 @Index(["locationId", "dayOfWeek"])
@@ -12,7 +13,7 @@ export class SessionEntity extends BaseEntity implements ISessionEntity {
   locationId!: number;
 
   @Column({ type: "smallint" })
-  dayOfWeek!: number;
+  dayOfWeek!: DayOfWeekEnum;
 
   @Column({ type: "time" })
   startTime!: string;

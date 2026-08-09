@@ -22,5 +22,5 @@ Write-Host $projectRoot
 Set-Location $projectRoot
 
 # Reverting migration
-Write-Host "Reverting migration with cmd: cross-env NODE_ENV=$Env ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js  migration:revert -d ./scripts/migration-data-source.ts for environment: $Env"
-npx cross-env NODE_ENV=$Env ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:revert -d ./scripts/migration-data-source.ts
+Write-Host "Reverting migration with environment: $Env"
+npx cross-env NODE_ENV=$Env TS_NODE_PROJECT=./tsconfig.json typeorm-ts-node-commonjs migration:revert -d ./scripts/migration-data-source.ts

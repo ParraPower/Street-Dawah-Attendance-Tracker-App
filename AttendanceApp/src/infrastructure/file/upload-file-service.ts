@@ -1,7 +1,7 @@
 import { UploadFileServiceFactory as IUploadFileServiceFactory } from "@attendance/features/import/application/services/upload-file-service";
 import multer, { Multer } from "multer";
 import { NoFileProvidedError, UploadFileError } from "../errors/import-errors";
-import { GlobalError } from "@shared/errors/types";
+import type { GlobalError } from "app-framework";
 
 export class UploadFileServiceFactory implements IUploadFileServiceFactory {
   constructor(
@@ -12,6 +12,8 @@ export class UploadFileServiceFactory implements IUploadFileServiceFactory {
       storage: multer.memoryStorage(),
       limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
       fileFilter: (req: any, file: any, cb: any) => {
+        console.log(`📁 File upload request received: ${file.originalname} (${file.size} bytes)`);
+
         const allowedMimes = [
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           "application/vnd.ms-excel",

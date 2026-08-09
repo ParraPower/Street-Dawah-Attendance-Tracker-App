@@ -1,4 +1,4 @@
-import { ConflictError, GlobalError, NotFoundError, UnauthorizedError, ValidationError } from '@shared/errors/types';
+import { ConflictError, GlobalError, NotFoundError, UnauthorizedError, ValidationError } from '../errors/types';
 import { NextFunction, Response } from 'express';
 
 export function globalErrorHandler(

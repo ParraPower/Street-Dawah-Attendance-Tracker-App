@@ -25,6 +25,18 @@ import { SessionService } from "@attendance/features/sessions/domain/services/se
 import { CreateSessionUseCase } from "@attendance/features/sessions/application/use-cases/create-session.use-case";
 import { CreateBulkSessionsUseCase } from "@attendance/features/sessions/application/use-cases/create-bulk-sessions.use-case";
 import { ImportBulkSessionsByFileUseCase } from "@attendance/features/import/application/use-cases/import-bulk-sessions-by-file.use-case";
+import { MembershipFileParserService } from "@attendance/infrastructure/file/membership-file-parser.service";
+import { MembershipEntity } from "@attendance/features/memberships/domain/entities/membership-entity";
+import { MembershipRepository } from "@attendance/features/memberships/infrastructure/persistence/typeorm/membership-repository";
+import { MembershipService } from "@attendance/features/memberships/domain/services/membership-service";
+import { CreateBulkMembershipsUseCase } from "@attendance/features/memberships/application/use-cases/create-bulk-memberships.use-case";
+import { ImportBulkMembershipsByFileUseCase } from "@attendance/features/import/application/use-cases/import-bulk-memberships-by-file.use-case";
+import { UserMembershipFileParserService } from "@attendance/infrastructure/file/user-membership-file-parser.service";
+import { UserMembershipEntity } from "@attendance/features/user-memberships/domain/entities/user-membership-entity";
+import { UserMembershipRepository } from "@attendance/features/user-memberships/infrastructure/persistence/typeorm/user-membership-repository";
+import { UserMembershipService } from "@attendance/features/user-memberships/domain/services/user-membership-service";
+import { CreateBulkUserMembershipsUseCase } from "@attendance/features/user-memberships/application/use-cases/create-bulk-user-memberships.use-case";
+import { ImportBulkUserMembershipsByFileUseCase } from "@attendance/features/import/application/use-cases/import-bulk-user-memberships-by-file.use-case";
 
 /**
  * Bootstrap function for the Import module
@@ -38,6 +50,8 @@ export function buildImportController(apiClientProvider: IApiClientProvider, dat
   const userRepository = new UserRepository(dataSource.getRepository(UserEntity)); // Assuming this is implemented elsewhere
   const locationRepository = new LocationRepository(dataSource.getRepository(LocationEntity));
   const sessionRepository = new SessionRepository(dataSource.getRepository(SessionEntity));
+  const membershipRepository = new MembershipRepository(dataSource.getRepository(MembershipEntity));
+  const userMembershipRepository = new UserMembershipRepository(dataSource.getRepository(UserMembershipEntity));
 
   // 2. Domain services (reuse from app-framework)
   const scopeService = new ScopeService();
@@ -47,6 +61,8 @@ export function buildImportController(apiClientProvider: IApiClientProvider, dat
   const userService = new UserService(); // Assuming this is implemented elsewhere
   const locationService = new LocationService();
   const sessionService = new SessionService();
+  const membershipService = new MembershipService();
+  const userMembershipService = new UserMembershipService();
 
   // 3. Application services / use cases
   const uploadFileService = new UploadFileServiceFactory();
@@ -63,7 +79,15 @@ export function buildImportController(apiClientProvider: IApiClientProvider, dat
     new SessionFileParserService(),
     new CreateBulkSessionsUseCase(new CreateSessionUseCase(sessionRepository, sessionService))
   );
+  const importMembershipsUseCase = new ImportBulkMembershipsByFileUseCase(
+    new MembershipFileParserService(),
+    new CreateBulkMembershipsUseCase(membershipRepository, membershipService)
+  );
+  const importUserMembershipsUseCase = new ImportBulkUserMembershipsByFileUseCase(
+    new UserMembershipFileParserService(),
+    new CreateBulkUserMembershipsUseCase(userMembershipRepository, userMembershipService),
+  );
 
   // 4. Controller
-  return new ImportController(scopeService, uploadFileService, jwtService, uploadFileUseCase, importLocationsUseCase, importSessionsUseCase);
+  return new ImportController(scopeService, uploadFileService, jwtService, uploadFileUseCase, importLocationsUseCase, importSessionsUseCase, importMembershipsUseCase, importUserMembershipsUseCase);
 }

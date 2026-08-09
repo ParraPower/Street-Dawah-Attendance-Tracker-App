@@ -1,9 +1,11 @@
+import { DayOfWeekEnum } from "../enums/day-of-week-enum";
+
 export class SessionService {
-  validateDayOfWeek(dayOfWeek: number): number {
+  validateDayOfWeek(dayOfWeek: number): DayOfWeekEnum {
     if (!Number.isInteger(dayOfWeek) || dayOfWeek < 0 || dayOfWeek > 6) {
       throw new Error("dayOfWeek must be an integer from 0 (Sunday) to 6 (Saturday)");
     }
-    return dayOfWeek;
+    return dayOfWeek as DayOfWeekEnum;
   }
 
   normalizeTime(time: string): string {

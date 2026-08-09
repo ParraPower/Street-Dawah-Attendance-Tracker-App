@@ -10,6 +10,8 @@ import { FileUploadError } from "@attendance/infrastructure/errors/import-errors
 import { ImportBulkUsersByFileUseCase } from "../../application/use-cases/import-bulk-users-by-file.usecase";
 import { ImportBulkLocationsByFileUseCase } from "../../application/use-cases/import-bulk-locations-by-file.use-case";
 import { ImportBulkSessionsByFileUseCase } from "../../application/use-cases/import-bulk-sessions-by-file.use-case";
+import { ImportBulkMembershipsByFileUseCase } from "../../application/use-cases/import-bulk-memberships-by-file.use-case";
+import { ImportBulkUserMembershipsByFileUseCase } from "../../application/use-cases/import-bulk-user-memberships-by-file.use-case";
 /**
  * Stub JWT Service for ImportController
  * AttendanceApp delegates JWT validation to Auth API middleware,
@@ -27,7 +29,9 @@ export class ImportController extends BaseController {
     protected readonly jwtService: IJwtService,
     private readonly importUsersUseCase: ImportBulkUsersByFileUseCase,
     private readonly importLocationsUseCase: ImportBulkLocationsByFileUseCase,
-    private readonly importSessionsUseCase: ImportBulkSessionsByFileUseCase
+    private readonly importSessionsUseCase: ImportBulkSessionsByFileUseCase,
+    private readonly importMembershipsUseCase: ImportBulkMembershipsByFileUseCase,
+    private readonly importUserMembershipsUseCase: ImportBulkUserMembershipsByFileUseCase
   ) {
     super(jwtService, scopeService, { jwtDefaultAudience: env.authApiJwtAudience });
 
@@ -48,6 +52,16 @@ export class ImportController extends BaseController {
     });
 
     this.registerRoute("post", "/sessions", this.importSessions.bind(this), {
+      authenticate: true,
+      authorizeScopes: [Scopes.Khaleef],
+    });
+
+    this.registerRoute("post", "/memberships", this.importMemberships.bind(this), {
+      authenticate: true,
+      authorizeScopes: [Scopes.Khaleef],
+    });
+
+    this.registerRoute("post", "/user-memberships", this.importUserMemberships.bind(this), {
       authenticate: true,
       authorizeScopes: [Scopes.Khaleef],
     });
@@ -85,6 +99,26 @@ export class ImportController extends BaseController {
     }
 
     const importResult = await this.importSessionsUseCase.execute(result.file as Express.Multer.File);
+    res.status(200).json(importResult);
+  };
+
+  public importMemberships: DawahRequestHandler<any, any, any> = async (req, res) => {
+    const result = await this.uploadFileRunnerFn(req, res, () => {});
+    if (!result.result) {
+      throw result.exception || new FileUploadError("File upload failed");
+    }
+
+    const importResult = await this.importMembershipsUseCase.execute(result.file as Express.Multer.File);
+    res.status(200).json(importResult);
+  };
+
+  public importUserMemberships: DawahRequestHandler<any, any, any> = async (req, res) => {
+    const result = await this.uploadFileRunnerFn(req, res, () => {});
+    if (!result.result) {
+      throw result.exception || new FileUploadError("File upload failed");
+    }
+
+    const importResult = await this.importUserMembershipsUseCase.execute(result.file as Express.Multer.File);
     res.status(200).json(importResult);
   };
 }

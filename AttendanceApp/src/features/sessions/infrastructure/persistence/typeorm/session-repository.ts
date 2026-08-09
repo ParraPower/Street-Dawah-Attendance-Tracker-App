@@ -2,12 +2,13 @@ import { Repository } from "typeorm";
 import { BaseRepository } from "app-framework";
 import { SessionEntity } from "../../../domain/entities/session-entity";
 import { ISessionRepository } from "../../../domain/repositories/isession-repository";
+import { DayOfWeekEnum } from "../../../domain/enums/day-of-week-enum";
 
 export class SessionRepository extends BaseRepository<SessionEntity> implements ISessionRepository {
   constructor(repo: Repository<SessionEntity>) { super(repo); }
   findById(id: number): Promise<SessionEntity | null> { return this.findOne({ where: { id } }); }
   findAll(): Promise<SessionEntity[]> { return this.find(); }
-  findBySchedule(locationId: number, dayOfWeek: number, startTime: string, endTime: string, excludeId?: number): Promise<SessionEntity | null> {
+  findBySchedule(locationId: number, dayOfWeek: DayOfWeekEnum, startTime: string, endTime: string, excludeId?: number): Promise<SessionEntity | null> {
     const query = this.repo.createQueryBuilder("session")
       .where("session.locationId = :locationId", { locationId })
       .andWhere("session.dayOfWeek = :dayOfWeek", { dayOfWeek })
@@ -17,7 +18,7 @@ export class SessionRepository extends BaseRepository<SessionEntity> implements 
     if (excludeId !== undefined) query.andWhere("session.id != :excludeId", { excludeId });
     return query.getOne();
   }
-  async hasOverlap(locationId: number, dayOfWeek: number, startTime: string, endTime: string, excludeId?: number): Promise<boolean> {
+  async hasOverlap(locationId: number, dayOfWeek: DayOfWeekEnum, startTime: string, endTime: string, excludeId?: number): Promise<boolean> {
     const query = this.repo.createQueryBuilder("session")
       .where("session.locationId = :locationId", { locationId })
       .andWhere("session.dayOfWeek = :dayOfWeek", { dayOfWeek })
