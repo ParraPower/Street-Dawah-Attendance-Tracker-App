@@ -5,6 +5,7 @@ import { RegisterUserResponseDto } from '@auth/features/auth/application/dtos/re
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { UserDto } from '../dtos/user.dto';
 import { ScopeList, Scopes } from '@auth/features/auth/domain/policies/scope-types';
+import { CreateBulkUsersResponseOmittedUserDto } from '../dtos/create-bulk-users-response.dto'
 
 const getScopeesFromUserEntity = (user: UserEntity): ScopeList => {
   const response = user?.scopes.map(scope =>
@@ -79,5 +80,58 @@ export function createUserProfile() {
       mapFrom((src) => src.createdAt), // Set to current date/time to indicate registration
     ),
   );
+
+  createMap(
+    mapper,
+    UserDto,
+    CreateBulkUsersResponseOmittedUserDto,
+    forMember(
+      (dest) => dest.id,
+      mapFrom((src) => src.id), // Assuming UserDto.id is already a string
+    ),
+    forMember(
+      (dest) => dest.email,
+      mapFrom((src) => src.email)
+    ),
+    forMember(
+      (dest) => dest.username,
+      mapFrom((src) => src.username)
+    ),
+    forMember(
+      (dest) => dest.createdAt,
+      mapFrom((src) => src.createdAt)
+    ),
+    forMember(
+      (dest) => dest.scopes,
+      mapFrom((src) => src.scopes)
+    )
+  );
+
+  createMap(
+    mapper,
+    UserEntity,
+    CreateBulkUsersResponseOmittedUserDto,
+    forMember(
+      (dest) => dest.id,
+      mapFrom((src) => src.id.toString()),
+    ),
+    forMember(
+      (dest) => dest.email,
+      mapFrom((src) => src.email),
+    ),
+    forMember(
+      (dest) => dest.username,
+      mapFrom((src) => src.username),
+    ),
+    forMember(
+      (dest) => dest.createdAt,
+      mapFrom((src) => src.createdAt),
+    ),
+    forMember(
+      (dest) => dest.scopes,
+      mapFrom((src) => getScopeesFromUserEntity(src)),
+    ),
+  );
+
 }
 

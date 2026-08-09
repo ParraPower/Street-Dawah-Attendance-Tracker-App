@@ -11,6 +11,7 @@ import { BaseController } from "@auth/shared/infrastructure/http/base-controller
 import { ScopeService } from "app-framework";
 import { IAuthAppJwtService } from "@auth/features/auth/domain/services/jwt-service";
 import { env } from "@auth/shared/infrastructure/config/env";
+import { PreviewBulkUsersUseCase } from "../../application/use-cases/preview-create-bulk-users.usecase";
 
 export class UsersController extends BaseController {
   public readonly router = Router();
@@ -19,6 +20,7 @@ export class UsersController extends BaseController {
     protected readonly jwtService: IAuthAppJwtService,
     protected readonly scopeService: ScopeService,
     private readonly createBulkUsersUseCase: CreateBulkUsersUseCase,
+    private readonly previewBulkUsersUseCase: PreviewBulkUsersUseCase,
     private readonly getUserUseCase: GetUserUseCase,
     private readonly createUserUseCase: CreateUserUseCase) {
     
@@ -30,6 +32,11 @@ export class UsersController extends BaseController {
     });
 
     this.registerRoute('post', '/bulk', this.createBulk, {
+      authenticate: true,
+      authorizeScopes: [Scopes.Emir, Scopes.Mudeer, Scopes.Khaleef],
+    });
+
+    this.registerRoute('post', '/bulk/preview', this.previewBulk, {
       authenticate: true,
       authorizeScopes: [Scopes.Emir, Scopes.Mudeer, Scopes.Khaleef],
     });
@@ -64,6 +71,16 @@ export class UsersController extends BaseController {
     const result = await this.createBulkUsersUseCase.execute(users);
     res.json(result);
   }
+
+  public previewBulk: DawahRequestHandler<
+    any,
+    CreateBulkUsersResponseDto,
+    CreateUserDto[]
+  > = async (req, res) => {
+    const users = req.body as CreateUserDto[];
+    const result = await this.previewBulkUsersUseCase.execute(users);
+    res.json(result);
+  };
 
   public get: DawahRequestHandler<
     { id: string },

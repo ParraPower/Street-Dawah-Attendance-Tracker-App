@@ -4,11 +4,11 @@ import { EntitySchema, MixedList } from 'typeorm'
 // Define a constructor type that produces a BaseEntity
 
 export const createDataSource = 
-(dbUrl: string, entities: MixedList<EntitySchema>, migrationsPath: string) => new DataSource({
+(dbUrl: string, entities: MixedList<EntitySchema>, migrationsPath: string, options?: { logging: boolean, synchronize?: boolean }) => new DataSource({
   type: 'postgres',
   url: dbUrl,
   entities: entities,
-  synchronize: false, // true only in dev
-  logging: false,
+  synchronize: options?.synchronize ?? false,
+  logging: options?.logging,
   migrations: [migrationsPath],
 })

@@ -12,6 +12,7 @@ import { CreateUserUseCase } from '@auth/features/users/application/use-cases/cr
 import { GetUserUseCase } from '@auth/features/users/application/use-cases/get-user.usecase';
 import { AuthAppJwtService } from '@auth/shared/infrastructure/auth/jwt-service';
 import { KeyCacheService } from '@auth/features/auth/infrastructure/jwt/key-cache.service';
+import { PreviewBulkUsersUseCase } from '@auth/features/users/application/use-cases/preview-create-bulk-users.usecase';
 
 
 export function buildUsersController(dataSource: DataSource) {
@@ -32,6 +33,7 @@ export function buildUsersController(dataSource: DataSource) {
 
   // 3. Application service
   const createBulkUsersUseCase = new CreateBulkUsersUseCase(featureUserService, userRepo, bcryptHasherService, passwordService, authService, scopeService)
+  const previewBulkUsersUseCase = new PreviewBulkUsersUseCase(featureUserService, userRepo)
   const getUserUseCase = new GetUserUseCase(featureUserService, userRepo)
   const createUserUseCase = new CreateUserUseCase(userRepo, passwordService)
 
@@ -40,6 +42,7 @@ export function buildUsersController(dataSource: DataSource) {
     jwtService,
     scopeService,
     createBulkUsersUseCase,
+    previewBulkUsersUseCase,
     getUserUseCase,
     createUserUseCase,
   );
