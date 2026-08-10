@@ -18,7 +18,7 @@ const createDataSource = () => new DataSource({
     ClientEntity
   ],
   synchronize: false, // true only in dev
-  logging: false,
+  logging: true,
   migrations: [__dirname + "/../migrations/*.ts"],
 })
 

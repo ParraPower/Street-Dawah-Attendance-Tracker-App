@@ -2,7 +2,7 @@ export * from './auth/interfaces/jwt-service';
 export * from './auth/interfaces/password-service'
 export * from './auth/interfaces/hasher-service'
 export * from './auth/interfaces/cryptograpahy-service'
-export * from './auth/services/scope-service';
+export * from './auth/interfaces/token-provider';
 export * from './auth/policies/scope-types';
 export * from './auth/services/jwt-service';
 export * from './auth/services/key-cache.service';
@@ -10,6 +10,7 @@ export * from './auth/services/scope-service';
 export * from './auth/services/bcrypt-hasher-service'
 export * from './auth/services/crypto-cryptograhpy-service'
 export * from './auth/services/password-service';
+export * from './auth/services/client-credentials-token-provider';
 export * from './auth/types/jwt.types';
 export * from './persistence/interfaces/ibase-audit';
 export * from './persistence/interfaces/ibase-entity-stub';
@@ -18,10 +19,14 @@ export * from './persistence/typeorm/createDataSource';
 export * from './persistence/abstracts/base-entity';
 export * from './http/base-controller';
 export * from './http/interfaces/controller';
+export * from './http/create-api-client';
 export * from './http/dawah-request-handler';
 export * from './http/request-with-user';
 export * from './http/user-jwt-payload.dto';
+export * from './errors/types';
 export * from './middleware/async-handler';
 export * from './middleware/global-error-handler';
+export * from './middleware/create-global-error-handler';
 export * from './middleware/auth-middleware';
 export * from './middleware/audience-guard';
+export * from './utils/strings';

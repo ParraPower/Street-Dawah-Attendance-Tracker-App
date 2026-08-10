@@ -1,0 +1,65 @@
+version: "3.9"
+
+services:
+  postgres-attendanceapp:
+    image: postgres:15-alpine
+    container_name: attendanceapp-postgres-local
+    restart: unless-stopped
+    command: postgres -c port=${DB_PORT}
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5435:${DB_PORT}"
+    volumes:
+      - postgres-attendanceapp-data-local:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -p ${DB_PORT}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  migrate-attendanceapp:
+    build:
+      context: ..
+      dockerfile: AttendanceApp/Dockerfile
+      target: build
+    container_name: attendanceapp-migrate-local
+    depends_on:
+      postgres-attendanceapp:
+        condition: service_healthy
+    working_dir: /repo/AttendanceApp
+    environment:
+      NODE_ENV: local
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+    command: npm run migration:run -- local
+    restart: "no"
+
+  app-attendanceapp:
+    build:
+      context: ..
+      dockerfile: AttendanceApp/Dockerfile
+      target: build
+    container_name: attendanceapp-api-local
+    depends_on:
+      postgres-attendanceapp:
+        condition: service_healthy
+    working_dir: /repo/AttendanceApp
+    environment:
+      NODE_ENV: local
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+    ports:
+      - "4002:${PORT}"
+    command: npm run start:local
+
+volumes:
+  postgres-attendanceapp-data-local:

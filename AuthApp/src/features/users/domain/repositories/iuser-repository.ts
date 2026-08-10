@@ -5,6 +5,7 @@ export interface IUserRepository {
   findByUsername(username: string): Promise<UserEntity | null>;
   findByEmail(email: string): Promise<UserEntity | null>;
   findByUsernamesAndEmails(usernames: string[], emails: string[]): Promise<UserEntity[]>;
+  findByUsernames(usernames: string[]): Promise<UserEntity[]>;
   findByTemporaryPasswordGuid(temporaryPasswordGuid: string): Promise<UserEntity | null>;
   createBulk(entities: UserEntity[]): Promise<UserEntity[]>
   create(user: Partial<UserEntity>): Promise<UserEntity>;

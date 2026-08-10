@@ -1,0 +1,1 @@
+export { IBaseAudit } from 'app-framework';

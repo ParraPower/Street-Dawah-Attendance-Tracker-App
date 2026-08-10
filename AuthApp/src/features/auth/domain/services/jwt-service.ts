@@ -11,4 +11,5 @@ export interface IAuthAppJwtService extends IJwtService {
     audience?: string | string[],
     ): { token: string; jti: string; expiresIn: StringValue }; 
     
+    verifyJwtSync(token: string): never;
 }

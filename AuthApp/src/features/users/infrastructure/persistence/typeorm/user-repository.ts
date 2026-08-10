@@ -33,6 +33,16 @@ export class UserRepository
     });
   }
 
+  async findByUsernames(
+    usernames: string[]
+  ): Promise<UserEntity[]> {
+    return this.find({
+      where: [
+        { username: In(usernames.map(u => u.toLowerCase())) }
+      ]
+    });
+  }
+
   async createBulk(entities: UserEntity[]): Promise<UserEntity[]> {
     return await this.repo.manager.transaction(async (trx) => {
       const prepped = entities.map(e => this.prepUserForUpsert(e) as UserEntity);

@@ -1,5 +1,6 @@
 import { LoginUserUseCase } from "./login-user.usecase";
   import { IssueClientCredentialsTokenUseCase } from "./issue-client-credentials-token.usecase";
+import { UnsupportedGrantTypeError } from "@auth/shared/infrastructure/errors/auth-errors";
 
 export class GenerateTokenUseCase {
   constructor(
@@ -13,10 +14,10 @@ export class GenerateTokenUseCase {
         return this.issueClientCredentialsToken.execute(dto.client_id, dto.client_secret);
 
       case 'password':
-        return this.loginUserUseCase.execute(dto.email, dto.password);
+        return this.loginUserUseCase.execute(dto.username, dto.password);
 
       default:
-        throw new Error('Unsupported grant_type'); // #TODO: custom error for this case
+        throw new UnsupportedGrantTypeError(dto.grant_type);
     }
   }
 }

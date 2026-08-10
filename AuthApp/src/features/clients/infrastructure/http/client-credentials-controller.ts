@@ -83,8 +83,6 @@ export class ClientCredentialsController extends BaseController {
   > = async (req, res) => {
     try {
       const { name, scopes } = req.body;
-      
-      console.log('Received create client credentials request:', req.body);
 
       if (!name || !Array.isArray(scopes)) {
         return res.status(400).json({ error: 'Invalid request body' });

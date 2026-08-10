@@ -1,0 +1,26 @@
+import { Repository } from "typeorm";
+import { BaseRepository } from "app-framework";
+import { SessionOccurrenceEntity } from "../../../domain/entities/session-occurrence-entity";
+import { ISessionOccurrenceRepository } from "../../../domain/repositories/isession-occurrence-repository";
+
+export class SessionOccurrenceRepository extends BaseRepository<SessionOccurrenceEntity> implements ISessionOccurrenceRepository {
+  constructor(repo: Repository<SessionOccurrenceEntity>) { super(repo); }
+  findById(id: number): Promise<SessionOccurrenceEntity | null> { return this.findOne({ where: { id } }); }
+  findAll(): Promise<SessionOccurrenceEntity[]> { return this.find(); }
+  findBySessionAndDate(sessionId: number, occurrenceDate: string, excludeId?: number): Promise<SessionOccurrenceEntity | null> {
+    const query = this.repo.createQueryBuilder("occurrence")
+      .where("occurrence.sessionId = :sessionId", { sessionId })
+      .andWhere("occurrence.occurrenceDate = :occurrenceDate", { occurrenceDate })
+      .andWhere("occurrence.isDeleted IS NOT TRUE");
+    if (excludeId !== undefined) query.andWhere("occurrence.id != :excludeId", { excludeId });
+    return query.getOne();
+  }
+  async create(occurrence: Partial<SessionOccurrenceEntity>): Promise<SessionOccurrenceEntity> { return this.repo.save(this.repo.create(occurrence)); }
+  async update(id: number, occurrence: Partial<SessionOccurrenceEntity>): Promise<SessionOccurrenceEntity | null> {
+    const existing = await this.findById(id);
+    if (!existing) return null;
+    Object.assign(existing, occurrence);
+    return this.repo.save(existing);
+  }
+  async delete(id: number): Promise<boolean> { await this.softDelete(id); return true; }
+}

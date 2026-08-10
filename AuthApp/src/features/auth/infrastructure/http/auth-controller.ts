@@ -1,7 +1,7 @@
 
 import { Router } from 'express';
 import { DawahRequestHandler } from '@auth/shared/infrastructure/http/dawah-request-handler';
-import { RegisterUserResponseDto } from '../../application/dtos/register-user.dto';
+import { RegisterUserDto, RegisterUserResponseDto } from '../../application/dtos/register-user.dto';
 import { ClientCredentialsDto } from '../../application/dtos/client-credentials-token-request.dto';
 import { GenerateTokenUseCase, RegisterUserUseCase } from '@auth/features/auth/application/use-cases/index';
 import { LoginRequestDto } from '@auth/features/auth/application/dtos/login-request.dto';
@@ -12,6 +12,8 @@ import { BaseController } from '@auth/shared/infrastructure/http/base-controller
 import { ScopeService } from "app-framework";
 import { IAuthAppJwtService } from '../../domain/services/jwt-service';
 import { env } from '@auth/shared/infrastructure/config/env';
+import { AccessTokenRequestDto } from '../../application/dtos/access-token-request.dto';
+import { RefreshAccessTokenUseCase } from '../../application/use-cases/refresh-access-token.usecase';
 
 export class AuthController extends BaseController {
   public readonly router = Router();
@@ -21,7 +23,8 @@ export class AuthController extends BaseController {
     protected readonly scopeService: ScopeService,
     private readonly generateTokenUserCase: GenerateTokenUseCase,
     private readonly registerUserUseCase: RegisterUserUseCase,
-    private readonly resetUserPasswordUseCase: ResetUserPasswordUseCase) {
+    private readonly resetUserPasswordUseCase: ResetUserPasswordUseCase,
+    private readonly refreshAccessTokenUseCase: RefreshAccessTokenUseCase) {
     super(jwtService, scopeService, { jwtDefaultAudience: env.jwtDefaultAudience });
 
     this.registerRoute('post', '/register', this.register.bind(this), {
@@ -36,6 +39,9 @@ export class AuthController extends BaseController {
       authenticate: false,
     });
 
+    this.registerRoute('post', '/refresh', this.refresh.bind(this), {
+      authenticate: false,
+    });
   }
 
   public token: DawahRequestHandler<
@@ -43,14 +49,17 @@ export class AuthController extends BaseController {
     { accessToken: string; refreshToken: string; user: UserDto },
     LoginRequestDto | ClientCredentialsDto
   > = async (req, res) => {
+    const loginResponse = await this.generateTokenUserCase.execute(req.body);
+    res.json(loginResponse);
+  }
 
-    try {
-      const loginResponse = await this.generateTokenUserCase.execute(req.body);
-      res.json(loginResponse);
-    } catch (err: any) {
-      console.error(err);
-      res.status(401).json({ error: 'Invalid credentials' });
-    }
+  public refresh: DawahRequestHandler<
+    any,
+    { accessToken: string; user: UserDto },
+    AccessTokenRequestDto
+  > = async (req, res) => {
+    const loginResponse = await this.refreshAccessTokenUseCase.execute(req.body.refreshToken);
+    res.json(loginResponse);
   }
 
   public resetPassword: DawahRequestHandler<
@@ -67,14 +76,10 @@ export class AuthController extends BaseController {
   public register: DawahRequestHandler<
     any,
     RegisterUserResponseDto,
-    { email: string; username: string; password: string }
+    RegisterUserDto
   > = async (req, res) => {
     const { email, username, password } = req.body;
-    try {
-      const registerResponse = await this.registerUserUseCase.execute(email, username, password);
-      res.status(201).json(registerResponse);
-    } catch (err: any) {
-      res.status(400).json({ error: err.message });
-    }
+    const registerResponse = await this.registerUserUseCase.execute(email, username, password);
+    res.status(201).json(registerResponse);
   }
 }

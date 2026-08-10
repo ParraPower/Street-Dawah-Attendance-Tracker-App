@@ -6,8 +6,8 @@ import { BaseEntity } from 'app-framework';
 
 @Entity('users')
 export class UserEntity extends BaseEntity implements IUserEntity {
-  @Column()
-  email!: string;
+  @Column('varchar', { default: null })
+  email?: string | null;
 
   @Column()
   username!: string;

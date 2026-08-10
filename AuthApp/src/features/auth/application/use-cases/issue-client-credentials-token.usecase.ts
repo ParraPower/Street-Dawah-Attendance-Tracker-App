@@ -1,3 +1,4 @@
+import { ClientNotFoundError, InvalidClientCredentialsError } from "@auth/shared/infrastructure/errors/auth-errors";
 import { IClientRepository } from "../../../clients/domains/repositories/iclient-repo";
 import { ClientService } from "../../../clients/domains/services/client-service";
 import { IAuthAppJwtService } from "../../domain/services/jwt-service";
@@ -13,10 +14,12 @@ export class IssueClientCredentialsTokenUseCase {
 
   async execute(clientName: string, clientSecret: string): Promise<TokenResponseDto | null> {
     const client = await this.repo.findByName(clientName);
-    if (!client) return null; // #TODO: custom error for this case
+    if (!client) throw new ClientNotFoundError(clientName); // #TODO: custom error for this case
 
     const isValid = await this.clientService.validateClientCredentials(client, clientSecret);
-    if (!isValid) return null; // #TODO: custom error for this case
+    if (!isValid) 
+      //# generate a custom error for this case to distinguish between "client not found" and "invalid credentials"
+      throw new InvalidClientCredentialsError(clientName); // #TODO: custom error for this case
 
     const token = this.jwtService.signToken(client.name, client.scopes, 'access');
     const response: TokenResponseDto = {
