@@ -96,6 +96,12 @@ This compiles TypeScript to JavaScript in the `dist` folder.
 
 Features-based architecture: code is organized into features (each containing domain, application, infrastructure, and interfaces layers) and shared cross-cutting concerns. Features encapsulate end-to-end functionality, while shared handles reusable logic like persistence, logging, and error handling.
 
+### Application-layer authorization pattern
+
+Feature authorization decisions and field-level permission rules belong in an application-layer authorization service, not in controllers. Controllers should authenticate requests, translate JWT claims into a feature-specific actor context, pass that context to use cases, and translate use-case results into HTTP responses. Use cases must enforce authorization so the rules apply consistently regardless of the entry point.
+
+Authorization services should expose focused methods such as `canViewNonPublic()`, `assertCanCreate()`, and `assertCanUpdate()`. They may define field-level rules—for example, allowing Emir-or-higher users to assign an Emir while restricting visibility changes to Mudeer-or-higher users. Authorization failures should use a dedicated error type registered with the centralized error handler so they return `403 Forbidden`.
+
 5. **Core components**
 
 - Entities:

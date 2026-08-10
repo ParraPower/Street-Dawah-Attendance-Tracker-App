@@ -7,6 +7,19 @@ export class SessionOccurrenceRepository extends BaseRepository<SessionOccurrenc
   constructor(repo: Repository<SessionOccurrenceEntity>) { super(repo); }
   findById(id: number): Promise<SessionOccurrenceEntity | null> { return this.findOne({ where: { id } }); }
   findAll(): Promise<SessionOccurrenceEntity[]> { return this.find(); }
+  findPublic(): Promise<SessionOccurrenceEntity[]> {
+    return this.repo.createQueryBuilder("occurrence")
+      .where('occurrence."showPublicly" IS TRUE')
+      .andWhere('occurrence."isDeleted" IS NOT TRUE')
+      .getMany();
+  }
+  findPublicById(id: number): Promise<SessionOccurrenceEntity | null> {
+    return this.repo.createQueryBuilder("occurrence")
+      .where('occurrence."id" = :id', { id })
+      .andWhere('occurrence."showPublicly" IS TRUE')
+      .andWhere('occurrence."isDeleted" IS NOT TRUE')
+      .getOne();
+  }
   findBySessionAndDate(sessionId: number, occurrenceDate: string, excludeId?: number): Promise<SessionOccurrenceEntity | null> {
     const query = this.repo.createQueryBuilder("occurrence")
       .where("occurrence.sessionId = :sessionId", { sessionId })
