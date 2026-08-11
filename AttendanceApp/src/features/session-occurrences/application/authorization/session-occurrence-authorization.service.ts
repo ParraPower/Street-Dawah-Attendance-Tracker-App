@@ -29,6 +29,12 @@ export class SessionOccurrenceAuthorizationService {
     }
   }
 
+  assertCanBulkCreate(actor: SessionOccurrenceActor): void {
+    if (!this.hasScopeOrHigher(actor, Scopes.Mudeer)) {
+      throw new SessionOccurrenceAuthorizationError("Only Mudeers or Khaleefs can create session occurrences in bulk");
+    }
+  }
+
   assertCanUpdate(actor: SessionOccurrenceActor, input: UpdateSessionOccurrenceDto): void {
     if (input.mainEmirUserId !== undefined && !this.hasScopeOrHigher(actor, Scopes.Emir)) {
       throw new SessionOccurrenceAuthorizationError("Only Emirs or higher can set the main Emir");

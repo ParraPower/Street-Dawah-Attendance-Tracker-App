@@ -10,7 +10,7 @@ import { UpdateSessionAttendanceUseCase } from "../features/session-attendance/a
 import { SessionAttendanceEntity } from "../features/session-attendance/domain/entities/session-attendance-entity";
 import { SessionAttendanceService } from "../features/session-attendance/domain/services/session-attendance-service";
 import { SessionAttendanceRepository } from "../features/session-attendance/infrastructure/persistence/typeorm/session-attendance-repository";
-import { SessionAttendanceController } from "../features/session-attendance/interface/controllers/session-attendance-controller";
+import { SessionAttendanceController } from "../features/session-attendance/infrastructure/http/session-attendance-controller";
 import { AttendanceAppJwtService } from "../infrastructure/auth/jwt-service";
 import { KeyCacheService, ScopeService } from "app-framework";
 

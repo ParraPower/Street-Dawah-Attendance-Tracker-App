@@ -7,6 +7,9 @@ import { SessionOccurrenceEntity } from '../features/session-occurrences/domain/
 import { SessionAttendanceEntity } from '../features/session-attendance/domain/entities/session-attendance-entity';
 import { MembershipEntity } from '../features/memberships/domain/entities/membership-entity';
 import { UserMembershipEntity } from '../features/user-memberships/domain/entities/user-membership-entity';
+import { DawahDayEntity } from '../features/dawah-days/domain/entities/dawah-day-entity';
+import { EmirDateAvailabilityEntity } from '../features/emir-date-availabilities/domain/entities/emir-date-availability-entity';
+import { EmirSessionPreferenceEntity } from '../features/emir-session-preferences/domain/entities/emir-session-preference-entity';
 import { env } from '../infrastructure/config/env';
 
 // import { 
@@ -19,5 +22,5 @@ import { env } from '../infrastructure/config/env';
 // } from '@/domains/entities-index';
 //import { Membership } from '@/domains/membership/entities/membership';
 
-const AppDataSource = createDataSource(env.db.url, [UserEntity, LocationEntity, SessionEntity, SessionOccurrenceEntity, SessionAttendanceEntity, MembershipEntity, UserMembershipEntity] as never, __dirname + "/../migrations/*.ts", { logging: true, synchronize: false })
+const AppDataSource = createDataSource(env.db.url, [UserEntity, LocationEntity, SessionEntity, SessionOccurrenceEntity, SessionAttendanceEntity, MembershipEntity, UserMembershipEntity, DawahDayEntity, EmirDateAvailabilityEntity, EmirSessionPreferenceEntity] as never, __dirname + "/../migrations/*.ts", { logging: true, synchronize: false })
 export default AppDataSource;

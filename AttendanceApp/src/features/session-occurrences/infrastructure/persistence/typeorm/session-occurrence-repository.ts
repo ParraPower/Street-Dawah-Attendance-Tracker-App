@@ -13,6 +13,14 @@ export class SessionOccurrenceRepository extends BaseRepository<SessionOccurrenc
       .andWhere('occurrence."isDeleted" IS NOT TRUE')
       .getMany();
   }
+  findByDateRange(startDate: string, endDate: string, includeNonPublic: boolean): Promise<SessionOccurrenceEntity[]> {
+    const query = this.repo.createQueryBuilder("occurrence")
+      .where("occurrence.occurrenceDate >= :startDate", { startDate })
+      .andWhere("occurrence.occurrenceDate <= :endDate", { endDate })
+      .andWhere("occurrence.isDeleted IS NOT TRUE");
+    if (!includeNonPublic) query.andWhere('occurrence."showPublicly" IS TRUE');
+    return query.orderBy("occurrence.occurrenceDate", "ASC").addOrderBy("occurrence.sessionId", "ASC").getMany();
+  }
   findPublicById(id: number): Promise<SessionOccurrenceEntity | null> {
     return this.repo.createQueryBuilder("occurrence")
       .where('occurrence."id" = :id', { id })
@@ -29,6 +37,9 @@ export class SessionOccurrenceRepository extends BaseRepository<SessionOccurrenc
     return query.getOne();
   }
   async create(occurrence: Partial<SessionOccurrenceEntity>): Promise<SessionOccurrenceEntity> { return this.repo.save(this.repo.create(occurrence)); }
+  async createBulk(occurrences: Partial<SessionOccurrenceEntity>[]): Promise<SessionOccurrenceEntity[]> {
+    return this.repo.manager.transaction(async (manager) => manager.save(SessionOccurrenceEntity, occurrences.map((occurrence) => manager.create(SessionOccurrenceEntity, occurrence))));
+  }
   async update(id: number, occurrence: Partial<SessionOccurrenceEntity>): Promise<SessionOccurrenceEntity | null> {
     const existing = await this.findById(id);
     if (!existing) return null;

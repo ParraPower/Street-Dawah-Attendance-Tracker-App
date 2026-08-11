@@ -3,7 +3,7 @@ import { KeyCacheService, ScopeService } from "app-framework";
 import { MembershipEntity } from "../features/memberships/domain/entities/membership-entity";
 import { MembershipRepository } from "../features/memberships/infrastructure/persistence/typeorm/membership-repository";
 import { MembershipService } from "../features/memberships/domain/services/membership-service";
-import { MembershipController } from "../features/memberships/interface/controllers/membership-controller";
+import { MembershipController } from "../features/memberships/infrastructure/http/membership-controller";
 import { CreateMembershipUseCase } from "../features/memberships/application/use-cases/create-membership.use-case";
 import { CreateBulkMembershipsUseCase } from "../features/memberships/application/use-cases/create-bulk-memberships.use-case";
 import { GetMembershipUseCase } from "../features/memberships/application/use-cases/get-membership.use-case";

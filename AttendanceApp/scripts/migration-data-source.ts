@@ -22,6 +22,8 @@ import { SessionOccurrenceEntity } from '../src/features/session-occurrences/dom
 import { SessionAttendanceEntity } from '../src/features/session-attendance/domain/entities/session-attendance-entity'
 import { MembershipEntity } from '../src/features/memberships/domain/entities/membership-entity'
 import { UserMembershipEntity } from '../src/features/user-memberships/domain/entities/user-membership-entity'
+import { DawahDayEntity } from '../src/features/dawah-days/domain/entities/dawah-day-entity'
+import { EmirSessionPreferenceEntity } from '../src/features/emir-session-preferences/domain/entities/emir-session-preference-entity'
 
 console.log(__dirname + "/../migrations/*.ts")
 
@@ -33,6 +35,8 @@ const entities = [
   SessionAttendanceEntity,
   MembershipEntity,
   UserMembershipEntity,
+  DawahDayEntity,
+  EmirSessionPreferenceEntity,
 ];
 
 const AppDataSource = createDataSource(
