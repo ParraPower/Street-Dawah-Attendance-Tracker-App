@@ -37,6 +37,7 @@ services:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
+      BASE_URL: ${BASE_URL}
     command: npm run migration:run -- local
     restart: "no"
 
@@ -57,6 +58,7 @@ services:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
+      BASE_URL: ${BASE_URL}
     ports:
       - "4002:${PORT}"
     command: npm run start:local

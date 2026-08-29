@@ -27,6 +27,22 @@ export class CreateBulkUsersUseCase {
       });
     }
 
+    // Ensure mobile numbers are unique within the incoming bulk
+    const mobileCounts = mobiles.reduce((acc, m) => {
+      const key = String(m);
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const duplicateMobiles = Object.keys(mobileCounts).filter((k) => mobileCounts[k] > 1);
+    if (duplicateMobiles.length > 0) {
+      const duplicateUsers = users.filter((u) => duplicateMobiles.includes(String(u.mobile)));
+      throw new ValidationError("Duplicate mobile numbers found in bulk insert", {
+        duplicateMobiles,
+        duplicateUsers,
+      });
+    }
+
     // Check for existing users with same mobile
     const existingUsers = await Promise.all(
       mobiles.map((mobile) => this.repo.findByMobile(mobile))

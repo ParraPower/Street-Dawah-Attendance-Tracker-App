@@ -58,7 +58,7 @@ export class CreateBulkUsersUseCase {
 
     console.log(`Creating ${userEntitiesCreate.length} users. Omitted ${omittedUsers.length} users due to existing active users with same username or email.`)
 
-    const userEntitiesResponse = [] as UserEntity[] //await this.repo.createBulk(userEntitiesCreate)
+    const userEntitiesResponse = await this.repo.createBulk(userEntitiesCreate)
 
     result = userEntitiesResponse.map((entity) => {
       return mapper.map(entity, UserEntity, UserDto)
@@ -94,21 +94,21 @@ export class CreateBulkUsersUseCase {
   }
 
   getCategorizedUsersByUsernamesAndEmails = (incomingUsers: CreateUserDto[], existingUsers: UserEntity[]) => {
-    const activeUsers = existingUsers.filter(x => this.userService.isUserActive(x))
-    const activeUsersEmails = activeUsers.filter(x => isNotNullOrEmtpy(x.email)).map(x => x.email) as string[]
-    const activeUsersUsernames = activeUsers.map(x => x.username.toLocaleLowerCase())
+    const nonDeletedUsers = existingUsers.filter(this.userService.isNotDeletedUser)
+    const nonDeletedUsersEmails = nonDeletedUsers.filter(x => isNotNullOrEmtpy(x.email)).map(x => x.email) as string[]
+    const nonDeletedUsersUsernames = nonDeletedUsers.map(x => x.username.toLocaleLowerCase())
 
-    const omittedUsers = incomingUsers.filter(x => activeUsersUsernames.includes(x.username.toLowerCase()) || (x.email && isNotNullOrEmtpy(x.email) && activeUsersEmails.includes(x.email)))
-    const includedUsers = incomingUsers.filter(x => !activeUsersUsernames.includes(x.username.toLowerCase()) && (!x.email || !isNotNullOrEmtpy(x.email) || !activeUsersEmails.includes(x.email)))
+    const omittedUsers = incomingUsers.filter(x => nonDeletedUsersUsernames.includes(x.username.toLowerCase()) || (x.email && isNotNullOrEmtpy(x.email) && nonDeletedUsersEmails.includes(x.email)))
+    const includedUsers = incomingUsers.filter(x => !nonDeletedUsersUsernames.includes(x.username.toLowerCase()) && (!x.email || !isNotNullOrEmtpy(x.email) || !nonDeletedUsersEmails.includes(x.email)))
 
     return { includedUsers, omittedUsers }
   }
 
   async *getCategorizedUsersByUsernames(incomingUsers: CreateUserDto[], existingUsers: UserEntity[]) {
-    const activeUsers = existingUsers.filter(x => this.userService.isUserActive(x))
+    const nonDeletedUsers = existingUsers.filter(x => x.isDeleted !== true)
 
     const usernameMap = new Map(
-      activeUsers.map(u => [u.username.toLowerCase(), u])
+      nonDeletedUsers.map(u => [u.username.toLowerCase(), u])
     )
 
     for (const user of incomingUsers) {

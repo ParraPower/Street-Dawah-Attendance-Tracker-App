@@ -6,6 +6,6 @@ export class UserService {
 
   }
 
-  public isUserActive = (user: UserEntity) => user && isNotNullOrEmtpy(user.passwordHash) && user.scopes?.length > 0 && !user.isDeleted
-  
+  public isUserActive = (user: UserEntity) => user && isNotNullOrEmtpy(user.passwordHash) && user.scopes?.length > 0 && this.isNotDeletedUser(user)
+  public isNotDeletedUser = (user: UserEntity) => user && user.isDeleted !== true
 }

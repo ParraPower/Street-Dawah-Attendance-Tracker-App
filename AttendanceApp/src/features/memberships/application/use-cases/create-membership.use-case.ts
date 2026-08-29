@@ -11,7 +11,8 @@ export class CreateMembershipUseCase {
     const name = this.service.normalizeName(input.name || "");
     if (!name) throw new Error("Membership name is required");
     const membershipTypesFlag = this.service.validateTypesFlag(input.membershipTypesFlag ?? 0);
+    const code = this.service.validateCode(input.code);
     if (await this.repo.findByName(name)) throw new Error("Membership already exists");
-    return mapper.map(await this.repo.create({ ...input, name, membershipTypesFlag }), MembershipEntity, MembershipDto);
+    return mapper.map(await this.repo.create({ ...input, name, membershipTypesFlag, code }), MembershipEntity, MembershipDto);
   }
 }

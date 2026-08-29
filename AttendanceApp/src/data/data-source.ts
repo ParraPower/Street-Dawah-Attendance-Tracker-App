@@ -22,5 +22,5 @@ import { env } from '../infrastructure/config/env';
 // } from '@/domains/entities-index';
 //import { Membership } from '@/domains/membership/entities/membership';
 
-const AppDataSource = createDataSource(env.db.url, [UserEntity, LocationEntity, SessionEntity, SessionOccurrenceEntity, SessionAttendanceEntity, MembershipEntity, UserMembershipEntity, DawahDayEntity, EmirDateAvailabilityEntity, EmirSessionPreferenceEntity] as never, __dirname + "/../migrations/*.ts", { logging: true, synchronize: false })
+const AppDataSource = createDataSource(env.db.url, [UserEntity, LocationEntity, SessionEntity, SessionOccurrenceEntity, SessionAttendanceEntity, MembershipEntity, UserMembershipEntity, DawahDayEntity, EmirDateAvailabilityEntity, EmirSessionPreferenceEntity] as never, __dirname + "/../migrations/*.ts", { logging: false, synchronize: false })
 export default AppDataSource;

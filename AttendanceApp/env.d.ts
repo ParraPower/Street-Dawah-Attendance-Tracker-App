@@ -5,6 +5,8 @@ declare global {
         AUTH_API_JWT_AUDIENCE: string;
         AUTH_API_JWT_ISSUER: string;
 
+        BASE_URL: string;
+
         PORT: string;
         NODE_ENV: string;
         DATABASE_URL: string;

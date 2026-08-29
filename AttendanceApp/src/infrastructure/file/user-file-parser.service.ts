@@ -80,11 +80,11 @@ export class UserFileParserService implements IFileParser {
         dto.name = this.getCellValue(row.getCell(1));
         dto.reference = this.getCellValue(row.getCell(2));
         dto.joinedDate = this.getCellDateValue(row.getCell(3));
-        dto.lastAttendance = this.getCellDateValue(row.getCell(4));
-        dto.location = this.getCellValue(row.getCell(5));
-        dto.regularLocation = this.getCellValue(row.getCell(6));
-        dto.lastAttendedBefore60Days = this.getCellValue(row.getCell(7));
-        dto.number = this.getCellValue(row.getCell(8))!;
+        dto.number = this.getCellValue(row.getCell(4), "number")!;
+        dto.lastAttendance = this.getCellDateValue(row.getCell(5));
+        dto.location = this.getCellValue(row.getCell(6));
+        dto.regularLocation = this.getCellValue(row.getCell(7));
+        dto.lastAttendedBefore60Days = this.getCellValue(row.getCell(8));
         dto.whatsappLink = this.getCellValue(row.getCell(9));
         dto.status = this.getCellValue(row.getCell(10));
         dto.managementFeedbackrequiredtoremove = this.getCellValue(row.getCell(11));
@@ -256,8 +256,9 @@ export class UserFileParserService implements IFileParser {
   /**
    * Get cell value, handling null/undefined
    */
-  private getCellValue(cell: ExcelJS.Cell): string | undefined {
+  private getCellValue(cell: ExcelJS.Cell, columnName?: string): string | undefined {
     const value = cell.value;
+
     if (value === null || value === undefined) {
       return undefined;
     }

@@ -1,5 +1,5 @@
 import { mapper } from "../../../../infrastructure/mapping/mapper";
-import { MembershipTypeEnum } from "../../../../domains/membership/enums/membership-type-enum";
+import { MembershipTypeEnum } from "../../../memberships/domain/enums/membership-type-enum";
 import { IEmirDateAvailabilityRepository } from "../../../emir-date-availabilities/domain/repositories/iemir-date-availability-repository";
 import { EmirSessionPreferenceEntity } from "../../../emir-session-preferences/domain/entities/emir-session-preference-entity";
 import { IEmirSessionPreferenceRepository } from "../../../emir-session-preferences/domain/repositories/iemir-session-preference-repository";

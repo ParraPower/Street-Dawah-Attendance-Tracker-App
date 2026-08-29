@@ -3,7 +3,7 @@ export class ImportUserResponseDto {
   username!: string;
   number!: string;
   normalizedNumber?: string;
-  authUserId?: string;
+  authUserId?: number;
   id?: number;
   email?: string;
   scopes?: string[];

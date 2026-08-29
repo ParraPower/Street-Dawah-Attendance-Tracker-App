@@ -1,10 +1,11 @@
-import { MembershipTypeEnum } from "@attendance/domains/membership/enums/membership-type-enum";
+import { MembershipTypeEnum } from "@attendance/features/memberships/domain/enums/membership-type-enum";
 
 const membershipMap: Record<string, MembershipTypeEnum> = {
     "new": MembershipTypeEnum.NEW_VOLUNTEERS,
     "regular": MembershipTypeEnum.REGULAR_MEMBERS,
+    "management": MembershipTypeEnum.MANAGEMENT,
     "emir": MembershipTypeEnum.EMIR,
-    "admin": MembershipTypeEnum.ADMIN
+    "shurah": MembershipTypeEnum.SHURAH
 };
 export function mapImportGroupTypeToMembershipType(input: string): MembershipTypeEnum {
 

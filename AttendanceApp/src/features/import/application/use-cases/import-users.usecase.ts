@@ -1,9 +1,10 @@
 //<project-root>/AttendanceApp/src/features/import/application/use-cases/import-users.usecase.ts
 
-import { ImportRowRequestDto, ImportUsersRequestDto, NormalizedImportUserRequestDto } from "../dtos/import-user-request.dto";
+import { ImportUsersRequestDto, NormalizedImportUserRequestDto } from "../dtos/import-user-request.dto";
 import { ImportUserResponseDto, ImportUsersBulkResponseDto } from "../dtos/import-user-response.dto";
 import { IImportUserService } from "../../domain/services/import-user.service";
 import { importUserSchema } from "../validators/import-user.schema";
+import { ValidationError } from "app-framework";
 import { CreateBulkUsersUseCase } from "@attendance/features/users/application/use-cases/create-bulk-users.usecase";
 import { mapper } from "@attendance/infrastructure/mapping/mapper";
 import { CreateUserDto } from "@attendance/features/users/application/dtos/create-user.dto";
@@ -13,7 +14,7 @@ export class ImportUsersUseCase {
   constructor(private importUserService: IImportUserService, private readonly createBulkUsersUseCase: CreateBulkUsersUseCase, private readonly userService: UserService) {}
 
   async execute(requestDto: ImportUsersRequestDto): Promise<ImportUsersBulkResponseDto> {
-    const validUsers: NormalizedImportUserRequestDto[] = [];
+    let validUsers: NormalizedImportUserRequestDto[] = [];
     const invalidUsers: ImportUserResponseDto[] = [];
     const validationErrors: string[] = [];
 
@@ -22,7 +23,7 @@ export class ImportUsersUseCase {
     // Validate each user
     for (let index = 0; index < requestDto.users.length; index++) {
       const user = requestDto.users[index];
-      console.log(`📋 Validating user at row ${index + 1}:`, user);
+      //console.log(`📋 Validating user at row ${index + 1}:`, user);
       const { error, value } = importUserSchema.validate(user, { convert: true });
 
       const normalizedNumber = user.number ? this.userService.normalizePhone(user.number) : undefined;
@@ -49,7 +50,7 @@ export class ImportUsersUseCase {
     }
 
     console.log(
-      `✅ Validation complete: ${validUsers.length} valid, ${invalidUsers.length} invalid`
+     `✅ Validation complete: ${validUsers.length} valid, ${invalidUsers.length} invalid`
     );
 
     // If all users are invalid, return early with validation errors
@@ -67,12 +68,52 @@ export class ImportUsersUseCase {
       };
     }
 
+    // Ensure no duplicate numbers within the incoming valid users
+    const keys = validUsers.map((v) => String(v.normalizedNumber ?? v.number ?? "")).filter(k => k !== "");
+    const keyCounts = keys.reduce((acc, k) => {
+      acc[k] = (acc[k] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const duplicateKeys = Object.keys(keyCounts).filter((k) => keyCounts[k] > 1);
+    if (duplicateKeys.length > 0) {
+      const duplicateUsers = validUsers.filter((v) => duplicateKeys.includes(String(v.normalizedNumber ?? v.number ?? "")));
+      throw new ValidationError("Duplicate numbers in import payload", {
+        duplicateNumbers: duplicateKeys,
+        duplicateUsers,
+      });
+    }
+
     // Call the service to import valid users
     const result = await this.importUserService.importUsers(validUsers);
 
+    // Assign authUserId from import results back to the validUsers so it can
+    // be persisted when creating local user entities.
+    if (result) {
+      // Match by normalizedNumber, username or raw number for robustness
+      const assignAuthId = (source: typeof result.createdUsers | typeof result.omittedUsers) => {
+        for (const r of source || []) {
+          const match = validUsers.find(
+            (v) =>
+              (v.normalizedNumber && r.normalizedNumber && v.normalizedNumber === r.normalizedNumber) ||
+              (v.username && r.username && v.username === r.username) ||
+              (v.number && r.number && v.number === r.number)
+          );
+          if (match && (r.authUserId)) {
+            console.log(`🔗 Assigning authUserId ${r.authUserId} to user with number ${match.number} and username ${match.username}`);
+            // assign as any to avoid strict DTO typing issues
+            (match).authUserId = r.authUserId;
+          }
+        }
+      };
+
+      assignAuthId(result.createdUsers);
+      assignAuthId(result.omittedUsers);
+    }
+
     // Map ImportRowRequestDto to CreateUserDto for bulk user creation
     const createUserDtos: CreateUserDto[] = validUsers.map((importRow) =>
-      mapper.map(importRow, ImportRowRequestDto, CreateUserDto)
+      mapper.map(importRow, NormalizedImportUserRequestDto, CreateUserDto)
     );
 
     // Insert successfully created users into users entity table before correlating results.

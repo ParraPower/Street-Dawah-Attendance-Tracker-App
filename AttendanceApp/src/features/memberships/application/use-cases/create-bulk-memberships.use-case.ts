@@ -17,8 +17,9 @@ export class CreateBulkMembershipsUseCase {
       const name = this.service.normalizeName(input.name || "");
       if (!name || names.has(name)) continue;
       const membershipTypesFlag = this.service.validateTypesFlag(input.membershipTypesFlag ?? 0);
+      const code = this.service.validateCode(input.code);
       names.add(name);
-      entities.push({ ...input, name, membershipTypesFlag } as MembershipEntity);
+      entities.push({ ...input, name, membershipTypesFlag, code } as MembershipEntity);
     }
     const created = await this.repo.createBulk(entities);
     return { createdMemberships: mapper.mapArray(created, MembershipEntity, MembershipDto), omittedMemberships };
