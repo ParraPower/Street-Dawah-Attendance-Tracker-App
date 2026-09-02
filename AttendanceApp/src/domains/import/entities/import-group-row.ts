@@ -12,5 +12,5 @@ export class ImportGroupRow implements IBaseEntityStub, IBaseAudit {
     createdBy!: number;
     updatedAt?: Date | undefined;
     updatedBy?: number | undefined;
-
+    code!: string;
 }

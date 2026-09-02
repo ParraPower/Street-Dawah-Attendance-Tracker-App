@@ -15,6 +15,9 @@ import { buildSessionOccurrenceController } from './bootstrap/session-occurrence
 import { buildSessionAttendanceController } from './bootstrap/session-attendance-module';
 import { buildMembershipController } from './bootstrap/membership-module';
 import { buildUserMembershipController } from './bootstrap/user-membership-module';
+import { buildDawahDayController } from './bootstrap/dawah-day-module';
+import { buildEmirDateAvailabilityController } from './bootstrap/emir-date-availability-module';
+import { buildEmirSessionPreferenceController } from './bootstrap/emir-session-preference-module';
 
 export const app = express();
 
@@ -35,6 +38,9 @@ export function buildControllers(app: Express, dataSource: DataSource) {
     const SessionAttendanceController = buildSessionAttendanceController(dataSource);
     const MembershipController = buildMembershipController(dataSource);
     const UserMembershipController = buildUserMembershipController(dataSource);
+    const DawahDayController = buildDawahDayController(dataSource);
+    const EmirDateAvailabilityController = buildEmirDateAvailabilityController(dataSource);
+    const EmirSessionPreferenceController = buildEmirSessionPreferenceController(dataSource);
 
     app.use('/import', ImportController.router);
     app.use('/locations', LocationController.router);
@@ -43,6 +49,9 @@ export function buildControllers(app: Express, dataSource: DataSource) {
     app.use('/session-attendances', SessionAttendanceController.router);
     app.use('/memberships', MembershipController.router);
     app.use('/user-memberships', UserMembershipController.router);
+    app.use('/dawah-days', DawahDayController.router);
+    app.use('/emir-date-availabilities', EmirDateAvailabilityController.router);
+    app.use('/emir-session-preferences', EmirSessionPreferenceController.router);
 
     // Centralized error handler (must be last)
     app.use(registerErrors());

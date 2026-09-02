@@ -36,6 +36,7 @@ export class ImportUsersRequestDto {
 
 export class NormalizedImportUserRequestDto extends ImportRowRequestDto {
   normalizedNumber!: string;
+  authUserId?: number; // Optional auth user ID for linking to existing users
 }
 
 // Alias for backward compatibility

@@ -5,7 +5,7 @@ import { isNotNullOrEmpty } from "app-framework";
 import { NormalizedImportUserRequestDto } from "@attendance/features/import/application/dtos/import-user-request.dto";
 
 type createBulkUserResponseUserDto = {
-  id: string;
+  id: number;
   email: string;
   username: string;
   scopes: string[];

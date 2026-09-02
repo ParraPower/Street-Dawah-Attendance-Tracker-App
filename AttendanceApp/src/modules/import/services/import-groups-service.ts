@@ -109,6 +109,7 @@ export class ImportGroupService {
                 if (rowNumber === 1) return; // skip header row
 
                 const rowData: ImportGroupRow = {
+                    code: row.getCell(8).value as string,
                     importId: 1,
                     id: 1,
                     Name: row.getCell(6).value as string,

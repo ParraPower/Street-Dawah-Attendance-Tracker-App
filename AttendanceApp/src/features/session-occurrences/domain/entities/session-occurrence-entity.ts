@@ -11,6 +11,12 @@ export class SessionOccurrenceEntity extends BaseEntity implements ISessionOccur
   @Column({ type: "date" })
   occurrenceDate!: string;
 
+  @Column({ type: "boolean", nullable: true, default: null })
+  showPublicly?: boolean | null;
+
+  @Column({ type: "integer", nullable: true, default: null })
+  mainEmirUserId?: number | null;
+
   @Column({ type: "integer", nullable: true })
   NoOfShahadahs?: number | null;
 

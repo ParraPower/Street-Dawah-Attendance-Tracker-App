@@ -7,6 +7,27 @@ export class SessionOccurrenceRepository extends BaseRepository<SessionOccurrenc
   constructor(repo: Repository<SessionOccurrenceEntity>) { super(repo); }
   findById(id: number): Promise<SessionOccurrenceEntity | null> { return this.findOne({ where: { id } }); }
   findAll(): Promise<SessionOccurrenceEntity[]> { return this.find(); }
+  findPublic(): Promise<SessionOccurrenceEntity[]> {
+    return this.repo.createQueryBuilder("occurrence")
+      .where('occurrence."showPublicly" IS TRUE')
+      .andWhere('occurrence."isDeleted" IS NOT TRUE')
+      .getMany();
+  }
+  findByDateRange(startDate: string, endDate: string, includeNonPublic: boolean): Promise<SessionOccurrenceEntity[]> {
+    const query = this.repo.createQueryBuilder("occurrence")
+      .where("occurrence.occurrenceDate >= :startDate", { startDate })
+      .andWhere("occurrence.occurrenceDate <= :endDate", { endDate })
+      .andWhere("occurrence.isDeleted IS NOT TRUE");
+    if (!includeNonPublic) query.andWhere('occurrence."showPublicly" IS TRUE');
+    return query.orderBy("occurrence.occurrenceDate", "ASC").addOrderBy("occurrence.sessionId", "ASC").getMany();
+  }
+  findPublicById(id: number): Promise<SessionOccurrenceEntity | null> {
+    return this.repo.createQueryBuilder("occurrence")
+      .where('occurrence."id" = :id', { id })
+      .andWhere('occurrence."showPublicly" IS TRUE')
+      .andWhere('occurrence."isDeleted" IS NOT TRUE')
+      .getOne();
+  }
   findBySessionAndDate(sessionId: number, occurrenceDate: string, excludeId?: number): Promise<SessionOccurrenceEntity | null> {
     const query = this.repo.createQueryBuilder("occurrence")
       .where("occurrence.sessionId = :sessionId", { sessionId })
@@ -16,6 +37,9 @@ export class SessionOccurrenceRepository extends BaseRepository<SessionOccurrenc
     return query.getOne();
   }
   async create(occurrence: Partial<SessionOccurrenceEntity>): Promise<SessionOccurrenceEntity> { return this.repo.save(this.repo.create(occurrence)); }
+  async createBulk(occurrences: Partial<SessionOccurrenceEntity>[]): Promise<SessionOccurrenceEntity[]> {
+    return this.repo.manager.transaction(async (manager) => manager.save(SessionOccurrenceEntity, occurrences.map((occurrence) => manager.create(SessionOccurrenceEntity, occurrence))));
+  }
   async update(id: number, occurrence: Partial<SessionOccurrenceEntity>): Promise<SessionOccurrenceEntity | null> {
     const existing = await this.findById(id);
     if (!existing) return null;

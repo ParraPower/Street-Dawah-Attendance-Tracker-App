@@ -7,6 +7,9 @@ import { createSessionProfile } from '../../features/sessions/application/mapper
 import { createSessionOccurrenceProfile } from '../../features/session-occurrences/application/mappers/session-occurrence.mapper';
 import { createSessionAttendanceProfile } from '../../features/session-attendance/application/mappers/session-attendance.mapper';
 import { createUserMembershipProfile } from '../../features/user-memberships/application/mappers/user-membership.mapper';
+import { createDawahDayProfile } from '../../features/dawah-days/application/mappers/dawah-day.mapper';
+import { createEmirDateAvailabilityProfile } from '../../features/emir-date-availabilities/application/mappers/emir-date-availability.mapper';
+import { createEmirSessionPreferenceProfile } from '../../features/emir-session-preferences/application/mappers/emir-session-preference.mapper';
 
 export function registerProfiles() {
   console.log('Registering Automapper profiles...');
@@ -20,6 +23,9 @@ export function registerProfiles() {
   createSessionOccurrenceProfile();
   createSessionAttendanceProfile();
   createUserMembershipProfile();
+  createDawahDayProfile();
+  createEmirDateAvailabilityProfile();
+  createEmirSessionPreferenceProfile();
 
   console.log('Automapper profiles registered.');
 }

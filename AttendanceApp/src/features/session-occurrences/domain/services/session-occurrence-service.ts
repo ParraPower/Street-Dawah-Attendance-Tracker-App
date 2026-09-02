@@ -11,6 +11,18 @@ export class SessionOccurrenceService {
     }
   }
 
+  validateShowPublicly(value: boolean | null | undefined): void {
+    if (value !== undefined && value !== null && typeof value !== "boolean") {
+      throw new Error("showPublicly must be a boolean or null");
+    }
+  }
+
+  validateMainEmirUserId(value: number | null | undefined): void {
+    if (value !== undefined && value !== null && (!Number.isInteger(value) || value <= 0)) {
+      throw new Error("mainEmirUserId must be a positive integer or null");
+    }
+  }
+
   normalizeDate(date: string): string {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error("occurrenceDate must use YYYY-MM-DD format");
     const parsed = new Date(`${date}T00:00:00Z`);

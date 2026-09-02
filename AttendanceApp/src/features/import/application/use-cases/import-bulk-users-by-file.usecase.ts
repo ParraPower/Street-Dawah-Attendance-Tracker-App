@@ -27,7 +27,7 @@ export class ImportBulkUsersByFileUseCase {
       console.log(`📊 Import users completed: ${result.createdUsers.length} created, ${result.omittedUsers.length} omitted, ${result.errors?.length || 0} errors`)
       return result;
     } catch (parseErr: any) {
-      console.error("❌ File parsing error:", parseErr.message);
+      console.error("❌ File parsing error:", parseErr.message, parseErr.stack);
       // #TODO: create custom error class for file parsing error
       // const fileParsingError = new FileParsingError(parseErr.message);
       throw new FileParsingError(parseErr.message || "Failed to parse file");

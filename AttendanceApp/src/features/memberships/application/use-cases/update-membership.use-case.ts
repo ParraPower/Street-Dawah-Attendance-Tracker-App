@@ -16,6 +16,7 @@ export class UpdateMembershipUseCase {
       if (duplicate && duplicate.id !== id) throw new Error("Membership already exists");
     }
     if (input.membershipTypesFlag !== undefined) update.membershipTypesFlag = this.service.validateTypesFlag(input.membershipTypesFlag);
+    if (input.code !== undefined) update.code = this.service.validateCode(input.code);
     const membership = await this.repo.update(id, update);
     return membership ? mapper.map(membership, MembershipEntity, MembershipDto) : null;
   }
