@@ -7,7 +7,7 @@ import { IHasherService } from "../../domain/services/hasher-service";
 import { AuthService } from "../../domain/services/auth-service";
 import { UserDto } from "../../../users/application/dtos/user.dto";
 import { UserService } from "@auth/features/users/domain/services/user-service";
-
+import { ValidationError } from "@auth/shared/infrastructure/middleware/global-error-handler";
 
 export class LoginUserUseCase {
   constructor(
@@ -32,12 +32,12 @@ export class LoginUserUseCase {
     else {
       user = await this.repo.findByUsername(username);
     }
-    if (!user) throw new Error('Invalid credentials');
+    if (!user) throw new ValidationError('Invalid credentials');
 
-    if (!this.userService.isUserActive(user)) new Error('Invalid user')
+    if (!this.userService.isUserActive(user)) new ValidationError('Invalid credentials')
 
     const ok = await this.hashService.verify(password, user.passwordHash!);
-    if (!ok) throw new Error('Invalid credentials');
+    if (!ok) throw new ValidationError('Invalid credentials');
 
     const access = this.authService.signAccessToken(user.id.toString(), user.scopes);
     const refresh = this.authService.signRefreshToken(user.id.toString(), user.scopes);
