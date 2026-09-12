@@ -30,3 +30,6 @@ export * from './middleware/create-global-error-handler';
 export * from './middleware/auth-middleware';
 export * from './middleware/audience-guard';
 export * from './utils/strings';
+export * from './utils/interfaces/mobile.service';
+export * from './utils/services/mobile.service';
+export * from './utils/types/mobile.service.types';

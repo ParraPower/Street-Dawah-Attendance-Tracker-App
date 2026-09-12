@@ -13,6 +13,8 @@ declare global {
         
         BYPASS_AUTHN: string;
         BYPASS_AUTHZ: string;
+
+        FINAL_MOBILE_FORMAT: string;
       }
     }
   }
