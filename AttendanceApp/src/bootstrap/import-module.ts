@@ -1,4 +1,4 @@
-import { KeyCacheService, ScopeService } from "app-framework";
+import { KeyCacheService, ScopeService, MobileService } from "app-framework";
 import { ImportUsersUseCase } from "../features/import/application/use-cases/import-users.usecase";
 import { ImportController } from "../features/import/infrastructure/http/import-controller";
 import { IApiClientProvider } from "../infrastructure/api";
@@ -55,6 +55,7 @@ export function buildImportController(apiClientProvider: IApiClientProvider, dat
 
   // 2. Domain services (reuse from app-framework)
   const scopeService = new ScopeService();
+  const mobileService = new MobileService();
   const jwtService = new AttendanceAppJwtService(new KeyCacheService()); // Stub implementation, as JWT validation is handled by Auth API middleware
   const fileParserService = new UserFileParserService(); // Assuming this is implemented elsewhere
   const locationFileParserService = new LocationFileParserService();
@@ -68,8 +69,8 @@ export function buildImportController(apiClientProvider: IApiClientProvider, dat
   const uploadFileService = new UploadFileServiceFactory();
 
   // 3. Application use cases
-  const createBulkUsersUseCase = new CreateBulkUsersUseCase(userService, userRepository);
-  const importUsersUseCase = new ImportUsersUseCase(importUserService, createBulkUsersUseCase, userService);
+  const createBulkUsersUseCase = new CreateBulkUsersUseCase(userService, userRepository, mobileService);
+  const importUsersUseCase = new ImportUsersUseCase(importUserService, createBulkUsersUseCase);
   const uploadFileUseCase = new ImportBulkUsersByFileUseCase(fileParserService, importUsersUseCase);
   const importLocationsUseCase = new ImportBulkLocationsByFileUseCase(
     locationFileParserService,

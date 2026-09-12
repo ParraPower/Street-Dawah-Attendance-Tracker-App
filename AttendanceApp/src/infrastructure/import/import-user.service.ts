@@ -13,7 +13,53 @@ type createBulkUserResponseUserDto = {
 }
 
 export class ImportUserService implements IImportUserService {
-  constructor(private readonly apiClientProvider: IApiClientProvider) {
+  constructor(private readonly apiClientProvider: IApiClientProvider) {}
+  normalizeMobile(mobileNumber: string): string {
+  if (!mobileNumber) return '';
+
+  // Trim and remove leading apostrophes
+  let trimmed = mobileNumber.trim().replace(/^'+/, '');
+
+  // Preserve leading plus
+  const hadPlus = trimmed.startsWith('+');
+
+  // Extract digits only (but keep plus if present)
+  const digitsOnly = hadPlus
+    ? '+' + trimmed.replace(/\D/g, '').replace(/^\+/, '')
+    : trimmed.replace(/\D/g, '');
+
+  // --- AUSTRALIAN MOBILE DETECTION ---
+  const isPlus61 = digitsOnly.startsWith('+61');
+  const is61 = digitsOnly.startsWith('61');
+  const is04 = digitsOnly.startsWith('04');
+
+  // Australian mobile numbers always start with "4" after country code
+  const australianMobile =
+    (isPlus61 && digitsOnly.substring(3, 4) === '4') ||
+    (is61 && digitsOnly.substring(2, 3) === '4') ||
+    (is04 && digitsOnly.substring(1, 2) === '4');
+
+  if (australianMobile) {
+    // Normalize to +614xxxxxxxx
+    if (isPlus61) {
+      return `+61${digitsOnly.substring(3)}`;
+    }
+    if (is61) {
+      return `+61${digitsOnly.substring(2)}`;
+    }
+    if (is04) {
+      return `+61${digitsOnly.substring(1)}`;
+    }
+  }
+
+  // --- NON-AUSTRALIAN INTERNATIONAL NUMBERS ---
+  // If already has +, return cleaned version
+  if (hadPlus) {
+    return `+${digitsOnly.replace(/\D/g, '')}`;
+  }
+
+  // Otherwise add + in front
+  return `+${digitsOnly}`;
   }
 
   async importUsers(users: NormalizedImportUserRequestDto[], authToken?: string): Promise<ImportUsersBulkResponseDto> {

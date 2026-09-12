@@ -6,12 +6,13 @@ import { UserEntity } from "../../domain/entities/user-entity";
 import { UserDto } from "../dtos/user.dto";
 import { ValidationError } from "app-framework";
 import { CreateBulkUsersResponseDto } from "../dtos/create-bulk-users-response.dto";
-import { isNotNullOrEmpty } from "app-framework";
+import { isNotNullOrEmpty, IMobileService } from "app-framework";
 
 export class CreateBulkUsersUseCase {
   constructor(
     private readonly userService: UserService,
-    private readonly repo: IUserRepository
+    private readonly repo: IUserRepository,
+    private readonly mobileService: IMobileService
   ) {}
 
   execute = async (users: CreateUserDto[]): Promise<CreateBulkUsersResponseDto> => {
@@ -24,6 +25,13 @@ export class CreateBulkUsersUseCase {
     if (mobiles.filter((x) => !isNotNullOrEmpty(x))?.length > 0) {
       throw new ValidationError("Invalid users where attempted to be inserted", {
         invalidUsers: users.filter((x) => !isNotNullOrEmpty(x.mobile)),
+      });
+    }
+
+    // Validate all mobile numbers are valid international numbers
+    if (mobiles.filter((x) => !this.mobileService.isInternationalNumber(x))?.length > 0) {
+      throw new ValidationError("Invalid users where attempted to be inserted", {
+        invalidUsers: users.filter((x) => !this.mobileService.isInternationalNumber(x.mobile)),
       });
     }
 

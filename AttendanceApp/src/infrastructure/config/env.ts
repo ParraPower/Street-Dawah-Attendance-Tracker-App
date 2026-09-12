@@ -9,4 +9,5 @@ export const env = {
     url: process.env.DB_URL!,
   },
   logFormat: process.env.LOG_FORMAT || 'dev',
+  finalMobileFormat: process.env.FINAL_MOBILE_FORMAT
 };
