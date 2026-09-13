@@ -57,7 +57,7 @@ export function buildImportController(apiClientProvider: IApiClientProvider, dat
   const scopeService = new ScopeService();
   const mobileService = new MobileService();
   const jwtService = new AttendanceAppJwtService(new KeyCacheService()); // Stub implementation, as JWT validation is handled by Auth API middleware
-  const fileParserService = new UserFileParserService(); // Assuming this is implemented elsewhere
+  const fileParserService = new UserFileParserService(mobileService); // Assuming this is implemented elsewhere
   const locationFileParserService = new LocationFileParserService();
   const userService = new UserService(); // Assuming this is implemented elsewhere
   const locationService = new LocationService();

@@ -1,6 +1,7 @@
 import ExcelJS from "exceljs";
 import { ImportRowRequestDto } from "../../features/import/application/dtos/import-user-request.dto";
 import { IFileParser } from "../../features/import/domain/services/file-parser.interface";
+import { IMobileService } from "@shared/index";
 
 /**
  * Unified file parser service supporting Excel and CSV formats
@@ -9,6 +10,8 @@ import { IFileParser } from "../../features/import/domain/services/file-parser.i
  */
 export class UserFileParserService implements IFileParser {
   private readonly CURRENT_MEMBERS_SHEET = "Current";
+
+  constructor(private readonly mobileService: IMobileService) { }
 
   /**
    * Parse xlsx or csv file and extract import data
@@ -80,7 +83,7 @@ export class UserFileParserService implements IFileParser {
         dto.name = this.getCellValue(row.getCell(1));
         dto.reference = this.getCellValue(row.getCell(2));
         dto.joinedDate = this.getCellDateValue(row.getCell(3));
-        dto.number = this.getCellValue(row.getCell(4), "number")!;
+        dto.number = this.normalizeMobileNumber(this.getCellValue(row.getCell(4))!);
         dto.lastAttendance = this.getCellDateValue(row.getCell(5));
         dto.location = this.getCellValue(row.getCell(6));
         dto.regularLocation = this.getCellValue(row.getCell(7));
@@ -88,12 +91,12 @@ export class UserFileParserService implements IFileParser {
         dto.whatsappLink = this.getCellValue(row.getCell(9));
         dto.status = this.getCellValue(row.getCell(10));
         dto.managementFeedbackrequiredtoremove = this.getCellValue(row.getCell(11));
-        dto.outreachDate =  this.normalizeOutreachDate(this.getCellValue(row.getCell(12)));
+        dto.outreachDate = this.normalizeOutreachDate(this.getCellValue(row.getCell(12)));
         dto.whoReachedOut = this.getCellValue(row.getCell(13));
         dto.socials = this.getCellBooleanValue(row.getCell(14));
         dto.university = this.getCellBooleanValue(row.getCell(15));
         dto.outcome = this.getCellValue(row.getCell(16));
-        dto.username = dto.number; 
+        dto.username = dto.number;
         rows.push(dto);
       });
 
@@ -107,46 +110,47 @@ export class UserFileParserService implements IFileParser {
     }
   }
 
-  
-  normalizeOutreachDate = (value: string | Date | number | null | undefined) : Date | null => {
-  if (!value) return null;
+  normalizeMobileNumber = (val: string) => this.mobileService.normalizeNumber(val)
 
-  // Already a valid Date object
-  if (value instanceof Date && !isNaN(value.getTime())) {
-    return value;
-  }
+  normalizeOutreachDate = (value: string | Date | number | null | undefined): Date | null => {
+    if (!value) return null;
 
-  // Excel serial number (very common!)
-  if (typeof value === "number") {
-    const excelEpoch = new Date(Date.UTC(1899, 11, 30));
-    return new Date(excelEpoch.getTime() + value * 86400000);
-  }
-
-  if (typeof value === "string") {
-    const trimmed = value.trim();
-    if (!trimmed) return null;
-
-    // dd.MM.yyyy
-    const dotMatch = trimmed.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
-    if (dotMatch) {
-      const [, d, m, y] = dotMatch;
-      return new Date(`${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`);
+    // Already a valid Date object
+    if (value instanceof Date && !isNaN(value.getTime())) {
+      return value;
     }
 
-    // d/MM/yyyy
-    const slashMatch = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-    if (slashMatch) {
-      const [, d, m, y] = slashMatch;
-      return new Date(`${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`);
+    // Excel serial number (very common!)
+    if (typeof value === "number") {
+      const excelEpoch = new Date(Date.UTC(1899, 11, 30));
+      return new Date(excelEpoch.getTime() + value * 86400000);
     }
 
-    // fallback for ISO or others
-    const parsed = new Date(trimmed);
-    if (!isNaN(parsed.getTime())) return parsed;
-  }
+    if (typeof value === "string") {
+      const trimmed = value.trim();
+      if (!trimmed) return null;
 
-  return null; // invalid date
-};
+      // dd.MM.yyyy
+      const dotMatch = trimmed.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+      if (dotMatch) {
+        const [, d, m, y] = dotMatch;
+        return new Date(`${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`);
+      }
+
+      // d/MM/yyyy
+      const slashMatch = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      if (slashMatch) {
+        const [, d, m, y] = slashMatch;
+        return new Date(`${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`);
+      }
+
+      // fallback for ISO or others
+      const parsed = new Date(trimmed);
+      if (!isNaN(parsed.getTime())) return parsed;
+    }
+
+    return null; // invalid date
+  }
 
 
   /**
@@ -256,7 +260,7 @@ export class UserFileParserService implements IFileParser {
   /**
    * Get cell value, handling null/undefined
    */
-  private getCellValue(cell: ExcelJS.Cell, columnName?: string): string | undefined {
+  private getCellValue(cell: ExcelJS.Cell): string | undefined {
     const value = cell.value;
 
     if (value === null || value === undefined) {

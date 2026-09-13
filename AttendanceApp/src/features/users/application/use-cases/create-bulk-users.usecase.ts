@@ -28,6 +28,7 @@ export class CreateBulkUsersUseCase {
       });
     }
 
+
     // Validate all mobile numbers are valid international numbers
     if (mobiles.filter((x) => !this.mobileService.isInternationalNumber(x))?.length > 0) {
       throw new ValidationError("Invalid users where attempted to be inserted", {

@@ -58,16 +58,27 @@ export class CreateBulkUsersUseCase {
 
     console.log(`Creating ${userEntitiesCreate.length} users. Omitted ${omittedUsers.length} users due to existing active users with same username or email.`)
 
-    const userEntitiesResponse = await this.repo.createBulk(userEntitiesCreate)
+    try {
 
-    result = userEntitiesResponse.map((entity) => {
-      return mapper.map(entity, UserEntity, UserDto)
-    })
+      const userEntitiesResponse = await this.repo.createBulk(userEntitiesCreate)
 
-    return {
-      createdUsers: result,
-      omittedUsers
-    } as CreateBulkUsersResponseDto
+      result = userEntitiesResponse.map((entity) => {
+        return mapper.map(entity, UserEntity, UserDto)
+      })
+
+      return {
+        createdUsers: result,
+        omittedUsers
+
+      } as CreateBulkUsersResponseDto
+    }
+    catch {
+      return {
+        createdUsers: [],
+        omittedUsers: [],
+        failedUsers: omittedUsers
+      } as CreateBulkUsersResponseDto
+    }
   }
 
   guardBulkCreateUsingUsernamesAndEmails = (users: CreateUserDto[]) => {

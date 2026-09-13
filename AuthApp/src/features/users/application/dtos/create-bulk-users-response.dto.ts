@@ -12,4 +12,5 @@ export class CreateBulkUsersResponseOmittedUserDto {
 export class CreateBulkUsersResponseDto {
   createdUsers!: UserDto[]
   omittedUsers!: CreateBulkUsersResponseOmittedUserDto[]
+  failedUsers!: CreateBulkUsersResponseOmittedUserDto[]
 }
