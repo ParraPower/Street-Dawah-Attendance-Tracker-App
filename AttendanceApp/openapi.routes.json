@@ -1,0 +1,792 @@
+{
+  "routes": [
+    {
+      "controller": "ImportController",
+      "method": "post",
+      "path": "/users",
+      "handlerName": "bound ",
+      "options": {
+        "authenticate": true,
+        "authorizeScopes": [
+          "khaleef"
+        ]
+      },
+      "basePath": "/import"
+    },
+    {
+      "controller": "ImportController",
+      "method": "post",
+      "path": "/locations",
+      "handlerName": "bound ",
+      "options": {
+        "authenticate": true,
+        "authorizeScopes": [
+          "khaleef"
+        ]
+      },
+      "basePath": "/import"
+    },
+    {
+      "controller": "ImportController",
+      "method": "post",
+      "path": "/sessions",
+      "handlerName": "bound ",
+      "options": {
+        "authenticate": true,
+        "authorizeScopes": [
+          "khaleef"
+        ]
+      },
+      "basePath": "/import"
+    },
+    {
+      "controller": "ImportController",
+      "method": "post",
+      "path": "/memberships",
+      "handlerName": "bound ",
+      "options": {
+        "authenticate": true,
+        "authorizeScopes": [
+          "khaleef"
+        ]
+      },
+      "basePath": "/import"
+    },
+    {
+      "controller": "ImportController",
+      "method": "post",
+      "path": "/user-memberships",
+      "handlerName": "bound ",
+      "options": {
+        "authenticate": true,
+        "authorizeScopes": [
+          "khaleef"
+        ]
+      },
+      "basePath": "/import"
+    },
+    {
+      "controller": "LocationsController",
+      "method": "get",
+      "path": "/",
+      "handlerName": "bound list",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/locations"
+    },
+    {
+      "controller": "LocationsController",
+      "method": "get",
+      "path": "/:id",
+      "handlerName": "bound getOne",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/locations"
+    },
+    {
+      "controller": "LocationsController",
+      "method": "post",
+      "path": "/bulk",
+      "handlerName": "bound bulkCreate",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/locations"
+    },
+    {
+      "controller": "LocationsController",
+      "method": "post",
+      "path": "/",
+      "handlerName": "bound createOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/locations"
+    },
+    {
+      "controller": "LocationsController",
+      "method": "patch",
+      "path": "/:id",
+      "handlerName": "bound updateOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/locations"
+    },
+    {
+      "controller": "LocationsController",
+      "method": "delete",
+      "path": "/:id",
+      "handlerName": "bound deleteOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/locations"
+    },
+    {
+      "controller": "SessionController",
+      "method": "get",
+      "path": "/",
+      "handlerName": "bound list",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/sessions"
+    },
+    {
+      "controller": "SessionController",
+      "method": "get",
+      "path": "/:id",
+      "handlerName": "bound getOne",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/sessions"
+    },
+    {
+      "controller": "SessionController",
+      "method": "post",
+      "path": "/",
+      "handlerName": "bound createOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/sessions"
+    },
+    {
+      "controller": "SessionController",
+      "method": "patch",
+      "path": "/:id",
+      "handlerName": "bound updateOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/sessions"
+    },
+    {
+      "controller": "SessionController",
+      "method": "delete",
+      "path": "/:id",
+      "handlerName": "bound deleteOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/sessions"
+    },
+    {
+      "controller": "SessionOccurrenceController",
+      "method": "get",
+      "path": "/",
+      "handlerName": "bound list",
+      "basePath": "/session-occurrences"
+    },
+    {
+      "controller": "SessionOccurrenceController",
+      "method": "get",
+      "path": "/current-week",
+      "handlerName": "bound listCurrentWeek",
+      "options": {
+        "authenticate": true
+      },
+      "basePath": "/session-occurrences"
+    },
+    {
+      "controller": "SessionOccurrenceController",
+      "method": "get",
+      "path": "/:id",
+      "handlerName": "bound getOne",
+      "basePath": "/session-occurrences"
+    },
+    {
+      "controller": "SessionOccurrenceController",
+      "method": "post",
+      "path": "/",
+      "handlerName": "bound createOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/session-occurrences"
+    },
+    {
+      "controller": "SessionOccurrenceController",
+      "method": "post",
+      "path": "/bulk",
+      "handlerName": "bound createMany",
+      "options": {
+        "authorizeScopes": [
+          "mudeer",
+          "khaleef"
+        ]
+      },
+      "basePath": "/session-occurrences"
+    },
+    {
+      "controller": "SessionOccurrenceController",
+      "method": "post",
+      "path": "/create-this-weeks",
+      "handlerName": "bound createThisWeeksOccurrences",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/session-occurrences"
+    },
+    {
+      "controller": "SessionOccurrenceController",
+      "method": "patch",
+      "path": "/:id",
+      "handlerName": "bound updateOne",
+      "options": {
+        "authorizeScopes": [
+          "ameer"
+        ]
+      },
+      "basePath": "/session-occurrences"
+    },
+    {
+      "controller": "SessionOccurrenceController",
+      "method": "delete",
+      "path": "/:id",
+      "handlerName": "bound deleteOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/session-occurrences"
+    },
+    {
+      "controller": "SessionAttendanceController",
+      "method": "get",
+      "path": "/",
+      "handlerName": "bound list",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/session-attendances"
+    },
+    {
+      "controller": "SessionAttendanceController",
+      "method": "get",
+      "path": "/occurrence/:sessionOccurrenceId",
+      "handlerName": "bound listByOccurrence",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/session-attendances"
+    },
+    {
+      "controller": "SessionAttendanceController",
+      "method": "get",
+      "path": "/user/:userId",
+      "handlerName": "bound listByUser",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/session-attendances"
+    },
+    {
+      "controller": "SessionAttendanceController",
+      "method": "get",
+      "path": "/:id",
+      "handlerName": "bound getOne",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/session-attendances"
+    },
+    {
+      "controller": "SessionAttendanceController",
+      "method": "post",
+      "path": "/",
+      "handlerName": "bound createOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/session-attendances"
+    },
+    {
+      "controller": "SessionAttendanceController",
+      "method": "post",
+      "path": "/bulk",
+      "handlerName": "bound createMany",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/session-attendances"
+    },
+    {
+      "controller": "SessionAttendanceController",
+      "method": "patch",
+      "path": "/:id",
+      "handlerName": "bound updateOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/session-attendances"
+    },
+    {
+      "controller": "SessionAttendanceController",
+      "method": "delete",
+      "path": "/:id",
+      "handlerName": "bound deleteOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/session-attendances"
+    },
+    {
+      "controller": "MembershipController",
+      "method": "get",
+      "path": "/",
+      "handlerName": "bound list",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/memberships"
+    },
+    {
+      "controller": "MembershipController",
+      "method": "get",
+      "path": "/:id",
+      "handlerName": "bound getOne",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/memberships"
+    },
+    {
+      "controller": "MembershipController",
+      "method": "post",
+      "path": "/",
+      "handlerName": "bound createOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/memberships"
+    },
+    {
+      "controller": "MembershipController",
+      "method": "post",
+      "path": "/bulk",
+      "handlerName": "bound createMany",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/memberships"
+    },
+    {
+      "controller": "MembershipController",
+      "method": "patch",
+      "path": "/:id",
+      "handlerName": "bound updateOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/memberships"
+    },
+    {
+      "controller": "MembershipController",
+      "method": "delete",
+      "path": "/:id",
+      "handlerName": "bound deleteOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/memberships"
+    },
+    {
+      "controller": "UserMembershipController",
+      "method": "get",
+      "path": "/",
+      "handlerName": "bound list",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/user-memberships"
+    },
+    {
+      "controller": "UserMembershipController",
+      "method": "get",
+      "path": "/user/:userId",
+      "handlerName": "bound listByUser",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/user-memberships"
+    },
+    {
+      "controller": "UserMembershipController",
+      "method": "get",
+      "path": "/membership/:membershipId",
+      "handlerName": "bound listByMembership",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/user-memberships"
+    },
+    {
+      "controller": "UserMembershipController",
+      "method": "get",
+      "path": "/:id",
+      "handlerName": "bound getOne",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/user-memberships"
+    },
+    {
+      "controller": "UserMembershipController",
+      "method": "post",
+      "path": "/",
+      "handlerName": "bound createOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/user-memberships"
+    },
+    {
+      "controller": "UserMembershipController",
+      "method": "post",
+      "path": "/bulk",
+      "handlerName": "bound createMany",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/user-memberships"
+    },
+    {
+      "controller": "UserMembershipController",
+      "method": "patch",
+      "path": "/:id",
+      "handlerName": "bound updateOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/user-memberships"
+    },
+    {
+      "controller": "UserMembershipController",
+      "method": "delete",
+      "path": "/:id",
+      "handlerName": "bound deleteOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/user-memberships"
+    },
+    {
+      "controller": "DawahDayController",
+      "method": "get",
+      "path": "/",
+      "handlerName": "bound list",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/dawah-days"
+    },
+    {
+      "controller": "DawahDayController",
+      "method": "get",
+      "path": "/active",
+      "handlerName": "bound listActive",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/dawah-days"
+    },
+    {
+      "controller": "DawahDayController",
+      "method": "get",
+      "path": "/available",
+      "handlerName": "bound listAvailable",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/dawah-days"
+    },
+    {
+      "controller": "DawahDayController",
+      "method": "get",
+      "path": "/day/:dayOfWeek",
+      "handlerName": "bound getByDay",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/dawah-days"
+    },
+    {
+      "controller": "DawahDayController",
+      "method": "get",
+      "path": "/:id",
+      "handlerName": "bound getOne",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/dawah-days"
+    },
+    {
+      "controller": "DawahDayController",
+      "method": "post",
+      "path": "/",
+      "handlerName": "bound createOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/dawah-days"
+    },
+    {
+      "controller": "DawahDayController",
+      "method": "patch",
+      "path": "/:id",
+      "handlerName": "bound updateOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/dawah-days"
+    },
+    {
+      "controller": "DawahDayController",
+      "method": "delete",
+      "path": "/:id",
+      "handlerName": "bound deleteOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/dawah-days"
+    },
+    {
+      "controller": "EmirDateAvailabilityController",
+      "method": "get",
+      "path": "/",
+      "handlerName": "bound list",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/emir-date-availabilities"
+    },
+    {
+      "controller": "EmirDateAvailabilityController",
+      "method": "get",
+      "path": "/user/:userId",
+      "handlerName": "bound listByUser",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/emir-date-availabilities"
+    },
+    {
+      "controller": "EmirDateAvailabilityController",
+      "method": "get",
+      "path": "/date/:date",
+      "handlerName": "bound listByDate",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/emir-date-availabilities"
+    },
+    {
+      "controller": "EmirDateAvailabilityController",
+      "method": "get",
+      "path": "/:id",
+      "handlerName": "bound getOne",
+      "options": {
+        "authenticate": false
+      },
+      "basePath": "/emir-date-availabilities"
+    },
+    {
+      "controller": "EmirDateAvailabilityController",
+      "method": "post",
+      "path": "/",
+      "handlerName": "bound createOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/emir-date-availabilities"
+    },
+    {
+      "controller": "EmirDateAvailabilityController",
+      "method": "patch",
+      "path": "/:id",
+      "handlerName": "bound updateOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/emir-date-availabilities"
+    },
+    {
+      "controller": "EmirDateAvailabilityController",
+      "method": "patch",
+      "path": "/:id/toggle",
+      "handlerName": "bound toggleOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/emir-date-availabilities"
+    },
+    {
+      "controller": "EmirDateAvailabilityController",
+      "method": "delete",
+      "path": "/:id",
+      "handlerName": "bound deleteOne",
+      "options": {
+        "authorizeScopes": [
+          "mudeer"
+        ]
+      },
+      "basePath": "/emir-date-availabilities"
+    },
+    {
+      "controller": "EmirSessionPreferenceController",
+      "method": "get",
+      "path": "/",
+      "handlerName": "bound list",
+      "options": {
+        "authorizeScopes": [
+          "ameer"
+        ]
+      },
+      "basePath": "/emir-session-preferences"
+    },
+    {
+      "controller": "EmirSessionPreferenceController",
+      "method": "get",
+      "path": "/user/:userId",
+      "handlerName": "bound listByUser",
+      "options": {
+        "authorizeScopes": [
+          "ameer"
+        ]
+      },
+      "basePath": "/emir-session-preferences"
+    },
+    {
+      "controller": "EmirSessionPreferenceController",
+      "method": "get",
+      "path": "/session/:sessionId",
+      "handlerName": "bound listBySession",
+      "options": {
+        "authorizeScopes": [
+          "ameer"
+        ]
+      },
+      "basePath": "/emir-session-preferences"
+    },
+    {
+      "controller": "EmirSessionPreferenceController",
+      "method": "get",
+      "path": "/:id",
+      "handlerName": "bound getOne",
+      "options": {
+        "authorizeScopes": [
+          "ameer"
+        ]
+      },
+      "basePath": "/emir-session-preferences"
+    },
+    {
+      "controller": "EmirSessionPreferenceController",
+      "method": "post",
+      "path": "/",
+      "handlerName": "bound createOne",
+      "options": {
+        "authorizeScopes": [
+          "ameer"
+        ]
+      },
+      "basePath": "/emir-session-preferences"
+    },
+    {
+      "controller": "EmirSessionPreferenceController",
+      "method": "patch",
+      "path": "/:id",
+      "handlerName": "bound updateOne",
+      "options": {
+        "authorizeScopes": [
+          "ameer"
+        ]
+      },
+      "basePath": "/emir-session-preferences"
+    },
+    {
+      "controller": "EmirSessionPreferenceController",
+      "method": "delete",
+      "path": "/:id",
+      "handlerName": "bound deleteOne",
+      "options": {
+        "authorizeScopes": [
+          "ameer"
+        ]
+      },
+      "basePath": "/emir-session-preferences"
+    }
+  ],
+  "controllerBasePaths": {
+    "ImportController": "/import",
+    "LocationsController": "/locations",
+    "SessionController": "/sessions",
+    "SessionOccurrenceController": "/session-occurrences",
+    "SessionAttendanceController": "/session-attendances",
+    "MembershipController": "/memberships",
+    "UserMembershipController": "/user-memberships",
+    "DawahDayController": "/dawah-days",
+    "EmirDateAvailabilityController": "/emir-date-availabilities",
+    "EmirSessionPreferenceController": "/emir-session-preferences"
+  }
+}

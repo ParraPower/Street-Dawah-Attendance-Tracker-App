@@ -1,6 +1,4 @@
-import { Entity, Column, /*OneToMany,*/ } from 'typeorm';
-//import type { UserOutreachActivityLog } from "../../outreach/entities/UserOutreachActivityLog.js";
-//import { IUserOutreachActivityLog } from '../../outreach/interfaces/iuser-outreach-activity-log.js';
+import { Entity, Column } from 'typeorm';
 import { IUserEntity } from './interfaces/user-entity';
 import { BaseEntity } from 'app-framework';
 
@@ -21,10 +19,4 @@ export class UserEntity extends BaseEntity implements IUserEntity {
 
   @Column({ nullable: true })
   authUserId?: number;
-
-  // @OneToMany("UserOutreachActivityLog", "volunteerUser")
-  // volunteerOutreachLogs?: IUserOutreachActivityLog[];
-
-  // @OneToMany("UserOutreachActivityLog", "managementOutreachUser")
-  // managementOutreachLogs?: IUserOutreachActivityLog[];
 }

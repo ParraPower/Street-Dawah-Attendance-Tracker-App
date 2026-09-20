@@ -1,0 +1,1707 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Attendance API",
+    "version": "1.0.0",
+    "description": "Generated OpenAPI placeholder"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4002"
+    }
+  ],
+  "paths": {
+    "/import/users": {
+      "post": {
+        "tags": [
+          "Import"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/import/locations": {
+      "post": {
+        "tags": [
+          "Import"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/import/sessions": {
+      "post": {
+        "tags": [
+          "Import"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/import/memberships": {
+      "post": {
+        "tags": [
+          "Import"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/import/user-memberships": {
+      "post": {
+        "tags": [
+          "Import"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/locations/": {
+      "get": {
+        "tags": [
+          "Locations"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/locations/{id}": {
+      "get": {
+        "tags": [
+          "Locations"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Locations"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Locations"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/locations/bulk": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sessions/": {
+      "get": {
+        "tags": [
+          "Session"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Session"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSessionDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sessions/{id}": {
+      "get": {
+        "tags": [
+          "Session"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Session"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionDto"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSessionDto"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Session"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/session-occurrences/": {
+      "get": {
+        "tags": [
+          "SessionOccurrence"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOccurrenceDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "SessionOccurrence"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOccurrenceDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSessionOccurrenceDto"
+              },
+              "examples": {
+                "default": {
+                  "summary": "Default create session occurrence",
+                  "value": {
+                    "sessionId": 1,
+                    "occurrenceDate": "2026-01-01",
+                    "showPublicly": true,
+                    "mainEmirUserId": null,
+                    "NoOfShahadahs": 0,
+                    "NoOfQuransDistributed": 0,
+                    "createdBy": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/session-occurrences/current-week": {
+      "get": {
+        "tags": [
+          "SessionOccurrence"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOccurrenceDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/session-occurrences/{id}": {
+      "get": {
+        "tags": [
+          "SessionOccurrence"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOccurrenceDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "SessionOccurrence"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOccurrenceDto"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSessionOccurrenceDto"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "SessionOccurrence"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOccurrenceDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/session-occurrences/bulk": {
+      "post": {
+        "tags": [
+          "SessionOccurrence"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOccurrenceDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSessionOccurrenceDto"
+              },
+              "examples": {
+                "default": {
+                  "summary": "Default create session occurrence",
+                  "value": {
+                    "sessionId": 1,
+                    "occurrenceDate": "2026-01-01",
+                    "showPublicly": true,
+                    "mainEmirUserId": null,
+                    "NoOfShahadahs": 0,
+                    "NoOfQuransDistributed": 0,
+                    "createdBy": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/session-occurrences/create-this-weeks": {
+      "post": {
+        "tags": [
+          "SessionOccurrence"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOccurrenceDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSessionOccurrenceDto"
+              },
+              "examples": {
+                "default": {
+                  "summary": "Default create session occurrence",
+                  "value": {
+                    "sessionId": 1,
+                    "occurrenceDate": "2026-01-01",
+                    "showPublicly": true,
+                    "mainEmirUserId": null,
+                    "NoOfShahadahs": 0,
+                    "NoOfQuransDistributed": 0,
+                    "createdBy": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/session-attendances/": {
+      "get": {
+        "tags": [
+          "SessionAttendance"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionAttendanceDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "SessionAttendance"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionAttendanceDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSessionAttendanceDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/session-attendances/occurrence/{sessionOccurrenceId}": {
+      "get": {
+        "tags": [
+          "SessionAttendance"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionAttendanceDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/session-attendances/user/{userId}": {
+      "get": {
+        "tags": [
+          "SessionAttendance"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionAttendanceDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/session-attendances/{id}": {
+      "get": {
+        "tags": [
+          "SessionAttendance"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionAttendanceDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "SessionAttendance"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionAttendanceDto"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSessionAttendanceDto"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "SessionAttendance"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionAttendanceDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/session-attendances/bulk": {
+      "post": {
+        "tags": [
+          "SessionAttendance"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionAttendanceDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSessionAttendanceDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/memberships/": {
+      "get": {
+        "tags": [
+          "Membership"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MembershipDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Membership"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MembershipDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMembershipDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/memberships/{id}": {
+      "get": {
+        "tags": [
+          "Membership"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MembershipDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Membership"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MembershipDto"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMembershipDto"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Membership"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MembershipDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/memberships/bulk": {
+      "post": {
+        "tags": [
+          "Membership"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MembershipDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMembershipDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user-memberships/": {
+      "get": {
+        "tags": [
+          "UserMembership"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserMembershipDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "UserMembership"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserMembershipDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserMembershipDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user-memberships/user/{userId}": {
+      "get": {
+        "tags": [
+          "UserMembership"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserMembershipDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user-memberships/membership/{membershipId}": {
+      "get": {
+        "tags": [
+          "UserMembership"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserMembershipDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user-memberships/{id}": {
+      "get": {
+        "tags": [
+          "UserMembership"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserMembershipDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "UserMembership"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserMembershipDto"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserMembershipDto"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "UserMembership"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserMembershipDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user-memberships/bulk": {
+      "post": {
+        "tags": [
+          "UserMembership"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserMembershipDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserMembershipDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dawah-days/": {
+      "get": {
+        "tags": [
+          "DawahDay"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DawahDayDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "DawahDay"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DawahDayDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDawahDayDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dawah-days/active": {
+      "get": {
+        "tags": [
+          "DawahDay"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DawahDayDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dawah-days/available": {
+      "get": {
+        "tags": [
+          "DawahDay"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DawahDayDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dawah-days/day/{dayOfWeek}": {
+      "get": {
+        "tags": [
+          "DawahDay"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DawahDayDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dawah-days/{id}": {
+      "get": {
+        "tags": [
+          "DawahDay"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DawahDayDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "DawahDay"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DawahDayDto"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDawahDayDto"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "DawahDay"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DawahDayDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/emir-date-availabilities/": {
+      "get": {
+        "tags": [
+          "EmirDateAvailability"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmirDateAvailabilityDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "EmirDateAvailability"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmirDateAvailabilityDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEmirDateAvailabilityDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/emir-date-availabilities/user/{userId}": {
+      "get": {
+        "tags": [
+          "EmirDateAvailability"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmirDateAvailabilityDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/emir-date-availabilities/date/{date}": {
+      "get": {
+        "tags": [
+          "EmirDateAvailability"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmirDateAvailabilityDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/emir-date-availabilities/{id}": {
+      "get": {
+        "tags": [
+          "EmirDateAvailability"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmirDateAvailabilityDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "EmirDateAvailability"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmirDateAvailabilityDto"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEmirDateAvailabilityDto"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "EmirDateAvailability"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmirDateAvailabilityDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/emir-date-availabilities/{id}/toggle": {
+      "patch": {
+        "tags": [
+          "EmirDateAvailability"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmirDateAvailabilityDto"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEmirDateAvailabilityDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/emir-session-preferences/": {
+      "get": {
+        "tags": [
+          "EmirSessionPreference"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmirSessionPreferenceDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "EmirSessionPreference"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmirSessionPreferenceDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEmirSessionPreferenceDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/emir-session-preferences/user/{userId}": {
+      "get": {
+        "tags": [
+          "EmirSessionPreference"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmirSessionPreferenceDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/emir-session-preferences/session/{sessionId}": {
+      "get": {
+        "tags": [
+          "EmirSessionPreference"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmirSessionPreferenceDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/emir-session-preferences/{id}": {
+      "get": {
+        "tags": [
+          "EmirSessionPreference"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmirSessionPreferenceDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "EmirSessionPreference"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmirSessionPreferenceDto"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEmirSessionPreferenceDto"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "EmirSessionPreference"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmirSessionPreferenceDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AvailableDawahDayDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for AvailableDawahDayDto",
+        "properties": {}
+      },
+      "CreateDawahDayDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for CreateDawahDayDto",
+        "properties": {}
+      },
+      "DawahDayDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for DawahDayDto",
+        "properties": {}
+      },
+      "UpdateDawahDayDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for UpdateDawahDayDto",
+        "properties": {}
+      },
+      "CreateEmirDateAvailabilityDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for CreateEmirDateAvailabilityDto",
+        "properties": {}
+      },
+      "EmirDateAvailabilityDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for EmirDateAvailabilityDto",
+        "properties": {}
+      },
+      "UpdateEmirDateAvailabilityDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for UpdateEmirDateAvailabilityDto",
+        "properties": {}
+      },
+      "CreateEmirSessionPreferenceDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for CreateEmirSessionPreferenceDto",
+        "properties": {}
+      },
+      "EmirSessionPreferenceDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for EmirSessionPreferenceDto",
+        "properties": {}
+      },
+      "UpdateEmirSessionPreferenceDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for UpdateEmirSessionPreferenceDto",
+        "properties": {}
+      },
+      "ImportRowRequestDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for ImportRowRequestDto",
+        "properties": {}
+      },
+      "ImportUsersRequestDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for ImportUsersRequestDto",
+        "properties": {}
+      },
+      "NormalizedImportUserRequestDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for NormalizedImportUserRequestDto",
+        "properties": {}
+      },
+      "ImportUserResponseDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for ImportUserResponseDto",
+        "properties": {}
+      },
+      "ImportUsersBulkResponseDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for ImportUsersBulkResponseDto",
+        "properties": {}
+      },
+      "CreateBulkLocationsResponseDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for CreateBulkLocationsResponseDto",
+        "properties": {}
+      },
+      "CreateLocationDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for CreateLocationDto",
+        "properties": {}
+      },
+      "LocationDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for LocationDto",
+        "properties": {}
+      },
+      "UpdateLocationDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for UpdateLocationDto",
+        "properties": {}
+      },
+      "CreateBulkMembershipsResponseDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for CreateBulkMembershipsResponseDto",
+        "properties": {}
+      },
+      "CreateMembershipDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for CreateMembershipDto",
+        "properties": {}
+      },
+      "MembershipDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for MembershipDto",
+        "properties": {}
+      },
+      "UpdateMembershipDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for UpdateMembershipDto",
+        "properties": {}
+      },
+      "CreateBulkSessionAttendanceDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for CreateBulkSessionAttendanceDto",
+        "properties": {}
+      },
+      "CreateSessionAttendanceDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for CreateSessionAttendanceDto",
+        "properties": {}
+      },
+      "SessionAttendanceDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for SessionAttendanceDto",
+        "properties": {}
+      },
+      "UpdateSessionAttendanceDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for UpdateSessionAttendanceDto",
+        "properties": {}
+      },
+      "CreateBulkSessionOccurrencesDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for CreateBulkSessionOccurrencesDto",
+        "properties": {}
+      },
+      "CreateSessionOccurrenceDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for CreateSessionOccurrenceDto",
+        "properties": {},
+        "examples": {
+          "default": {
+            "summary": "Default create session occurrence",
+            "value": {
+              "sessionId": 1,
+              "occurrenceDate": "2026-01-01",
+              "showPublicly": true,
+              "mainEmirUserId": null,
+              "NoOfShahadahs": 0,
+              "NoOfQuransDistributed": 0,
+              "createdBy": 1
+            }
+          }
+        }
+      },
+      "SessionOccurrenceDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for SessionOccurrenceDto",
+        "properties": {}
+      },
+      "UpdateSessionOccurrenceDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for UpdateSessionOccurrenceDto",
+        "properties": {}
+      },
+      "CreateBulkSessionsResponseDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for CreateBulkSessionsResponseDto",
+        "properties": {}
+      },
+      "CreateSessionDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for CreateSessionDto",
+        "properties": {}
+      },
+      "SessionDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for SessionDto",
+        "properties": {}
+      },
+      "UpdateSessionDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for UpdateSessionDto",
+        "properties": {}
+      },
+      "CreateBulkUserMembershipsResponseDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for CreateBulkUserMembershipsResponseDto",
+        "properties": {}
+      },
+      "CreateUserMembershipDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for CreateUserMembershipDto",
+        "properties": {}
+      },
+      "UpdateUserMembershipDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for UpdateUserMembershipDto",
+        "properties": {}
+      },
+      "UserMembershipDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for UserMembershipDto",
+        "properties": {}
+      },
+      "CreateBulkUsersResponseDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for CreateBulkUsersResponseDto",
+        "properties": {}
+      },
+      "CreateUserDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for CreateUserDto",
+        "properties": {}
+      },
+      "UserDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for UserDto",
+        "properties": {}
+      },
+      "RegisterUserDto": {
+        "type": "object",
+        "description": "Auto-generated placeholder for RegisterUserDto",
+        "properties": {}
+      }
+    }
+  }
+}

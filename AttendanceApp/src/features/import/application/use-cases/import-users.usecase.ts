@@ -25,8 +25,7 @@ export class ImportUsersUseCase {
       //console.log(`📋 Validating user at row ${index + 1}:`, user);
       const { error, value } = importUserSchema.validate(user, { convert: true });
 
-      const normalizedNumber = user.number ? this.importUserService.normalizeMobile(user.number) : undefined;
-      const username = value.username || normalizedNumber || "unknown";
+      const username = value.username || user.number  || "unknown";
 
       if (error) {
         const errorDetails = error.details.map((d) => d.message).join(", ");
@@ -37,14 +36,14 @@ export class ImportUsersUseCase {
           success: false,
           username: username,
           number: user.number,
-          normalizedNumber: normalizedNumber,
+          normalizedNumber:  user.number,
           error: `Validation failed: ${errorDetails}`,
         });
 
         console.log(`❌ Validation failed for row ${index + 1}: ${errorDetails}`);
       } else {
 
-        if (!normalizedNumber) {
+        if (!user.number) {
           const errorMessage = `Row ${index + 1}: Mobile number is missing or invalid`;
             validationErrors.push(errorMessage);
 
@@ -52,7 +51,7 @@ export class ImportUsersUseCase {
             success: false,
             username: username,
             number: user.number,
-            normalizedNumber: normalizedNumber,
+            normalizedNumber: user.number,
             error: `Validation failed: ${errorMessage}`,
           });
 
@@ -105,7 +104,7 @@ export class ImportUsersUseCase {
 
     // Assign authUserId from import results back to the validUsers so it can
     // be persisted when creating local user entities.
-    if (result) {
+    if (result && (!result.errors || result.errors?.length === 0) ) {
       // Match by normalizedNumber, username or raw number for robustness
       const assignAuthId = (source: typeof result.createdUsers | typeof result.omittedUsers) => {
         for (const r of source || []) {
@@ -125,40 +124,45 @@ export class ImportUsersUseCase {
 
       assignAuthId(result.createdUsers);
       assignAuthId(result.omittedUsers);
-    }
+    
 
-    // Map ImportRowRequestDto to CreateUserDto for bulk user creation
-    const createUserDtos: CreateUserDto[] = validUsers.map((importRow) =>
-      mapper.map(importRow, NormalizedImportUserRequestDto, CreateUserDto)
-    );
+      // Map ImportRowRequestDto to CreateUserDto for bulk user creation
+      const createUserDtos: CreateUserDto[] = validUsers.map((importRow) =>
+        mapper.map(importRow, NormalizedImportUserRequestDto, CreateUserDto)
+      );
 
-    // Insert successfully created users into users entity table before correlating results.
-    const bulkCreateResult = await this.createBulkUsersUseCase.execute(createUserDtos);
+      // Insert successfully created users into users entity table before correlating results.
+      const bulkCreateResult = await this.createBulkUsersUseCase.execute(createUserDtos);
 
-    bulkCreateResult.createdUsers.forEach((createdUser) => {
-      const importedUser = result.createdUsers.find((u) => u.number === createdUser.mobile);
-      if (importedUser) {
-        importedUser.id = createdUser.id;
-      }
-      const omiittedUser = result.omittedUsers.find((u) => u.number === createdUser.mobile);
-      if (omiittedUser) {
-        omiittedUser.error = `User with mobile ${createdUser.mobile} was created but also marked as omitted. This may indicate a duplicate entry.`;
-        omiittedUser.id = createdUser.id;
-      }
-    });
-
-    bulkCreateResult.omittedUsers.forEach((omittedUser) => {
-      const importedUser = result.createdUsers.find((u) => u.number === omittedUser.mobile);
-      if (importedUser) {
-        importedUser.error = `User with mobile ${omittedUser.mobile} was created but also marked as omitted. This may indicate a duplicate entry.`;
-      } else {
-        const omiittedUser = result.omittedUsers.find((u) => u.number === omittedUser.mobile);
-
-        if (omiittedUser) {
-          omiittedUser.error = `User with mobile ${omittedUser.mobile} was marked as omitted. This may indicate a duplicate entry.`;
+      bulkCreateResult.createdUsers.forEach((createdUser) => {
+        const importedUser = result.createdUsers.find((u) => u.number === createdUser.mobile);
+        if (importedUser) {
+          importedUser.id = createdUser.id;
         }
-      }
-    });
+        const omiittedUser = result.omittedUsers.find((u) => u.number === createdUser.mobile);
+        if (omiittedUser) {
+          omiittedUser.error = `User with mobile ${createdUser.mobile} was created but also marked as omitted. This may indicate a duplicate entry.`;
+          omiittedUser.id = createdUser.id;
+        }
+      });
+
+      bulkCreateResult.omittedUsers.forEach((omittedUser) => {
+        const importedUser = result.createdUsers.find((u) => u.number === omittedUser.mobile);
+        if (importedUser) {
+          importedUser.error = `User with mobile ${omittedUser.mobile} was created but also marked as omitted. This may indicate a duplicate entry.`;
+        } else {
+          const omiittedUser = result.omittedUsers.find((u) => u.number === omittedUser.mobile);
+
+          if (omiittedUser) {
+            omiittedUser.error = `User with mobile ${omittedUser.mobile} was marked as omitted. This may indicate a duplicate entry.`;
+          }
+        }
+      });
+    }
+    else {
+      const errors = result.errors?.join(',') ?? ''
+      validationErrors.push(errors)
+    }
 
     // Combine results: validation failures go to omittedUsers
     return {

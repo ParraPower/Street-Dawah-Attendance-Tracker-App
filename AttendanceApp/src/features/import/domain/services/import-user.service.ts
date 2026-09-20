@@ -3,5 +3,4 @@ import { ImportUsersBulkResponseDto } from "../../application/dtos/import-user-r
 
 export interface IImportUserService {
   importUsers(users: NormalizedImportUserRequestDto[], authToken?: string): Promise<ImportUsersBulkResponseDto>;
-  normalizeMobile(mobileNumber: string): string;
 }

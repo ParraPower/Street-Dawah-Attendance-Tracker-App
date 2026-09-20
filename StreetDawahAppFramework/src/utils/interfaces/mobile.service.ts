@@ -5,4 +5,5 @@ export interface IMobileService {
     validate(val: string, formatToMatch?: string): MobileServiceValidateResponse
     isAustralianNumber(val: string): boolean;
     isInternationalNumber(val: string): boolean;
+    normalizeNumber(val: string): string
 }
