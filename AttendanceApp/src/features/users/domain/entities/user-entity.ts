@@ -19,4 +19,7 @@ export class UserEntity extends BaseEntity implements IUserEntity {
 
   @Column({ nullable: true })
   authUserId?: number;
+  
+  @Column({ default: false })
+  whatsAppMsgOptIn!: boolean;
 }

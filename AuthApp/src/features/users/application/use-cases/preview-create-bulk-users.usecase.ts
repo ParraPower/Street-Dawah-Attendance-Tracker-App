@@ -13,7 +13,7 @@ export class PreviewBulkUsersUseCase {
     private readonly repo: IUserRepository
   ) {}
 
-  execute = async (incomingUsers: CreateUserDto[]) => {
+  execute = async (incomingUsers: CreateUserDto[], options?: { imported?: boolean }) => {
     // 🔹 Step 1: Guard input (reuse existing validation logic)
     const { usernames } = this.guardBulkCreateUsingUsernames(incomingUsers);
 

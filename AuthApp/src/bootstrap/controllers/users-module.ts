@@ -24,10 +24,12 @@ export function buildUsersController(dataSource: DataSource) {
   const passwordService = new PasswordService();
   const bcryptHasherService = new BcryptHasherService()
   const scopeService = new ScopeService()
-  const jwtService = new AuthAppJwtService(new KeyCacheService())
 
   // 2. Domain services
   const featureUserService = new FeatureUserService()
+
+  const jwtService = new AuthAppJwtService(new KeyCacheService())
+
   const authService = new AuthService(jwtService, passwordService);
 
 

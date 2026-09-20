@@ -68,7 +68,8 @@ export class UsersController extends BaseController {
     CreateUserDto[]
   > = async (req, res) => {
     const users = req.body as CreateUserDto[];
-    const result = await this.createBulkUsersUseCase.execute(users);
+    const importedFlag = (req.query?.imported === 'true' || req.query?.imported === true);
+    const result = await this.createBulkUsersUseCase.execute(users, { imported: !!importedFlag });
     res.json(result);
   }
 
@@ -78,7 +79,8 @@ export class UsersController extends BaseController {
     CreateUserDto[]
   > = async (req, res) => {
     const users = req.body as CreateUserDto[];
-    const result = await this.previewBulkUsersUseCase.execute(users);
+    const importedFlag = (req.query?.imported === 'true' || req.query?.imported === true);
+    const result = await this.previewBulkUsersUseCase.execute(users, { imported: !!importedFlag });
     res.json(result);
   };
 

@@ -9,6 +9,7 @@ import { DataSource } from 'typeorm/data-source/DataSource';
 import { buildImportController } from './bootstrap/import-module';
 import { registerErrors } from './infrastructure/errors/register-errors';
 import { apiClientProvider } from './infrastructure/api';
+import { buildUsersController } from './bootstrap/users-module';
 import { buildLocationController } from './bootstrap/location-module';
 import { buildSessionController } from './bootstrap/session-module';
 import { buildSessionOccurrenceController } from './bootstrap/session-occurrence-module';
@@ -41,6 +42,7 @@ export function buildControllers(app: Express, dataSource: DataSource) {
     const DawahDayController = buildDawahDayController(dataSource);
     const EmirDateAvailabilityController = buildEmirDateAvailabilityController(dataSource);
     const EmirSessionPreferenceController = buildEmirSessionPreferenceController(dataSource);
+    const UsersController = buildUsersController(dataSource);
 
     app.use('/import', ImportController.router);
     app.use('/locations', LocationController.router);
@@ -52,6 +54,9 @@ export function buildControllers(app: Express, dataSource: DataSource) {
     app.use('/dawah-days', DawahDayController.router);
     app.use('/emir-date-availabilities', EmirDateAvailabilityController.router);
     app.use('/emir-session-preferences', EmirSessionPreferenceController.router);
+
+
+    app.use('/users', UsersController.router);
 
     // Centralized error handler (must be last)
     app.use(registerErrors());

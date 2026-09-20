@@ -3,6 +3,7 @@ import { BaseRepository } from "@auth/shared/infrastructure/persistence/typeorm/
 import { JwtKey } from "../../../domain/entities/key-entity";
 import { IJwtKeyRepository } from "../../../domain/repositories/ijwtkey-repository";
 
+//src\features\auth\infrastructure\persistence\typeorm\jwt-key-repository.ts
 export class JwtKeyRepository
   extends BaseRepository<JwtKey>
   implements IJwtKeyRepository
