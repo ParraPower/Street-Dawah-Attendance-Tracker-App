@@ -11,6 +11,7 @@ import { v4 as UUID } from 'uuid';
 import { ValidationError } from "@auth/shared/infrastructure/middleware/global-error-handler"
 import { CreateBulkUsersResponseDto, CreateBulkUsersResponseOmittedUserDto } from "../dtos/create-bulk-users-response.dto"
 import { ScopeService } from "app-framework";
+import { UserOnboardingFlags } from "@auth/features/users/domain/enums/user-onboarding-flags";
 import { AuthService } from "@auth/features/auth/domain/services/auth-service"
 
 export class CreateBulkUsersUseCase {
@@ -22,7 +23,7 @@ export class CreateBulkUsersUseCase {
     private readonly authService: AuthService,
     private readonly scopeService: ScopeService
   ) { }
-  execute = async (incomingUsers: CreateUserDto[]) => {
+  execute = async (incomingUsers: CreateUserDto[], options?: { imported?: boolean }) => {
     let result: UserDto[] = []
 
     const { usernames } = this.guardBulkCreateUsingUsernames(incomingUsers)
@@ -53,6 +54,15 @@ export class CreateBulkUsersUseCase {
       else
         entity.temporaryPasswordGuid = UUID()
       entity.scopes = entity.scopes.map(x => this.scopeService.normalizeString(x))
+      // If import flow, mark onboarding flags to indicate imported member and pre-apply some onboarding events
+      if (options?.imported) {
+        const flags = UserOnboardingFlags.ImportedMember |
+          UserOnboardingFlags.MobileVerified |
+          UserOnboardingFlags.WhatsAppOptedIn |
+          UserOnboardingFlags.TermsAccepted;
+        // onboardingFlags is a bigint column; store as BigInt
+        entity.onboardingFlags = BigInt(flags) as any;
+      }
       return entity
     }))
 

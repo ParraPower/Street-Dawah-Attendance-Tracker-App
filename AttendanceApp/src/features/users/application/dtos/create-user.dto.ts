@@ -4,5 +4,6 @@ export class CreateUserDto {
   shirtSize?: 'XS' | 'S' | 'M' | 'L' | 'XL' | '2XL' | '3XL' | '4XL';
   currentSuburb?: number;
   authUserId?: number;
+  whatsAppMsgOptIn?: boolean;
   createdAt?: Date;
 }

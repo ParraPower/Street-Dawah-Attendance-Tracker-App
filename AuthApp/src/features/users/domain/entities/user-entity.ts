@@ -20,4 +20,7 @@ export class UserEntity extends BaseEntity implements IUserEntity {
 
   @Column('simple-array', { default: '' })
   scopes!: string[]; // e.g. ['user-read', 'user-write']
+
+  @Column('bigint', { default: () => '0' })
+  onboardingFlags!: bigint;
 }

@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import { buildAuthController } from './bootstrap/controllers/auth-module';
 import { buildClientCredentialsController } from './bootstrap/controllers/client-credentials-module';
 import { buildUsersController } from './bootstrap/controllers/users-module';
+import { buildInternalUsersController } from './bootstrap/controllers/internal-users-module';
 import { registerProfiles } from './shared/infrastructure/mapping/register-profiles';
 import { DataSource } from 'typeorm/data-source/DataSource';
 import { buildJwksController } from './bootstrap/controllers/jwks-module';
@@ -24,9 +25,11 @@ export function buildControllers(app: Express, dataSource: DataSource) {
   const AuthController = buildAuthController(dataSource);
   const ClientCredentialsController = buildClientCredentialsController(dataSource);
   const UsersController = buildUsersController(dataSource);
+  const InternalUsersController = buildInternalUsersController(dataSource);
   const JwksController = buildJwksController();
   
   app.use('/user', UsersController.router);
+  app.use('/internal/users', InternalUsersController.router);
   app.use('/auth', AuthController.router);
   app.use('/client-credentials', ClientCredentialsController.router);
   app.use('/', JwksController.router);

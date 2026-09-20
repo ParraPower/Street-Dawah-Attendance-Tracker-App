@@ -11,6 +11,10 @@ import { userRateLimiter } from "../../../middleware/userRateLimiter";
 const router = Router();
 const userService = new UserService();
 
+/* 
+- Endpoint Deprecated 
+info: register endpoint is no longer functional
+*/
 router.post(
   "/register",
   authenticate,

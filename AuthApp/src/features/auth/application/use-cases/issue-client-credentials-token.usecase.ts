@@ -21,7 +21,7 @@ export class IssueClientCredentialsTokenUseCase {
       //# generate a custom error for this case to distinguish between "client not found" and "invalid credentials"
       throw new InvalidClientCredentialsError(clientName); // #TODO: custom error for this case
 
-    const token = this.jwtService.signToken(client.name, client.scopes, 'access');
+      const token = this.jwtService.signTokenWithExtraClaims(client.name, client.scopes, 'access');
     const response: TokenResponseDto = {
       accessToken: token.token,
       accessTokenExpiresIn: token.expiresIn.toString(),

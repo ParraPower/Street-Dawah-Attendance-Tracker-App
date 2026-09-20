@@ -1,11 +1,8 @@
-export class UserDto {
-  id!: number;
-  name?: string;
+export class OnboardUserDto {
+  authUserId!: number;
+  name!: string;
   mobile!: string;
   shirtSize?: 'XS' | 'S' | 'M' | 'L' | 'XL' | '2XL' | '3XL' | '4XL';
   currentSuburb?: number;
-  authUserId?: number;
   whatsAppMsgOptIn?: boolean;
-  isDeleted?: boolean;
-  createdAt?: Date;
 }

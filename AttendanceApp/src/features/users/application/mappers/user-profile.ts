@@ -26,6 +26,11 @@ export function createUserProfile() {
       (destination) => destination.authUserId,
       mapFrom((source) => source.authUserId)
     )
+    ,
+    forMember(
+      (destination) => destination.whatsAppMsgOptIn,
+      mapFrom((source) => source.whatsAppMsgOptIn)
+    )
   );
   createMap(mapper, UserEntity, UserDto);
 }

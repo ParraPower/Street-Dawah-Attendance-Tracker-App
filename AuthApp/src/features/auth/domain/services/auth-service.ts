@@ -6,12 +6,12 @@ import { IAuthAppJwtService } from "./jwt-service";
 export class AuthService {
   constructor(private readonly jwtService: IAuthAppJwtService, private readonly passwordService: PasswordService) { }
 
-  private signToken(userId: string, scopes: string[], type: 'access' | 'refresh') {
-    return this.jwtService.signToken(userId, scopes, type);
+  private signToken(userId: string, scopes: string[], type: 'access' | 'refresh', extraClaims?: Record<string, any>) {
+    return this.jwtService.signTokenWithExtraClaims(userId, scopes, type, undefined, extraClaims);
   }
 
-  signAccessToken(userId: string, scopes: string[]) {
-    return this.signToken(userId, scopes, 'access');
+  signAccessToken(userId: string, scopes: string[], extraClaims?: Record<string, any>) {
+    return this.signToken(userId, scopes, 'access', extraClaims);
   }
 
   signRefreshToken(userId: string, scopes: string[]) {

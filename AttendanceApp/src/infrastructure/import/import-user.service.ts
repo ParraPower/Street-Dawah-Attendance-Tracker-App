@@ -60,7 +60,8 @@ export class ImportUserService implements IImportUserService {
       }
 
       const httpClient = this.apiClientProvider.getAuthClient();
-      const response = await httpClient.post("/user/bulk", usersForBulkImport);
+      // Mark these users as imported via querystring so Auth API can apply imported flags
+      const response = await httpClient.post("/user/bulk?imported=true", usersForBulkImport, { headers });
 
 
       if (response.data.failedUsers && Array.isArray(response.data.failedUsers)) {
