@@ -8,4 +8,10 @@ export const env = {
   db: {
     url: process.env.DB_URL!,
   },
+  emailHost: process.env.EMAIL_HOST!,
+  emailPort: Number(process.env.EMAIL_PORT),
+  emailSecure: process.env.EMAIL_SECURE === 'true',
+  emailUser: process.env.EMAIL_USER!,
+  emailPassword: process.env.EMAIL_PASSWORD!,
+  emailFrom: process.env.EMAIL_FROM!,
 };
