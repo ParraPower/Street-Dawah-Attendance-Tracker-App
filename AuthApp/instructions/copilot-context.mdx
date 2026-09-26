@@ -1,170 +1,869 @@
-```md
-# Project documentation topics
+# AuthApp Documentation
 
-Before generating the documentation comment, define the key topics that should be covered for the AuthApp project. Below are recommended topics and concise descriptions you can use directly in documentation.
+## Project Overview
 
-1. **Project overview**
+AuthApp provides authentication and authorization services for internal and external applications, such as the Attendance API. The application supports user authentication, machine-to-machine authentication, authorization, JWT token issuance and validation, and centralized identity management for the broader platform ecosystem.
 
-AuthApp provides an authentication and authorization API for other services (for example, the Attendance API).
+The project follows a feature-based architecture that emphasizes clear separation of concerns, maintainability, testability, and rapid feature development.
 
-2. **Setup and installation**
+---
 
-**Prerequisites:**
+# Setup and Installation
+
+## Prerequisites
+
 - Node.js 18+ (tested with Node 20)
 - npm or yarn
-- PostgreSQL 15+ (for database)
-- Docker and Docker Compose (optional, for containerized development)
+- PostgreSQL 15+
+- Docker and Docker Compose (optional)
 
-**Installation steps:**
-1. Clone the repository and navigate to the AuthApp directory:
-   ```bash
-   cd AuthApp
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Set up environment variables:
-   - Copy `.env.example` to `.env.local` (or `.env.machine-local` for machine-specific setup)
-   - Update the values with your local configuration (database credentials, JWT settings, port, etc.)
-   - Required variables: `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `PORT`, `JWT_ISSUER`, `JWT_DEFAULT_AUDIENCE`, `JWT_EXPIRATION_TIME`
+## Installation
 
-**Build:**
+Clone the repository and navigate to the AuthApp directory:
+
+```bash
+cd AuthApp
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Configure environment variables:
+
+- Copy `.env.example` to `.env.local`
+- Or copy `.env.example` to `.env.machine-local` for machine-specific development
+- Update environment variable values
+
+Required variables:
+
+```env
+DB_HOST=
+DB_PORT=
+DB_USER=
+DB_PASSWORD=
+DB_NAME=
+
+PORT=
+
+JWT_ISSUER=
+JWT_DEFAULT_AUDIENCE=
+JWT_EXPIRATION_TIME=
+```
+
+---
+
+## Build
+
 ```bash
 npm run build
 ```
-This compiles TypeScript to JavaScript in the `dist` folder.
 
-**Running locally (without Docker):**
-1. Ensure a PostgreSQL database is running and accessible
-2. Run migrations to set up the database schema:
-   ```bash
-   # On Windows
-   npm run migration:run:win
-   # On Linux/macOS
-   npm run migration:run
-   ```
-3. Start the development server:
-   ```bash
-   npm run start:dev
-   ```
-   Or for local environment:
-   ```bash
-   npm run start:local
-   ```
-   The server will start at the port specified in your `.env` file (default: 3000)
-
-**Running with Docker (local development):**
-1. Ensure Docker and Docker Compose are installed
-2. Set up environment variables in `.env.local` or `.env.machine-local`
-3. Start the Docker containers from the workspace root:
-   ```bash
-   npm run docker:start -w AuthApp -- authapp <env>
-   ```
-   Replace `<env>` with the environment name (e.g., `local`, `dev`). This PowerShell script will spin up a PostgreSQL container and the AuthApp service.
-4. Alternatively, manually start services from within the AuthApp directory:
-   ```bash
-   docker-compose -f docker-compose.machine-local.yml up -d
-   ```
-5. Run migrations inside the container:
-   ```bash
-   docker exec authapp npm run migration:run
-   ```
-   The API will be available at `http://localhost:3000` (or your configured port)
-
-**Deployment to Azure Web App (without Docker):**
-1. Build the application:
-   ```bash
-   npm run build
-   ```
-2. Ensure all dependencies are installed and `dist` folder is included
-3. Configure environment variables in Azure Web App settings (equivalent to `.env` variables)
-4. Set `NODE_ENV=production` in Azure settings
-5. The app startup command in Azure should point to the compiled entry point:
-   ```bash
-   node dist/server.js
-   ```
-   Or use:
-   ```bash
-   npm start
-   ```
-   (Configure the start script in `package.json` if needed)
-6. Ensure the PostgreSQL database on Azure is accessible and migrations have been run
-7. Set the port to match Azure's expected port (typically environment variable `PORT` is injected)
-
-4. **Architecture**
-
-Features-based architecture: code is organized into features (each containing domain, application, infrastructure, and interfaces layers) and shared cross-cutting concerns. Features encapsulate end-to-end functionality, while shared handles reusable logic like persistence, logging, and error handling.
-
-### Application-layer authorization pattern
-
-Feature authorization decisions and field-level permission rules belong in an application-layer authorization service, not in controllers. Controllers should authenticate requests, translate JWT claims into a feature-specific actor context, pass that context to use cases, and translate use-case results into HTTP responses. Use cases must enforce authorization so the rules apply consistently regardless of the entry point.
-
-Authorization services should expose focused methods such as `canViewNonPublic()`, `assertCanCreate()`, and `assertCanUpdate()`. They may define field-level rules—for example, allowing Emir-or-higher users to assign an Emir while restricting visibility changes to Mudeer-or-higher users. Authorization failures should use a dedicated error type registered with the centralized error handler so they return `403 Forbidden`.
-
-5. **Core components**
-
-- Entities:
-  - `UserEntity`: represents application users.
-  - `ClientEntity`: stores client-credentials entries (client credentials flow).
-  - `KeyEntity`: stores asymmetric key pairs used for signing and verifying JWTs.
-- Features:
-  - `auth`: authentication and authorization (domain entities/services, application use-cases/DTOs, infrastructure persistence/security, interfaces HTTP).
-  - `users`: user management (similar layered structure).
-
-6. **Authentication flow**
-
-For users: register, then call `POST /auth/login` to receive a JWT. The system also supports client credentials for machine-to-machine authentication.
-
-7. **Directory structure**
-
-- Root level:
-  - `src/`: Main application source code, organized into features, shared components, and bootstrap.
-  - `scripts/`: Utility scripts for Docker deployment and database migrations (e.g., `docker-run.ps1`, `generate-migration.ps1`, `run-migration.ps1`).
-  - `docker-compose.*.yml`: Docker Compose configuration files for development, local, and production environments.
-  - `instructions/`: Documentation and context files for development tools.
-- Under `src/`:
-  - `bootstrap/`: app wiring: express init, DI container, middleware pipeline.
-  - `shared/`: cross-cutting code shared by multiple features (domain/, application/, infrastructure/, interfaces/, config/).
-  - `shared/infrastructure/`: cross-cutting code shared by multiple features (errors/, config/, file/, mapping/, etc.). Infrastructure will implement interfaces found in features that require importing of libraries. We want to ensure features is free of library imports.
-  - `features/`: feature-specific implementations (e.g., auth/, users/, each with domain/, application/, infrastructure/).
-  - `migrations/`: database migration files generated by TypeORM.
-  - `types/`: global type augmentations (keep small).
-  (Obsolete folders: `domains`, `modules`, `core`, `data`, `mapping`, `security`, `dtos` have been reorganized into `shared` and `features`.)
-
-8. **Key dependencies**
-
-- `TypeORM` — database ORM and migrations
-- `express` — HTTP framework
-- `jsonwebtoken` — JWT creation and verification
-- `bcrypt` — password hashing
-- `automapper` (or AutoMapper binding used) — entity/DTO mapping
-
-9. **Configuration**
-
-Uses `cross-env` and `.env` files for multi-environment configuration. See [config/env.ts](config/env.ts#L1) for the environment variables currently read by the application.
-
-10. **Error handling**
-
-Centralized error handling implemented with the following approach: a global error middleware that normalizes errors into a consistent HTTP response format, structured logging, and optional integration with an error-reporting system (Sentry, etc.).
-
-11. **Security considerations**
-
-- Authorization uses scopes defined in [features/auth/domain/policies/scopes.ts](features/auth/domain/policies/scopes.ts#L1) and enforced via guards/middleware.
-- Key management: store asymmetric keys securely and rotate when necessary; token blacklist/whitelist entities exist under `features/auth/domain/entities`.
-
-12. **Testing strategy**
-
-Tests should live under `__tests__` with a mirrored folder structure. Use `jest` for unit tests and `msw` for mocking external HTTP calls.
-
-13. **Migrations**
-
-Database migrations are managed with TypeORM and stored in the `migrations` folder.
-
-14. **Next steps / TODOs**
-
-- Implement centralized error handling and logging.
-- Consolidate `core` responsibilities into `features` or `shared` where appropriate.
-- Move feature-specific DTOs from `dtos` into their respective `features/{feature}/application/dtos/` folders.
+This compiles TypeScript into JavaScript output within the `dist` folder.
 
 ---
+
+## Running Locally
+
+Ensure PostgreSQL is running and accessible.
+
+Run database migrations:
+
+### Windows
+
+```bash
+npm run migration:run:win
+```
+
+### Linux/macOS
+
+```bash
+npm run migration:run
+```
+
+Start development mode:
+
+```bash
+npm run start:dev
+```
+
+Or local environment mode:
+
+```bash
+npm run start:local
+```
+
+The API will be available on the configured port (default: `3000`).
+
+---
+
+## Running with Docker
+
+Ensure Docker and Docker Compose are installed.
+
+Start containers from the workspace root:
+
+```bash
+npm run docker:start -w AuthApp -- authapp <env>
+```
+
+Example:
+
+```bash
+npm run docker:start -w AuthApp -- authapp local
+```
+
+Alternatively:
+
+```bash
+docker-compose -f docker-compose.machine-local.yml up -d
+```
+
+Run migrations inside the container:
+
+```bash
+docker exec authapp npm run migration:run
+```
+
+The API will become available at:
+
+```text
+http://localhost:3000
+```
+
+Or whichever port is configured through environment variables.
+
+---
+
+## Deployment to Azure Web App
+
+Build the project:
+
+```bash
+npm run build
+```
+
+Ensure:
+
+- Dependencies are installed
+- `dist` directory is included
+- Environment variables are configured in Azure
+- PostgreSQL connectivity is available
+- Migrations have already been executed
+
+Recommended startup command:
+
+```bash
+node dist/server.js
+```
+
+Or:
+
+```bash
+npm start
+```
+
+Set:
+
+```env
+NODE_ENV=production
+```
+
+The application should use the Azure-provided `PORT` environment variable.
+
+---
+
+# Architecture
+
+AuthApp follows a **feature-based layered architecture**.
+
+Each feature encapsulates its own:
+
+- Domain layer
+- Application layer
+- Infrastructure layer
+- Interface layer
+
+Shared concerns are extracted into a central `shared` area.
+
+```text
+Feature
+├── domain
+├── application
+├── infrastructure
+└── interfaces
+```
+
+This structure promotes:
+
+- Low coupling
+- High cohesion
+- Independent feature evolution
+- Better testability
+- Easier AI-assisted development
+
+---
+
+# Application-Layer Authorization Pattern
+
+Authorization decisions belong within the application layer and not within controllers.
+
+Controllers should only:
+
+- Authenticate requests
+- Translate JWT claims into actor contexts
+- Invoke use cases
+- Return HTTP responses
+
+Use cases are responsible for enforcing authorization rules.
+
+Example authorization service methods:
+
+```typescript
+canViewNonPublic()
+
+assertCanCreate()
+
+assertCanUpdate()
+```
+
+Authorization services may also enforce field-level permissions.
+
+Example:
+
+- Emir-or-higher can assign Emir values.
+- Mudeer-or-higher can modify visibility settings.
+
+Authorization failures should throw a dedicated authorization exception handled by the centralized error middleware and returned as:
+
+```http
+403 Forbidden
+```
+
+---
+
+# Controller Framework Integration
+
+## StreetDawahAppFramework
+
+All APIs consume a shared framework library called:
+
+```text
+StreetDawahAppFramework
+```
+
+The framework is referenced in `package.json` as:
+
+```json
+{
+  "dependencies": {
+    "app-framework": "file:../StreetDawahAppFramework"
+  }
+}
+```
+
+All framework imports use:
+
+```typescript
+import ... from "app-framework";
+```
+
+Example:
+
+```typescript
+import { BaseController } from "app-framework";
+```
+
+---
+
+## BaseController
+
+Every controller in AuthApp must inherit from the framework's `BaseController`.
+
+Example:
+
+```typescript
+import { BaseController } from "app-framework";
+
+export class UserController extends BaseController {
+    constructor(
+        private readonly getUserUseCase: GetUserUseCase
+    ) {
+        super();
+    }
+}
+```
+
+Controllers should never implement common HTTP concerns themselves.
+
+Instead, those concerns are inherited from `BaseController`.
+
+Framework responsibilities include:
+
+- Consistent HTTP response formatting
+- Request validation helpers
+- Standardized success responses
+- Standardized error responses
+- Logging integration
+- Authentication helpers
+- Authorization helpers
+- Controller utilities
+- Exception translation
+
+All controllers throughout every API should inherit from `BaseController` to ensure consistency across the platform.
+
+---
+
+## Framework Usage Philosophy
+
+The framework exists to centralize reusable infrastructure and cross-cutting concerns shared by all APIs.
+
+Typical framework components include:
+
+- Base controllers
+- Middleware
+- Error abstractions
+- Logging abstractions
+- Authentication infrastructure
+- Authorization infrastructure
+- Shared DTOs
+- API response models
+- Shared interfaces
+- Common utilities
+
+Features should leverage framework abstractions whenever possible instead of creating duplicate implementations.
+
+---
+
+# Bootstrap and Dependency Composition
+
+## Overview
+
+The `bootstrap` layer is responsible for application composition.
+
+AuthApp intentionally uses an explicit Composition Root pattern rather than relying on automatic dependency injection frameworks.
+
+Dependencies are instantiated manually and assembled together until a fully configured controller is produced.
+
+The resulting controller instance is exported and registered within the application.
+
+This approach makes dependency relationships extremely clear and is highly suitable for AI-assisted code generation.
+
+---
+
+## Dependency Construction Flow
+
+Dependencies should be created from the lowest-level implementation upward.
+
+Typical flow:
+
+```text
+Repository
+    ↓
+Domain Service
+    ↓
+Authorization Service
+    ↓
+Use Case
+    ↓
+Controller
+    ↓
+Export Controller
+    ↓
+Application Routes
+```
+
+Example:
+
+```text
+UserRepository
+    ↓
+UserDomainService
+    ↓
+UserAuthorizationService
+    ↓
+GetUserUseCase
+    ↓
+UserController
+```
+
+---
+
+## Bootstrap Responsibilities
+
+The bootstrap layer is responsible for:
+
+- Loading configuration
+- Initializing database connections
+- Creating repositories
+- Creating infrastructure services
+- Creating domain services
+- Creating authorization services
+- Creating use cases
+- Creating controllers
+- Wiring middleware
+- Wiring routes
+- Exporting top-level application objects
+
+---
+
+## Example Composition
+
+```typescript
+const userRepository =
+    new UserRepository(dataSource);
+
+const userDomainService =
+    new UserDomainService(
+        userRepository
+    );
+
+const userAuthorizationService =
+    new UserAuthorizationService();
+
+const getUserUseCase =
+    new GetUserUseCase(
+        userRepository,
+        userAuthorizationService
+    );
+
+export const userController =
+    new UserController(
+        getUserUseCase
+    );
+```
+
+---
+
+## Route Registration
+
+Controllers that are composed during bootstrap are consumed by route registration.
+
+Example:
+
+```typescript
+import { userController }
+    from "./bootstrap/users";
+
+router.get(
+    "/users/:id",
+    userController.getById
+);
+```
+
+Controllers should never create their own dependencies internally.
+
+Dependencies must always be supplied from bootstrap.
+
+---
+
+## Feature Bootstrap Organization
+
+Each feature should own its own composition file.
+
+Example:
+
+```text
+src/
+├── bootstrap/
+│
+├── auth/
+│   └── auth.bootstrap.ts
+│
+├── users/
+│   └── users.bootstrap.ts
+│
+└── shared/
+```
+
+Each feature bootstrap should:
+
+- Create repositories
+- Create services
+- Create use cases
+- Create controllers
+- Export the controller instances
+
+The application should then consume only the exported controllers.
+
+---
+
+## AI Generation Guidance
+
+When generating a new feature, AI should follow this order:
+
+1. Domain entities
+2. Repository interfaces
+3. Domain services
+4. DTOs
+5. Authorization services
+6. Use cases
+7. Infrastructure implementations
+8. Controllers inheriting from `BaseController`
+9. Bootstrap composition
+10. Route registration
+
+Dependency direction should always flow inward:
+
+```text
+Controller
+    → Use Case
+        → Domain Service
+            → Repository Interface
+```
+
+Infrastructure implementations satisfy repository contracts and are injected by bootstrap.
+
+This convention must be followed for all future feature development.
+
+Benefits include:
+
+- Consistency
+- Testability
+- Reduced coupling
+- Faster onboarding
+- Predictable architecture
+- High-quality AI-generated code
+- Minimal prompting requirements
+
+---
+
+# Core Components
+
+## Entities
+
+### UserEntity
+
+Represents application users.
+
+### ClientEntity
+
+Represents machine-to-machine clients used in the OAuth client-credentials flow.
+
+### KeyEntity
+
+Stores asymmetric key pairs used for JWT signing and validation.
+
+---
+
+## Features
+
+### auth
+
+Responsible for:
+
+- Authentication
+- JWT issuance
+- JWT validation
+- Authorization
+- Client credentials
+
+Contains:
+
+- domain
+- application
+- infrastructure
+- interfaces
+
+### users
+
+Responsible for:
+
+- User creation
+- User updates
+- User retrieval
+- User management
+
+Contains:
+
+- domain
+- application
+- infrastructure
+- interfaces
+
+---
+
+# Authentication Flow
+
+## User Authentication
+
+1. User registers.
+2. User authenticates through:
+
+```http
+POST /auth/login
+```
+
+3. System validates credentials.
+4. JWT is issued.
+5. JWT is used for subsequent API requests.
+
+---
+
+## Machine Authentication
+
+Client credentials authentication is supported for:
+
+- Backend services
+- Scheduled jobs
+- Service-to-service communication
+
+Clients authenticate using stored credentials and receive a JWT.
+
+---
+
+# Directory Structure
+
+```text
+src/
+├── bootstrap/
+├── features/
+├── shared/
+├── migrations/
+└── types/
+```
+
+---
+
+## bootstrap/
+
+Contains application composition roots.
+
+Responsibilities:
+
+- Dependency wiring
+- Controller instantiation
+- Database initialization
+- Route exports
+
+---
+
+## features/
+
+Contains feature implementations.
+
+Example:
+
+```text
+features/
+├── auth/
+└── users/
+```
+
+Each feature contains:
+
+```text
+feature/
+├── domain/
+├── application/
+├── infrastructure/
+└── interfaces/
+```
+
+---
+
+## shared/
+
+Contains reusable cross-cutting code.
+
+Examples:
+
+```text
+shared/
+├── domain/
+├── application/
+├── infrastructure/
+├── interfaces/
+└── config/
+```
+
+---
+
+## shared/infrastructure/
+
+Contains shared implementations.
+
+Examples:
+
+```text
+shared/infrastructure/
+├── errors/
+├── config/
+├── file/
+├── mapping/
+└── logging/
+```
+
+Infrastructure implementations should remain outside of feature layers wherever possible.
+
+Features should depend on abstractions rather than libraries.
+
+---
+
+## migrations/
+
+Contains TypeORM migration files.
+
+---
+
+## types/
+
+Contains global type extensions and augmentations.
+
+Keep this folder small.
+
+---
+
+## Obsolete Folder Structure
+
+The following folders have been replaced by `shared` and `features`:
+
+```text
+domains
+modules
+core
+data
+mapping
+security
+dtos
+```
+
+---
+
+# Key Dependencies
+
+| Dependency | Purpose |
+|------------|----------|
+| TypeORM | ORM and migrations |
+| Express | HTTP framework |
+| jsonwebtoken | JWT creation and validation |
+| bcrypt | Password hashing |
+| AutoMapper | DTO and entity mapping |
+
+---
+
+# Configuration
+
+Configuration is environment-based.
+
+Uses:
+
+- `.env`
+- `.env.local`
+- `.env.machine-local`
+- `cross-env`
+
+Environment variables are loaded through:
+
+```text
+config/env.ts
+```
+
+---
+
+# Error Handling
+
+The application uses centralized error handling.
+
+Components include:
+
+- Global error middleware
+- Structured logging
+- Consistent API error responses
+- Error normalization
+- Optional error-reporting providers (Sentry, etc.)
+
+All exceptions should flow through the centralized pipeline.
+
+---
+
+# Security Considerations
+
+Authorization uses scopes defined in:
+
+```text
+features/auth/domain/policies/scopes.ts
+```
+
+Security considerations include:
+
+- Scope enforcement
+- JWT validation
+- Asymmetric key signing
+- Key rotation
+- Token blacklist support
+- Token whitelist support
+- Least-privilege authorization
+
+Keys should be stored securely and rotated regularly.
+
+---
+
+# Testing Strategy
+
+Tests should be created within:
+
+```text
+__tests__/
+```
+
+The folder structure should mirror the source structure.
+
+Recommended tools:
+
+### Unit Testing
+
+```text
+jest
+```
+
+### HTTP Mocking
+
+```text
+msw
+```
+
+Tests should be written for:
+
+- Entities
+- Domain services
+- Use cases
+- Authorization services
+- Controllers
+- Repositories
+
+---
+
+# Migrations
+
+Database migrations are managed using TypeORM.
+
+Migration files are stored in:
+
+```text
+migrations/
+```
+
+Typical workflow:
+
+Generate migration:
+
+```bash
+npm run migration:generate
+```
+
+Run migration:
+
+```bash
+npm run migration:run
+```
+
+Revert migration:
+
+```bash
+npm run migration:revert
+```
+
+All schema changes should be introduced through migrations rather than direct database modifications.
