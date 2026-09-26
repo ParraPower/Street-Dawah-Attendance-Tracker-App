@@ -1,5 +1,5 @@
 import { Router, RequestHandler } from 'express';
-import { authenticate, authorize } from '../middleware/auth-middleware';
+import { authenticate, authorize, AuthorizeHandleInactiveUsers, AuthorizeHandleOnboardingUsers } from '../middleware/auth-middleware';
 import { ScopeService } from '../auth/services/scope-service';
 import { ScopeList } from '../auth/policies/scope-types';
 import { asyncHandler } from '../middleware/async-handler';
@@ -25,8 +25,14 @@ export abstract class BaseController implements IController {
       authorizeScopes?: ScopeList;
       requiredAudience?: string;
       middleware?: RequestHandler | RequestHandler[];
+      handleOnboardingUsers?: AuthorizeHandleOnboardingUsers
+      handleInactiveUsers?: AuthorizeHandleInactiveUsers
     }
   ): void {
+
+    const handleOnboardingUsers = options?.handleOnboardingUsers ?? AuthorizeHandleOnboardingUsers.DisallowThem
+    const handleInactiveUsers = options?.handleInactiveUsers ?? AuthorizeHandleInactiveUsers.DisallowThem
+
     const routeHandlers: RequestHandler[] = [];
 
     const shouldAuthenticate = (options?.authenticate ?? true) || Boolean(options?.requiredAudience) || Boolean(options?.authorizeScopes?.length);
@@ -43,7 +49,10 @@ export abstract class BaseController implements IController {
     }
 
     if (options?.authorizeScopes?.length) {
-      routeHandlers.push(authorize(this.scopeService, options.authorizeScopes));
+      routeHandlers.push(authorize(this.scopeService, options.authorizeScopes, {
+        handleOnboardingUsers,
+        handleInactiveUsers,
+      }));
     }
 
     if (options?.middleware) {
