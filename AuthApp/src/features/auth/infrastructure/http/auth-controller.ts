@@ -14,6 +14,8 @@ import { IAuthAppJwtService } from '../../domain/services/jwt-service';
 import { env } from '@auth/shared/infrastructure/config/env';
 import { AccessTokenRequestDto } from '../../application/dtos/access-token-request.dto';
 import { RefreshAccessTokenUseCase } from '../../application/use-cases/refresh-access-token.usecase';
+import { RetrieveImportedUseCase } from '@auth/features/users/application/use-cases/retrieve-imported.usecase';
+import { RequestWithUser } from "app-framework"
 
 export class AuthController extends BaseController {
   public readonly router = Router();
@@ -24,12 +26,15 @@ export class AuthController extends BaseController {
     private readonly generateTokenUserCase: GenerateTokenUseCase,
     private readonly registerUserUseCase: RegisterUserUseCase,
     private readonly resetUserPasswordUseCase: ResetUserPasswordUseCase,
-    private readonly refreshAccessTokenUseCase: RefreshAccessTokenUseCase) {
+    private readonly refreshAccessTokenUseCase: RefreshAccessTokenUseCase,
+      private readonly retrieveImportedUseCase?: RetrieveImportedUseCase) {
     super(jwtService, scopeService, { jwtDefaultAudience: env.jwtDefaultAudience });
 
     this.registerRoute('post', '/register', this.register.bind(this), {
       authenticate: false,
     });
+
+    this.registerRoute('post', '/register/imported', this.registerImported.bind(this));
 
     this.registerRoute('post', '/token', this.token.bind(this), {
       authenticate: false,
@@ -40,6 +45,9 @@ export class AuthController extends BaseController {
     });
 
     this.registerRoute('post', '/refresh', this.refresh.bind(this), {
+      authenticate: false,
+    });
+    this.registerRoute('get', '/retrieve/imported/:temporaryPasswordGuid', this.retrieveImported.bind(this), {
       authenticate: false,
     });
   }
@@ -82,4 +90,38 @@ export class AuthController extends BaseController {
     const registerResponse = await this.registerUserUseCase.execute(email, username, password);
     res.status(201).json(registerResponse);
   }
+  public registerImported: DawahRequestHandler<
+    any,
+    RegisterUserResponseDto,
+    RegisterUserDto
+  > = async (req, res) => {
+    const payload = req.user as (RequestWithUser['user'] & { imported?: boolean }) | undefined;
+
+    if (!payload?.imported) {
+      res.status(403).json({ message: 'Invalid imported registration token' });
+      return;
+    }
+
+    const { email, username, password } = req.body;
+    const registerResponse = await this.registerUserUseCase.execute(email, username, password);
+
+    res.status(201).json(registerResponse);
+  }
+  
+public retrieveImported: DawahRequestHandler<
+  { temporaryPasswordGuid: string },
+  any
+> = async (req, res) => {
+  if (!this.retrieveImportedUseCase) {
+    res.status(500).json({ message: 'Not configured' });
+    return;
+  }
+
+  const dto = await this.retrieveImportedUseCase.execute(req.params.temporaryPasswordGuid);
+
+  // sign a short-lived access token for registration flow
+  const signed = this.jwtService.signTokenWithExtraClaims(dto.id.toString(), [], 'access', undefined, { imported: true });
+
+  res.json({ username: dto.username, token: signed.token, expiresIn: signed.expiresIn });
+}
 }

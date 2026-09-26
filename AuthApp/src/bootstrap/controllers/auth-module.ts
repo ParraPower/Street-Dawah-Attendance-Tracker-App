@@ -17,6 +17,8 @@ import { ScopeService } from "app-framework"
 import { AuthAppJwtService } from "@auth/shared/infrastructure/auth/jwt-service";
 import { KeyCacheService } from "@auth/features/auth/infrastructure/jwt/key-cache.service";
 import { RefreshAccessTokenUseCase } from "@auth/features/auth/application/use-cases/refresh-access-token.usecase";
+import { RetrieveImportedUseCase } from '@auth/features/users/application/use-cases/retrieve-imported.usecase';
+import { GetUserActivationStatusUseCase } from "@auth/features/users/application/use-cases/get-user-activation-status.use-case";
 
 export function buildAuthController(dataSource: DataSource) {
   // 1. Infrastructure
@@ -42,12 +44,14 @@ export function buildAuthController(dataSource: DataSource) {
   // 3. Application service
 
   // 4. Controller
+  const userActivationStatusUseCase = new GetUserActivationStatusUseCase(userService, userRepo);
   const issueClientCredentialsTokenUseCase = new IssueClientCredentialsTokenUseCase(jwtService, clientRepo, clientService);
-  const loginUserUseCase = new LoginUserUseCase(userRepo, bcryptHasher, authService, userService);
+  const loginUserUseCase = new LoginUserUseCase(userRepo, bcryptHasher, authService, userService, userActivationStatusUseCase);
   const generateTokenUserCase = new GenerateTokenUseCase(issueClientCredentialsTokenUseCase, loginUserUseCase);
   const registerUserUseCase = new RegisterUserUseCase(userRepo, bcryptHasher, scopeService);
   const resetUserPasswordUseCase = new ResetUserPasswordUseCase(userRepo, passwordService, bcryptHasher)
-  const refreshAccessTokenUseCase = new RefreshAccessTokenUseCase(jwtService, authService, userRepo, userService);
+  const refreshAccessTokenUseCase = new RefreshAccessTokenUseCase(jwtService, authService, userRepo, userService, userActivationStatusUseCase);
 
-  return new AuthController(jwtService, scopeService, generateTokenUserCase, registerUserUseCase, resetUserPasswordUseCase, refreshAccessTokenUseCase);
+  const retrieveImportedUseCase = new RetrieveImportedUseCase(userRepo, userService)
+  return new AuthController(jwtService, scopeService, generateTokenUserCase, registerUserUseCase, resetUserPasswordUseCase, refreshAccessTokenUseCase,   retrieveImportedUseCase);
 }
