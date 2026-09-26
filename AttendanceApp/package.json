@@ -4,6 +4,7 @@
   "description": "",
   "main": "dist/server.js",
   "dependencies": {
+    "swagger-ui-express": "^4.6.3",
     "@automapper/classes": "^8.8.1",
     "@automapper/core": "^8.8.1",
     "@types/morgan": "^1.9.10",
@@ -31,6 +32,7 @@
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.6",
+    "glob": "^10.3.3",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
     "@types/jsonwebtoken": "^9.0.10",
@@ -62,7 +64,10 @@
 
     "docker:start": "powershell -ExecutionPolicy Bypass -File ./scripts/docker-run.ps1",
 
-    "start:local": "npm run build && cross-env NODE_ENV=local ts-node-dev -r tsconfig-paths/register src/server.ts"
+    "start:local": "npm run build && cross-env NODE_ENV=local ts-node-dev -r tsconfig-paths/register src/server.ts",
+    "openapi:build": "node ./scripts/generate-openapi.js",
+    "openapi:build:local": "cross-env OPENAPI_ENV_FILE=.env.local node ./scripts/generate-openapi.js",
+    "openapi:build:prod": "cross-env OPENAPI_ENV_FILE=.env.production node ./scripts/generate-openapi.js"
   },
   "author": "",
   "license": "ISC"

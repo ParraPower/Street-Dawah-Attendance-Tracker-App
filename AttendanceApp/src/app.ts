@@ -19,6 +19,7 @@ import { buildUserMembershipController } from './bootstrap/user-membership-modul
 import { buildDawahDayController } from './bootstrap/dawah-day-module';
 import { buildEmirDateAvailabilityController } from './bootstrap/emir-date-availability-module';
 import { buildEmirSessionPreferenceController } from './bootstrap/emir-session-preference-module';
+import { routeRegistry } from './infrastructure/shared/swagger/route-registry';
 
 export const app = express();
 
@@ -45,14 +46,34 @@ export function buildControllers(app: Express, dataSource: DataSource) {
     const UsersController = buildUsersController(dataSource);
 
     app.use('/import', ImportController.router);
+    routeRegistry.setBasePath(ImportController.constructor.name, '/import');
+    routeRegistry.setBasePath(UsersController.constructor.name, '/users');
     app.use('/locations', LocationController.router);
+    routeRegistry.setBasePath(LocationController.constructor.name, '/locations');
+    app.use('/locations', LocationController.router);
+
+    routeRegistry.setBasePath(SessionController.constructor.name, '/sessions');
     app.use('/sessions', SessionController.router);
+
+    routeRegistry.setBasePath(SessionOccurrenceController.constructor.name, '/session-occurrences');
     app.use('/session-occurrences', SessionOccurrenceController.router);
+
+    routeRegistry.setBasePath(SessionAttendanceController.constructor.name, '/session-attendances');
     app.use('/session-attendances', SessionAttendanceController.router);
+
+    routeRegistry.setBasePath(MembershipController.constructor.name, '/memberships');
     app.use('/memberships', MembershipController.router);
+
+    routeRegistry.setBasePath(UserMembershipController.constructor.name, '/user-memberships');
     app.use('/user-memberships', UserMembershipController.router);
+
+    routeRegistry.setBasePath(DawahDayController.constructor.name, '/dawah-days');
     app.use('/dawah-days', DawahDayController.router);
+
+    routeRegistry.setBasePath(EmirDateAvailabilityController.constructor.name, '/emir-date-availabilities');
     app.use('/emir-date-availabilities', EmirDateAvailabilityController.router);
+
+    routeRegistry.setBasePath(EmirSessionPreferenceController.constructor.name, '/emir-session-preferences');
     app.use('/emir-session-preferences', EmirSessionPreferenceController.router);
 
 

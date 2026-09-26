@@ -12,23 +12,40 @@ export const swaggerConfig = {
 
 const SPEC_PATH = path.resolve(process.cwd(), 'openapi.json');
 
+function ensureBearerSecurity(spec: Record<string, any>) {
+  spec.components = {
+    ...(spec.components ?? {}),
+    securitySchemes: {
+      ...(spec.components?.securitySchemes ?? {}),
+      bearerAuth: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description: 'JWT access token issued by the authentication service',
+      },
+    },
+  };
+
+  return spec;
+}
+
 export function loadSpec() {
   if (fs.existsSync(SPEC_PATH)) {
     try {
       const raw = fs.readFileSync(SPEC_PATH, 'utf8');
-      return JSON.parse(raw);
+      return ensureBearerSecurity(JSON.parse(raw));
     } catch (e) {
       console.error('Failed to parse openapi.json:', e);
     }
   }
 
-  return {
+  return ensureBearerSecurity({
     openapi: '3.0.0',
     info: { title: swaggerConfig.title, version: swaggerConfig.version, description: swaggerConfig.description },
     servers: swaggerConfig.servers,
     paths: {},
     components: {},
-  };
+  });
 }
 
 export function initSwagger(app: Express, options?: { docsPath?: string; specPath?: string }) {
@@ -36,7 +53,16 @@ export function initSwagger(app: Express, options?: { docsPath?: string; specPat
   const specPath = options?.specPath ?? '/openapi.json';
   const docsPath = options?.docsPath ?? '/api/docs';
   app.get(specPath, (_req, res) => res.json(spec));
-  app.use(docsPath, swaggerUi.serve, swaggerUi.setup(spec, { explorer: true }));
+  app.use(
+    docsPath,
+    swaggerUi.serve,
+    swaggerUi.setup(spec, {
+      explorer: true,
+      swaggerOptions: {
+        persistAuthorization: true,
+      },
+    }),
+  );
 }
 
 export default initSwagger;

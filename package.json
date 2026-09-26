@@ -12,6 +12,7 @@
     "build": "npm run build --workspaces"
   },
   "devDependencies": {
+    "@types/swagger-ui-express": "^4.1.8",
     "ts-node": "^10.9.2"
   }
 }
