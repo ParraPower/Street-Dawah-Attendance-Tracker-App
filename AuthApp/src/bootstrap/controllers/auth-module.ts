@@ -19,6 +19,7 @@ import { KeyCacheService } from "@auth/features/auth/infrastructure/jwt/key-cach
 import { RefreshAccessTokenUseCase } from "@auth/features/auth/application/use-cases/refresh-access-token.usecase";
 import { RetrieveImportedUseCase } from '@auth/features/users/application/use-cases/retrieve-imported.usecase';
 import { GetUserActivationStatusUseCase } from "@auth/features/users/application/use-cases/get-user-activation-status.use-case";
+import { RegisterImportedUseCase } from "@auth/features/auth/application/use-cases/register-imported.usecase";
 
 export function buildAuthController(dataSource: DataSource) {
   // 1. Infrastructure
@@ -49,9 +50,10 @@ export function buildAuthController(dataSource: DataSource) {
   const loginUserUseCase = new LoginUserUseCase(userRepo, bcryptHasher, authService, userService, userActivationStatusUseCase);
   const generateTokenUserCase = new GenerateTokenUseCase(issueClientCredentialsTokenUseCase, loginUserUseCase);
   const registerUserUseCase = new RegisterUserUseCase(userRepo, bcryptHasher, scopeService);
+  const registerImportedUseCase = new RegisterImportedUseCase(userRepo, bcryptHasher, userService, jwtService);
   const resetUserPasswordUseCase = new ResetUserPasswordUseCase(userRepo, passwordService, bcryptHasher)
   const refreshAccessTokenUseCase = new RefreshAccessTokenUseCase(jwtService, authService, userRepo, userService, userActivationStatusUseCase);
 
   const retrieveImportedUseCase = new RetrieveImportedUseCase(userRepo, userService)
-  return new AuthController(jwtService, scopeService, generateTokenUserCase, registerUserUseCase, resetUserPasswordUseCase, refreshAccessTokenUseCase,   retrieveImportedUseCase);
+  return new AuthController(jwtService, scopeService, generateTokenUserCase, registerUserUseCase, registerImportedUseCase, resetUserPasswordUseCase, refreshAccessTokenUseCase, retrieveImportedUseCase);
 }

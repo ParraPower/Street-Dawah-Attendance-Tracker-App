@@ -9,7 +9,7 @@ import { GetUserActivationStatusUseCase } from '@auth/features/users/application
 import { UserDto } from "../../../users/application/dtos/user.dto";
 import { UserService } from "@auth/features/users/domain/services/user-service";
 import { ValidationError } from "@auth/shared/infrastructure/middleware/global-error-handler";
-import { ILoggedInUserExtraClaims } from "app-framework"
+import { ILoginUserExtraClaims } from "app-framework"
 
 export class LoginUserUseCase {
   constructor(
@@ -42,7 +42,7 @@ export class LoginUserUseCase {
     const ok = await this.hashService.verify(password, user.passwordHash!);
     if (!ok) throw new ValidationError('Invalid credentials');
 
-    let extraClaims: ILoggedInUserExtraClaims | undefined = undefined;
+    let extraClaims: ILoginUserExtraClaims | undefined = undefined;
     const userIdNum = parseInt(user.id as any, 10);
     if (!Number.isNaN(userIdNum)) {
       try {

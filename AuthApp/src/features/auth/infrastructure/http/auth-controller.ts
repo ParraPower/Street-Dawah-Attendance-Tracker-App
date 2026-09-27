@@ -9,13 +9,13 @@ import { UserDto } from '@auth/features/users/application/dtos/user.dto';
 import { ResetUserPasswordUseCase } from '../../application/use-cases/reset-user-password.usecase';
 import { ResetUserPasswordResponseDto } from '../../application/dtos/reset-user-password.dto';
 import { BaseController } from '@auth/shared/infrastructure/http/base-controller';
-import { ScopeService } from "app-framework";
+import { RequestWithUser, ScopeService } from "app-framework";
 import { IAuthAppJwtService } from '../../domain/services/jwt-service';
 import { env } from '@auth/shared/infrastructure/config/env';
 import { AccessTokenRequestDto } from '../../application/dtos/access-token-request.dto';
 import { RefreshAccessTokenUseCase } from '../../application/use-cases/refresh-access-token.usecase';
 import { RetrieveImportedUseCase } from '@auth/features/users/application/use-cases/retrieve-imported.usecase';
-import { RequestWithUser } from "app-framework"
+import { RegisterImportedUseCase } from '@auth/features/auth/application/use-cases/register-imported.usecase';
 
 export class AuthController extends BaseController {
   public readonly router = Router();
@@ -25,9 +25,10 @@ export class AuthController extends BaseController {
     protected readonly scopeService: ScopeService,
     private readonly generateTokenUserCase: GenerateTokenUseCase,
     private readonly registerUserUseCase: RegisterUserUseCase,
+    private readonly registerImportedUseCase: RegisterImportedUseCase,
     private readonly resetUserPasswordUseCase: ResetUserPasswordUseCase,
     private readonly refreshAccessTokenUseCase: RefreshAccessTokenUseCase,
-      private readonly retrieveImportedUseCase?: RetrieveImportedUseCase) {
+    private readonly retrieveImportedUseCase?: RetrieveImportedUseCase) {
     super(jwtService, scopeService, { jwtDefaultAudience: env.jwtDefaultAudience });
 
     this.registerRoute('post', '/register', this.register.bind(this), {
@@ -92,18 +93,19 @@ export class AuthController extends BaseController {
   }
   public registerImported: DawahRequestHandler<
     any,
-    RegisterUserResponseDto,
+    any,
     RegisterUserDto
   > = async (req, res) => {
     const payload = req.user as (RequestWithUser['user'] & { imported?: boolean }) | undefined;
+    const userId = Number(req.user?.sub);
 
-    if (!payload?.imported) {
+    if (!payload?.imported || !req.user?.sub || Number.isNaN(userId)) {
       res.status(403).json({ message: 'Invalid imported registration token' });
       return;
     }
 
     const { email, username, password } = req.body;
-    const registerResponse = await this.registerUserUseCase.execute(email, username, password);
+    const registerResponse = await this.registerImportedUseCase.execute(userId, email, username, password);
 
     res.status(201).json(registerResponse);
   }
