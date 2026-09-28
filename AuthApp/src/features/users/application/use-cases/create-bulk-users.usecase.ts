@@ -58,7 +58,7 @@ export class CreateBulkUsersUseCase {
       if (options?.imported) {
         const flags = UserOnboardingFlags.ImportedMember |
           UserOnboardingFlags.MobileVerified |
-          UserOnboardingFlags.WhatsAppOptedIn |
+          //UserOnboardingFlags.WhatsAppOptedIn |
           UserOnboardingFlags.TermsAccepted;
         // onboardingFlags is a bigint column; store as BigInt
         entity.onboardingFlags = BigInt(flags) as any;

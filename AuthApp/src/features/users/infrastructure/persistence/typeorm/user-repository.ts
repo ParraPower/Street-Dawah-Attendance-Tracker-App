@@ -51,6 +51,21 @@ export class UserRepository
     });
   }
 
+  async addOnboardingFlagToUsers(userIds: number[], flag: number): Promise<number> {
+    if (userIds.length === 0) return 0;
+
+    const result = await this.repo
+      .createQueryBuilder()
+      .update(UserEntity)
+      .set({ onboardingFlags: () => '"onboardingFlags" | :flag' })
+      .whereInIds(userIds)
+      .andWhere('("isDeleted" = false OR "isDeleted" IS NULL)')
+      .setParameter('flag', flag)
+      .execute();
+
+    return result.affected ?? 0;
+  }
+
   async findByEmail(email: string): Promise<UserEntity | null> {
     return this.findOne({
       where: { email: ILike(email.toLowerCase()) }

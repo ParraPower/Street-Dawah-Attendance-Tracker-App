@@ -20,6 +20,10 @@ export class InternalUsersController extends BaseController {
       authenticate: true,
       authorizeScopes: [Scopes.Khaleef],
     });
+    this.registerRoute('post', '/onboarding-events/bulk', this.handleBulkOnboardingEvent, {
+      authenticate: true,
+      authorizeScopes: [Scopes.Khaleef],
+    });
   }
 
   public handleOnboardingEvent: DawahRequestHandler<
@@ -40,11 +44,36 @@ export class InternalUsersController extends BaseController {
     const eventKey = body.event as keyof typeof OnboardingEventType;
     // Ensure event maps to a valid enum key
     const eventValue = (OnboardingEventType as any)[eventKey];
-    if (typeof eventValue === 'undefined') {
+    if (typeof eventValue !== 'number') {
       return res.status(400).json({ message: 'Invalid event' });
     }
 
-    await this.handleOnboardingEventUseCase.execute({ userId, event: eventValue });
+    await this.handleOnboardingEventUseCase.execute({ userIds: [userId], event: eventValue });
+    res.status(204).send();
+  }
+
+  public handleBulkOnboardingEvent: DawahRequestHandler<
+    Record<string, never>,
+    void,
+    { userIds: number[]; event: keyof typeof OnboardingEventType }
+  > = async (req, res) => {
+    const body = req.body as { userIds?: unknown; event?: unknown };
+    if (
+      !body ||
+      !Array.isArray(body.userIds) ||
+      body.userIds.length === 0 ||
+      !body.userIds.every((userId) => Number.isInteger(userId) && userId > 0) ||
+      typeof body.event !== 'string'
+    ) {
+      return res.status(400).json({ message: 'Invalid payload' });
+    }
+
+    const eventValue = (OnboardingEventType as any)[body.event];
+    if (typeof eventValue !== 'number') {
+      return res.status(400).json({ message: 'Invalid event' });
+    }
+
+    await this.handleOnboardingEventUseCase.execute({ userIds: body.userIds, event: eventValue });
     res.status(204).send();
   }
 }

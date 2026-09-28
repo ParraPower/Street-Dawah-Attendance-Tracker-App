@@ -65,7 +65,7 @@ export class ImportUserService implements IImportUserService {
 
 
       if (response.data.failedUsers && Array.isArray(response.data.failedUsers)) {
-        throw new Error("Failed to buulk create users")
+        throw new Error("Failed to bulk create users")
       }
 
       // Map created users from the bulk response

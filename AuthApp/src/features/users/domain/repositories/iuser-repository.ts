@@ -8,6 +8,7 @@ export interface IUserRepository {
   findByUsernames(usernames: string[]): Promise<UserEntity[]>;
   findByTemporaryPasswordGuid(temporaryPasswordGuid: string): Promise<UserEntity | null>;
   createBulk(entities: UserEntity[]): Promise<UserEntity[]>
+  addOnboardingFlagToUsers(userIds: number[], flag: number): Promise<number>;
   create(user: Partial<UserEntity>): Promise<UserEntity>;
   update(id: number, user: Partial<UserEntity>): Promise<UserEntity | null>;
   delete(id: number): Promise<boolean>;

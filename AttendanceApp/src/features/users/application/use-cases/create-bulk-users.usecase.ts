@@ -7,12 +7,14 @@ import { UserDto } from "../dtos/user.dto";
 import { ValidationError } from "app-framework";
 import { CreateBulkUsersResponseDto } from "../dtos/create-bulk-users-response.dto";
 import { isNotNullOrEmpty, IMobileService } from "app-framework";
+import { IApiClientProvider } from "../../../../infrastructure/api";
 
 export class CreateBulkUsersUseCase {
   constructor(
     private readonly userService: UserService,
     private readonly repo: IUserRepository,
-    private readonly mobileService: IMobileService
+    private readonly mobileService: IMobileService,
+    private readonly apiClientProvider: IApiClientProvider
   ) {}
 
   execute = async (users: CreateUserDto[]): Promise<CreateBulkUsersResponseDto> => {
@@ -81,6 +83,25 @@ export class CreateBulkUsersUseCase {
 
     // Save users using bulk create
     const userEntitiesResponse = await this.repo.createBulk(userEntitiesCreate);
+
+    const authUserIds = userEntitiesCreate
+      .map((user) => user.authUserId)
+      .filter(
+        (userId): userId is number =>
+          typeof userId === "number" && Number.isInteger(userId) && userId > 0
+      );
+    if (authUserIds.length > 0) {
+      try {
+        await this.apiClientProvider
+          .getAuthClient()
+          .post("/internal/users/onboarding-events/bulk", {
+            userIds: authUserIds,
+            event: "ProfileCreated",
+          });
+      } catch (err: any) {
+        console.error(`CreateBulkUsersUseCase: failed to emit ProfileCreated events: ${err?.message || err}`);
+      }
+    }
 
     // Map response entities to UserDto
     result = userEntitiesResponse.map((entity) => {
