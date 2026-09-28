@@ -4,6 +4,7 @@ export * from './auth/interfaces/hasher-service'
 export * from './auth/interfaces/cryptograpahy-service'
 export * from './auth/interfaces/token-provider';
 export * from './auth/policies/scope-types';
+export * from './auth/policies/login-user-extra-claims';
 export * from './auth/services/jwt-service';
 export * from './auth/services/key-cache.service';
 export * from './auth/services/scope-service';

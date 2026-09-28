@@ -22,15 +22,15 @@ export class UserService {
   public hasCompletedOnboarding(user: UserEntity): boolean {
     if (!user) return false;
 
-    const hasImportedMemberOnboarding = this.isImportedMember(user);
-    const meetsEmailRequirement = this.hasOnboardingEvent(user, OnboardingEventType.EmailVerified) || hasImportedMemberOnboarding;
+    //const hasImportedMemberOnboarding = this.isImportedMember(user);
+    //const meetsEmailRequirement = this.hasOnboardingEvent(user, OnboardingEventType.EmailVerified) || hasImportedMemberOnboarding;
 
-    if (hasImportedMemberOnboarding) {
-      return this.hasOnboardingEvent(user, OnboardingEventType.ProfileCreated)
-        && this.hasOnboardingEvent(user, OnboardingEventType.WhatsAppOptedIn)
-        && meetsEmailRequirement
-        && this.hasAssignedScopes(user);
-    }
+    // if (hasImportedMemberOnboarding) {
+    //   return this.hasOnboardingEvent(user, OnboardingEventType.ProfileCreated)
+    //     && this.hasOnboardingEvent(user, OnboardingEventType.WhatsAppOptedIn)
+    //     && meetsEmailRequirement
+    //     && this.hasAssignedScopes(user);
+    // }
 
     return this.hasOnboardingFlag(user, UserOnboardingFlags.SetInitialPassword)
       && this.hasOnboardingEvent(user, OnboardingEventType.ProfileCreated)
@@ -42,7 +42,7 @@ export class UserService {
   public getMissingOnboardingFlags(user: UserEntity): UserOnboardingFlags[] {
     if (!user) return [];
 
-    const isImportedMember = this.isImportedMember(user);
+    //const isImportedMember = this.isImportedMember(user);
     const requiredFlags = [
       UserOnboardingFlags.SetInitialPassword,
       UserOnboardingFlags.ProfileCreated,
@@ -51,9 +51,9 @@ export class UserService {
     ];
 
     return requiredFlags.filter((flag) => {
-      if (isImportedMember && (flag === UserOnboardingFlags.SetInitialPassword || flag === UserOnboardingFlags.EmailVerified)) {
-        return false;
-      }
+      // if (isImportedMember && (flag === UserOnboardingFlags.SetInitialPassword || flag === UserOnboardingFlags.EmailVerified)) {
+      //   return false;
+      // }
 
       return !this.hasOnboardingFlag(user, flag);
     });

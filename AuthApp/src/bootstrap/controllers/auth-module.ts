@@ -12,7 +12,6 @@ import { AuthController } from "@auth/features/auth/infrastructure/http/auth-con
 import { UserRepository } from "@auth/features/users/infrastructure/persistence/typeorm/user-repository";
 import { UserEntity } from "@auth/features/users/domain/entities/user-entity";
 import { UserService } from "@auth/features/users/domain/services/user-service";
-import { GetUserActivationStatusUseCase } from '@auth/features/users/application/use-cases/get-user-activation-status.use-case';
 import { PasswordService } from "@auth/features/auth/domain/services/password-service";
 import { ScopeService } from "app-framework"
 import { AuthAppJwtService } from "@auth/shared/infrastructure/auth/jwt-service";
@@ -24,6 +23,9 @@ import { VerifyEmailVerificationCodeUseCase } from "@auth/features/auth/applicat
 import { EmailVerificationRepository } from "@auth/features/auth/infrastructure/persistence/typeorm/email-verification-repository";
 import { EmailVerificationEntity } from "@auth/features/auth/domain/entities/email-verification-entity";
 import { SmtpEmailService } from "@auth/shared/infrastructure/email/smtp-email-service";
+import { RetrieveImportedUseCase } from '@auth/features/users/application/use-cases/retrieve-imported.usecase';
+import { GetUserActivationStatusUseCase } from "@auth/features/users/application/use-cases/get-user-activation-status.use-case";
+import { RegisterImportedUseCase } from "@auth/features/auth/application/use-cases/register-imported.usecase";
 
 //src\bootstrap\controllers\auth-module.ts
 export function buildAuthController(dataSource: DataSource) {
@@ -36,11 +38,11 @@ export function buildAuthController(dataSource: DataSource) {
   );
 
   const emailVerificationRepo =
-  new EmailVerificationRepository(
-    dataSource.getRepository(
-      EmailVerificationEntity,
-    ),
-  );
+    new EmailVerificationRepository(
+      dataSource.getRepository(
+        EmailVerificationEntity,
+      ),
+    );
   //const jwt = new JwtService(process.env.JWT_SECRET!);
 
   const bcryptHasher = new BcryptHasherService();
@@ -52,52 +54,55 @@ export function buildAuthController(dataSource: DataSource) {
   const jwtService = new AuthAppJwtService(new KeyCacheService());
 
   // 2. Domain services
-const emailService =
-  new SmtpEmailService();
+  const emailService =
+    new SmtpEmailService();
   const passwordService = new PasswordService();
   const clientService = new ClientService(bcryptHasher);
   const authService = new AuthService(jwtService, passwordService);
   //const tokenFactory = new TokenFactory(jwt);
 
   // 3. Application service
-
-  // 4. Controller
   const issueClientCredentialsTokenUseCase = new IssueClientCredentialsTokenUseCase(jwtService, clientRepo, clientService);
   const loginUserUseCase = new LoginUserUseCase(userRepo, bcryptHasher, authService, userService, getUserActivationStatusUseCase);
   const generateTokenUserCase = new GenerateTokenUseCase(issueClientCredentialsTokenUseCase, loginUserUseCase);
   const registerUserUseCase = new RegisterUserUseCase(userRepo, bcryptHasher, scopeService);
+  const retrieveImportedUseCase = new RetrieveImportedUseCase(userRepo, userService)
+  const registerImportedUseCase = new RegisterImportedUseCase(userRepo, bcryptHasher, userService, jwtService);
   const resetUserPasswordUseCase = new ResetUserPasswordUseCase(userRepo, passwordService, bcryptHasher)
   const refreshAccessTokenUseCase = new RefreshAccessTokenUseCase(jwtService, authService, userRepo, userService, getUserActivationStatusUseCase);
-const handleOnboardingEventUseCase =
-  new HandleOnboardingEventUseCase(
-    userRepo,
-  );
+  const handleOnboardingEventUseCase =
+    new HandleOnboardingEventUseCase(
+      userRepo,
+    );
 
   const sendEmailVerificationCodeUseCase =
-  new SendEmailVerificationCodeUseCase(
-    userRepo,
-    emailVerificationRepo,
-    bcryptHasher,
-    emailService,
-    userService
-  );
+    new SendEmailVerificationCodeUseCase(
+      userRepo,
+      emailVerificationRepo,
+      bcryptHasher,
+      emailService,
+      userService
+    );
 
   const verifyEmailVerificationCodeUseCase =
-  new VerifyEmailVerificationCodeUseCase(
-    userRepo,
-    emailVerificationRepo,
-    handleOnboardingEventUseCase,
-    bcryptHasher,
-  );
+    new VerifyEmailVerificationCodeUseCase(
+      userRepo,
+      emailVerificationRepo,
+      handleOnboardingEventUseCase,
+      bcryptHasher,
+    );
 
-return new AuthController(
-  jwtService,
-  scopeService,
-  generateTokenUserCase,
-  registerUserUseCase,
-  resetUserPasswordUseCase,
-  refreshAccessTokenUseCase,
-  sendEmailVerificationCodeUseCase,
-  verifyEmailVerificationCodeUseCase,
-);
+  // 4. Controller
+  return new AuthController(
+    jwtService,
+    scopeService,
+    generateTokenUserCase,
+    registerUserUseCase,
+    registerImportedUseCase,
+    retrieveImportedUseCase,
+    resetUserPasswordUseCase,
+    refreshAccessTokenUseCase,
+    sendEmailVerificationCodeUseCase,
+    verifyEmailVerificationCodeUseCase,
+  );
 }

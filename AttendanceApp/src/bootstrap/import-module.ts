@@ -69,7 +69,7 @@ export function buildImportController(apiClientProvider: IApiClientProvider, dat
   const uploadFileService = new UploadFileServiceFactory();
 
   // 3. Application use cases
-  const createBulkUsersUseCase = new CreateBulkUsersUseCase(userService, userRepository, mobileService);
+  const createBulkUsersUseCase = new CreateBulkUsersUseCase(userService, userRepository, mobileService, apiClientProvider);
   const importUsersUseCase = new ImportUsersUseCase(importUserService, createBulkUsersUseCase);
   const uploadFileUseCase = new ImportBulkUsersByFileUseCase(fileParserService, importUsersUseCase);
   const importLocationsUseCase = new ImportBulkLocationsByFileUseCase(

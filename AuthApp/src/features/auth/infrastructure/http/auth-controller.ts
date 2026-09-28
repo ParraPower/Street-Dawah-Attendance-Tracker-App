@@ -17,6 +17,8 @@ import { RefreshAccessTokenUseCase } from '../../application/use-cases/refresh-a
 import { SendEmailVerificationCodeUseCase } from '../../application/use-cases/send-email-verification-code.usecase';
 import { VerifyEmailVerificationCodeUseCase } from '../../application/use-cases/verify-email-verification-code.usecase';
 import { VerifyEmailVerificationCodeDto } from '../../application/dtos/verify-email-verification-code.dto';
+import { RetrieveImportedUseCase } from '@auth/features/users/application/use-cases/retrieve-imported.usecase';
+import { RegisterImportedUseCase } from '@auth/features/auth/application/use-cases/register-imported.usecase';
 
 //src\features\auth\infrastructure\http\auth-controller.ts
 export class AuthController extends BaseController {
@@ -27,16 +29,21 @@ export class AuthController extends BaseController {
     protected readonly scopeService: ScopeService,
     private readonly generateTokenUserCase: GenerateTokenUseCase,
     private readonly registerUserUseCase: RegisterUserUseCase,
+    private readonly registerImportedUseCase: RegisterImportedUseCase,
+    private readonly retrieveImportedUseCase: RetrieveImportedUseCase,
     private readonly resetUserPasswordUseCase: ResetUserPasswordUseCase,
     private readonly refreshAccessTokenUseCase: RefreshAccessTokenUseCase,
     private readonly sendEmailVerificationCodeUseCase: SendEmailVerificationCodeUseCase,
     private readonly verifyEmailVerificationCodeUseCase: VerifyEmailVerificationCodeUseCase,
+    
   ) {
     super(jwtService, scopeService, { jwtDefaultAudience: env.jwtDefaultAudience });
 
     this.registerRoute('post', '/register', this.register.bind(this), {
       authenticate: false,
     });
+
+    this.registerRoute('post', '/register/imported', this.registerImported.bind(this));
 
     this.registerRoute('post', '/token', this.token.bind(this), {
       authenticate: false,
@@ -61,6 +68,9 @@ export class AuthController extends BaseController {
       '/email-verification/verify',
       this.verifyEmailVerificationCode.bind(this),
     );
+    this.registerRoute('get', '/retrieve/imported/:temporaryPasswordGuid', this.retrieveImported.bind(this), {
+      authenticate: false,
+    });
   }
 
   public token: DawahRequestHandler<
@@ -131,4 +141,39 @@ public verifyEmailVerificationCode: DawahRequestHandler<
     success: true,
   });
 };
+  public registerImported: DawahRequestHandler<
+    any,
+    any,
+    RegisterUserDto
+  > = async (req, res) => {
+    const payload = req.user as (RequestWithUser['user'] & { imported?: boolean }) | undefined;
+    const userId = Number(req.user?.sub);
+
+    if (!payload?.imported || !req.user?.sub || Number.isNaN(userId)) {
+      res.status(403).json({ message: 'Invalid imported registration token' });
+      return;
+    }
+
+    const { email, username, password } = req.body;
+    const registerResponse = await this.registerImportedUseCase.execute(userId, email, username, password);
+
+    res.status(201).json(registerResponse);
+  }
+  
+public retrieveImported: DawahRequestHandler<
+  { temporaryPasswordGuid: string },
+  any
+> = async (req, res) => {
+  if (!this.retrieveImportedUseCase) {
+    res.status(500).json({ message: 'Not configured' });
+    return;
+  }
+
+  const dto = await this.retrieveImportedUseCase.execute(req.params.temporaryPasswordGuid);
+
+  // sign a short-lived access token for registration flow
+  const signed = this.jwtService.signTokenWithExtraClaims(dto.id.toString(), [], 'access', undefined, { imported: true });
+
+  res.json({ username: dto.username, token: signed.token, expiresIn: signed.expiresIn });
+}
 }
