@@ -68,7 +68,7 @@ export class VerifyEmailVerificationCodeUseCase {
     );
 
     await this.handleOnboardingEventUseCase.execute({
-      userId: user.id,
+      userIds: [ user.id ],
       event: OnboardingEventType.EmailVerified,
     });
   }

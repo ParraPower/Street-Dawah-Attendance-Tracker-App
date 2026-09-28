@@ -3,7 +3,7 @@ import { Column, Entity } from "typeorm";
 
 @Entity('email_verifications')
 export class EmailVerificationEntity extends BaseEntity {
-    @Column('number')
+    @Column('integer')
     userId!: number;
 
     @Column()
