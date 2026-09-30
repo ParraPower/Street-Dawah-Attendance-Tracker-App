@@ -12,7 +12,7 @@ export const authenticate = async (
 
   if (process.env.BYPASS_AUTHN === '1') {
     console.log("Bypassing authentication as per configuration");
-    (req as RequestWithUser).user = { id: 'bypass-user', scope: "khaleef" } as UserJwtPayload;
+    (req as RequestWithUser).user = { id: 'bypass-user', scope: "khaleef", is_inactive: false, is_onboarding: false } as UserJwtPayload;
     next();
     return;
   }

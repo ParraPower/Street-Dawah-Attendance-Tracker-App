@@ -17,15 +17,30 @@ export class OnboardUseCase {
     private readonly apiClientProvider: IApiClientProvider
   ) {}
 
-  execute = async (payload: OnboardUserDto): Promise<UserDto> => {
+  execute = async (
+    payload: OnboardUserDto,
+    accessToken: string,
+  ): Promise<UserDto & { accessToken: string; accessTokenExpiresIn: string }> => {
+    if (!accessToken.trim()) {
+      throw new ValidationError("A user access token is required for onboarding");
+    }
+    if (!Number.isInteger(payload.authUserId) || payload.authUserId <= 0) {
+      throw new ValidationError("A valid auth user ID is required for onboarding");
+    }
     if (!isNotNullOrEmpty(payload.name)) {
       throw new ValidationError("Name is required for onboarding");
     }
     if (!isNotNullOrEmpty(payload.mobile)) {
       throw new ValidationError("Mobile is required for onboarding");
     }
-    if (!this.mobileService.isInternationalNumber(payload.mobile)) {
+
+    if (!this.mobileService.validate(payload.mobile)) {
       throw new ValidationError("Invalid mobile number", { mobile: payload.mobile });
+    }
+    
+    let mobile = payload.mobile
+    if (!this.mobileService.isInternationalNumber(payload.mobile)) {
+      mobile = this.mobileService.normalizeNumber(mobile)
     }
 
     // If user already exists by auth user id, update
@@ -38,29 +53,37 @@ export class OnboardUseCase {
     //   }
     // }
 
-    // If mobile belongs to an active user, reject
-    const existingByMobile = await this.repo.findByMobile(payload.mobile);
-    if (existingByMobile && this.userService.isUserActive(existingByMobile)) {
+    const existingByAuthUser = await this.repo.findByAuthUserId(payload.authUserId);
+    const existingByMobile = await this.repo.findByMobile(mobile);
+    if (
+      existingByMobile &&
+      existingByMobile.id !== existingByAuthUser?.id &&
+      this.userService.isUserActive(existingByMobile)
+    ) {
       throw new ValidationError("Mobile number already in use", { mobile: payload.mobile });
     }
 
-    // Create new user
     const entity = mapper.map(payload as unknown as CreateUserDto, CreateUserDto, UserEntity) as UserEntity;
-    const created = await this.repo.create(entity);
+    const profile = existingByAuthUser
+      ? await this.repo.update(existingByAuthUser.id, {...payload, mobile })
+      : await this.repo.create(entity);
 
-    // Emit onboarding events to Auth API (do not modify any onboarding flags locally)
-    try {
-      if (payload.authUserId) {
-        await this.emitOnboardingEvents(payload.authUserId, payload.whatsAppMsgOptIn);
-      } else {
-        console.warn(`OnboardUseCase: no authUserId provided; skipping onboarding events emission`);
-      }
-    } catch (err: any) {
-      // Log and continue - allow retries to be implemented later
-      console.error(`OnboardUseCase: failed to emit onboarding events: ${err?.message || err}`);
+    if (!profile) {
+      throw new ValidationError("Unable to save onboarding profile");
     }
 
-    return mapper.map(created, UserEntity, UserDto);
+    await this.emitOnboardingEvents(payload.authUserId, payload.whatsAppMsgOptIn);
+
+    const client = this.apiClientProvider.getAuthClient();
+    const { data: token } = await client.post<{
+      accessToken: string;
+      accessTokenExpiresIn: string;
+    }>("/internal/auth/exchange-token", { accessToken });
+
+    return {
+      ...mapper.map(profile, UserEntity, UserDto),
+      ...token,
+    };
   };
 
   private async emitOnboardingEvents(authUserId: number, whatsAppOptIn?: boolean): Promise<void> {
@@ -75,13 +98,17 @@ export class OnboardUseCase {
     for (const event of events) {
       let attempt = 0;
       const maxAttempts = 3;
+      let succeeded = false;
+      let lastError: unknown;
       while (attempt < maxAttempts) {
         attempt++;
         try {
           await client.post(`/internal/users/${authUserId}/onboarding-events`, { event });
           console.log(`Emitted onboarding event ${event} for authUserId=${authUserId}`);
-          break; // success
+          succeeded = true;
+          break;
         } catch (err: any) {
+          lastError = err;
           const status = err?.response?.status;
           const msg = err?.response?.data?.message || err?.message || String(err);
           const isTransient = !status || status >= 500;
@@ -90,9 +117,12 @@ export class OnboardUseCase {
             console.error(`Giving up emitting event ${event} for authUserId=${authUserId}`);
             break;
           }
-          // backoff
           await sleep(200 * attempt);
         }
+      }
+
+      if (!succeeded) {
+        throw lastError ?? new Error(`Failed to emit event ${event} for authUserId=${authUserId}`);
       }
     }
   }

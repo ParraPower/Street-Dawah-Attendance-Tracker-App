@@ -6,22 +6,18 @@
   "scripts": {
     "test": "test",
     "build": "tsc",
-
     "typeorm:generate": "cross-env TS_NODE_PROJECT=./tsconfig.json ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:generate -d ./src/data/data-source.ts",
     "typeorm:run": "cross-env TS_NODE_PROJECT=./tsconfig.json ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d ./scripts/migration-data-source.ts",
-
     "migration:generate": "sh ./scripts/generate-migration.sh",
     "migration:generate:win": "powershell -ExecutionPolicy Bypass -File ./scripts/generate-migration.ps1",
     "migration:run": "sh ./scripts/run-migration.sh",
     "migration:run:win": "powershell -ExecutionPolicy Bypass -File ./scripts/run-migration.ps1",
     "migration:revert": "sh ./scripts/revert-migration.sh",
     "migration:revert:win": "powershell -ExecutionPolicy Bypass -File ./scripts/revert-migration.ps1",
-
     "start:local": "npm run build && cross-env NODE_ENV=local ts-node-dev -r tsconfig-paths/register src/server.ts",
     "start:dev": "npm run build && cross-env NODE_ENV=develop ts-node-dev -r tsconfig-paths/register src/server.ts",
     "admin:password:hash": "ts-node -r tsconfig-paths/register ./scripts/generate-password-hash.ts",
     "admin:clientsecret": "ts-node -r tsconfig-paths/register ./scripts/generate-secret.ts",
-
     "docker:start": "powershell -ExecutionPolicy Bypass -File ./scripts/docker-run.ps1"
   },
   "author": "",
@@ -31,6 +27,7 @@
     "@automapper/core": "^8.8.1",
     "@types/cors": "^2.8.19",
     "@types/morgan": "^1.9.10",
+    "app-framework": "file:../StreetDawahAppFramework",
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.3",
@@ -41,10 +38,10 @@
     "jsonwebtoken": "^9.0.3",
     "lodash": "^4.17.21",
     "morgan": "^1.10.1",
+    "nodemailer": "^10.0.12",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
-    "typeorm": "^0.3.28",
-    "app-framework": "file:../StreetDawahAppFramework"
+    "typeorm": "^0.3.28"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",

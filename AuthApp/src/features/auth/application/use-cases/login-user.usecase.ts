@@ -4,20 +4,17 @@ import { mapper } from "@auth/shared/infrastructure/mapping/mapper";
 import { UserEntity } from "@auth/features/users/domain/entities/user-entity";
 import { IUserRepository } from "@auth/features/users/domain/repositories/iuser-repository";
 import { IHasherService } from "../../domain/services/hasher-service";
-import { AuthService } from "../../domain/services/auth-service";
-import { GetUserActivationStatusUseCase } from '@auth/features/users/application/use-cases/get-user-activation-status.use-case';
 import { UserDto } from "../../../users/application/dtos/user.dto";
 import { UserService } from "@auth/features/users/domain/services/user-service";
 import { ValidationError } from "@auth/shared/infrastructure/middleware/global-error-handler";
-import { ILoginUserExtraClaims } from "app-framework"
+import { IssueTokenUseCase } from './issue-token.usecase';
 
 export class LoginUserUseCase {
   constructor(
     private readonly repo: IUserRepository,
     private readonly hashService: IHasherService,
-    private readonly authService: AuthService,
     private readonly userService: UserService,
-    private readonly getUserActivationStatusUseCase: GetUserActivationStatusUseCase,
+    private readonly issueTokenUseCase: IssueTokenUseCase,
   ) { }
 
   async execute(username: string, password: string): Promise<UserTokenResponseDto | null> {
@@ -37,28 +34,23 @@ export class LoginUserUseCase {
     }
     if (!user) throw new ValidationError('Invalid credentials');
 
-    if (!this.userService.isUserActive(user)) new ValidationError('Invalid credentials')
+    if (!this.userService.isNotDeletedUser(user)) {
+      throw new ValidationError('Invalid credentials');
+    }
 
     const ok = await this.hashService.verify(password, user.passwordHash!);
     if (!ok) throw new ValidationError('Invalid credentials');
 
-    let extraClaims: ILoginUserExtraClaims | undefined = undefined;
-    const userIdNum = parseInt(user.id as any, 10);
-    if (!Number.isNaN(userIdNum)) {
-      try {
-        const status = await this.getUserActivationStatusUseCase.execute({ userId: userIdNum });
-        extraClaims = {
-          is_logged_in_user: true,
-          is_active: !!status.isActive,
-          is_oboarded: !!status.hasCompletedOnboarding,
-        };
-      } catch (err) {
-        // ignore claim enrichment failures
-      }
-    }
-
-    const access = this.authService.signAccessToken(user.id.toString(), user.scopes, extraClaims);
-    const refresh = this.authService.signRefreshToken(user.id.toString(), user.scopes);
+    const access = this.issueTokenUseCase.execute({
+      user,
+      tokenType: 'access',
+      profile: 'user',
+    });
+    const refresh = this.issueTokenUseCase.execute({
+      user,
+      tokenType: 'refresh',
+      profile: 'user',
+    });
 
     const userDto = mapper.map(user, Object.getPrototypeOf(user).constructor, UserDto);
 

@@ -8,6 +8,8 @@ import { DawahRequestHandler } from '../http/dawah-request-handler';
 import { IJwtService } from '../auth/interfaces/jwt-service';
 import { requireAudience } from '../middleware/audience-guard';
 
+type RouteHandler = DawahRequestHandler | RequestHandler;
+
 
 export abstract class BaseController implements IController {
   public readonly router = Router();
@@ -19,7 +21,7 @@ export abstract class BaseController implements IController {
   public registerRoute(
     method: HttpMethod,
     path: string,
-    handler: DawahRequestHandler | DawahRequestHandler[] | RequestHandler | RequestHandler[],
+    handler: RouteHandler | RouteHandler[],
     options?: {
       authenticate?: boolean;
       authorizeScopes?: ScopeList;
@@ -64,8 +66,8 @@ export abstract class BaseController implements IController {
     (this.router as any)[method](path, ...routeHandlers);
   }
 
-  private wrapHandlers(handler: RequestHandler | RequestHandler[]): RequestHandler[] {
+  private wrapHandlers(handler: RouteHandler | RouteHandler[]): RequestHandler[] {
     const handlers = Array.isArray(handler) ? handler : [handler];
-    return handlers.map(h => asyncHandler(h));
+    return handlers.map(h => asyncHandler(h as DawahRequestHandler));
   }
 }

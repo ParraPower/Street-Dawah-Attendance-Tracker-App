@@ -18,9 +18,10 @@ import { createDataSource } from 'app-framework'
 import { UserEntity } from '../src/features/users/domain/entities/user-entity'
 import { JwtKey } from '../src/features/auth/domain/entities/key-entity'
 import { ClientEntity } from '../src/features/clients/domains/entities/client-entity'
+import { EmailVerificationEntity } from '../src/features/auth/domain/entities/email-verification-entity'
 
 console.log(__dirname + "/../migrations/*.ts")
 
-const AppDataSource = createDataSource(process.env.DB_URL!, [ UserEntity, JwtKey, ClientEntity ] as never, __dirname + "/../src/migrations/*.ts");
+const AppDataSource = createDataSource(process.env.DB_URL!, [ UserEntity, JwtKey, ClientEntity, EmailVerificationEntity ] as never, __dirname + "/../src/migrations/*.ts");
 
 export default AppDataSource;

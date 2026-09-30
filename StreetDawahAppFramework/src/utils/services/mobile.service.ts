@@ -249,13 +249,26 @@ export class MobileService implements IMobileService {
 
 	private formatToRegex(format: string): RegExp {
 		let regexStr = "^";
-
-		for (const ch of format) {
-			if (ch === "x") regexStr += "\\d";
+		var i = 0;
+		for (; i < format.length;) {
+			const ch = format[i]
+			if (ch === "\\") {
+				if ((i + 2 < format.length) && ch[i + 1] === "d" && ch[i + 2] === "+") {
+					regexStr = "\\d{1,}";  
+					i = i + 2;
+					continue;
+				}
+				else if ((i + 6 < format.length) && ch[i + 1] === "d" && /^\\\{\d\,\d\}$/i.test(format.substring(i, i + 7))) {
+					i = i + 6;
+					continue;
+				}
+			}
+			else if (ch === "x") regexStr += "\\d";
 			else if (ch === " ") regexStr += "\\s";
 			else if (ch === "-") regexStr += "-";
 			else if (ch === "+") regexStr += "\\+"
 			else regexStr += ch;
+			++i
 		}
 
 		regexStr += "$";

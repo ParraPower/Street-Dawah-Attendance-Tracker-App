@@ -1,11 +1,13 @@
-import { NextFunction, RequestHandler } from 'express';
+import { NextFunction } from 'express';
 import { RequestWithUser } from './request-with-user';
 
-export interface DawahRequestHandler<
+export type DawahRequestHandler<
   P = any,
   ResBody = any,
   ReqBody = any | { error: string },
   ReqQuery = any
-> extends RequestHandler<P, ResBody, ReqBody, ReqQuery> {
-  (req: RequestWithUser<P, ResBody, ReqBody, ReqQuery>, res: any, next: NextFunction): any;
-}
+> = (
+  req: RequestWithUser<P, ResBody, ReqBody, ReqQuery>,
+  res: any,
+  next: NextFunction
+) => unknown;
