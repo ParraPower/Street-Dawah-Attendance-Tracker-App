@@ -88,12 +88,14 @@ export class SendEmailVerificationCodeUseCase {
         verificationCode,
       );
 
+    const expiresAt = new Date(
+        Date.now() + 10 * 60 * 1000,
+      )
+
     await this.emailVerificationRepository.create({
       userId: user.id,
       codeHash,
-      expiresAt: new Date(
-        Date.now() + 10 * 60 * 1000,
-      ),
+      expiresAt
     });
 
     await this.emailService.send({
@@ -105,6 +107,10 @@ export class SendEmailVerificationCodeUseCase {
             <p>
               Your email verification code is:
               <strong>${verificationCode}</strong>
+            </p>
+            <p>
+              Your code wiil expire on:
+              <strong>${expiresAt.toISOString()}</strong>
             </p>
           </body>
         </html>

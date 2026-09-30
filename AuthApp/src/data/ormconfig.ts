@@ -5,6 +5,7 @@ import { UserEntity } from '@auth/features/users/domain/entities/user-entity';
 //import { TokenWhitelist } from '../domains/tokens/token-whitelist-entity';
 import { JwtKey } from '@auth/features/auth/domain/entities/key-entity';
 import { ClientEntity } from '@auth/features/clients/domains/entities/client-entity';
+import { EmailVerificationEntity } from '@auth/features/auth/domain/entities/email-verification-entity';
 
 console.log("Creating data source with DB URL:", env.db.url);
 
@@ -15,7 +16,8 @@ const createDataSource = () => new DataSource({
     UserEntity,//, TokenBlacklist, 
     //TokenWhitelist
     JwtKey,
-    ClientEntity
+    ClientEntity,
+    EmailVerificationEntity
   ],
   synchronize: false, // true only in dev
   logging: true,

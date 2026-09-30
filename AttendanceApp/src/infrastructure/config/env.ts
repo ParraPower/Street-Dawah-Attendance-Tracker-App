@@ -1,3 +1,4 @@
+
 export const env = {
   port: Number(process.env.PORT) || 3000,
   nodeEnv: process.env.NODE_ENV || 'development',
@@ -9,5 +10,5 @@ export const env = {
     url: process.env.DB_URL!,
   },
   logFormat: process.env.LOG_FORMAT || 'dev',
-  finalMobileFormat: process.env.FINAL_MOBILE_FORMAT
+  finalMobileFormat: process.env.FINAL_MOBILE_FORMAT?.split(',')
 };

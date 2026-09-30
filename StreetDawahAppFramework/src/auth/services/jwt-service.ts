@@ -75,7 +75,7 @@ export class JwtService implements IJwtService {
     });
   }
 
-  verifyJwtSync(token: string): never {
+  verifyJwtSync(token: string): unknown {
     try {
       const decoded = jwt.decode(token, { complete: true });
       
@@ -86,7 +86,7 @@ export class JwtService implements IJwtService {
       if (!pub) {
         throw new Error('Unknown key ID');
       }
-      return jwt.verify(token, pub, { algorithms: ['RS256'] }) as never;
+      return jwt.verify(token, pub, { algorithms: ['RS256'] });
     } catch (err) {
       throw err instanceof Error ? err : new Error('Token verification failed');
     }   

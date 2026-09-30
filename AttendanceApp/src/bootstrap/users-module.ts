@@ -7,13 +7,14 @@ import { OnboardUseCase } from "@attendance/features/users/application/use-cases
 import { apiClientProvider } from "../infrastructure/api";
 import { AttendanceAppJwtService } from "@attendance/infrastructure/auth/jwt-service";
 import { KeyCacheService, ScopeService, MobileService } from "app-framework";
+import { env } from "@attendance/infrastructure/config/env"
 
 export function buildUsersController(dataSource: DataSource): UsersController {
   const repository = new UserRepository(dataSource.getRepository(UserEntity));
   const service = new UserService();
   const scopeService = new ScopeService();
   const jwtService = new AttendanceAppJwtService(new KeyCacheService());
-  const mobileService = new MobileService();
+  const mobileService = new MobileService(env.finalMobileFormat);
 
   const onboardUseCase = new OnboardUseCase(service, repository, mobileService, apiClientProvider);
 

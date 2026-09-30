@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { BaseController, IJwtService, RequestWithUser, ScopeService } from "app-framework";
 import { OnboardUseCase } from "../../../application/use-cases/onboard.usecase";
 import { env } from "../../../../../infrastructure/config/env";
@@ -16,8 +16,14 @@ export class UsersController extends BaseController {
   }
 
   private async onboard(req: RequestWithUser, res: Response): Promise<void> {
-    const onboardUser = {...req.body, authUserId: req.user?.sub } as OnboardUserDto
-    const result = await this.onboardUseCase.execute(onboardUser);
+    const accessToken = req.headers.authorization?.match(/^Bearer\s+(.+)$/i)?.[1];
+    if (!accessToken) {
+      res.status(401).json({ message: 'Access token required' });
+      return;
+    }
+
+    const onboardUser = {...req.body, authUserId: Number(req.user?.sub) } as OnboardUserDto
+    const result = await this.onboardUseCase.execute(onboardUser, accessToken);
     res.status(201).json(result);
   }
 }

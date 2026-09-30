@@ -37,6 +37,7 @@ import { UserMembershipRepository } from "@attendance/features/user-memberships/
 import { UserMembershipService } from "@attendance/features/user-memberships/domain/services/user-membership-service";
 import { CreateBulkUserMembershipsUseCase } from "@attendance/features/user-memberships/application/use-cases/create-bulk-user-memberships.use-case";
 import { ImportBulkUserMembershipsByFileUseCase } from "@attendance/features/import/application/use-cases/import-bulk-user-memberships-by-file.use-case";
+import { env } from "@attendance/infrastructure/config/env"
 
 /**
  * Bootstrap function for the Import module
@@ -55,7 +56,7 @@ export function buildImportController(apiClientProvider: IApiClientProvider, dat
 
   // 2. Domain services (reuse from app-framework)
   const scopeService = new ScopeService();
-  const mobileService = new MobileService();
+  const mobileService = new MobileService(env.finalMobileFormat);
   const jwtService = new AttendanceAppJwtService(new KeyCacheService()); // Stub implementation, as JWT validation is handled by Auth API middleware
   const fileParserService = new UserFileParserService(mobileService); // Assuming this is implemented elsewhere
   const locationFileParserService = new LocationFileParserService();

@@ -1,6 +1,8 @@
+import { RequestHandler } from 'express';
 import { DawahRequestHandler } from '../http/dawah-request-handler';
+import { RequestWithUser } from '../http/request-with-user';
 
 export const asyncHandler =
-  (fn: DawahRequestHandler): DawahRequestHandler =>
+  (fn: DawahRequestHandler): RequestHandler =>
   (req, res, next) =>
-    Promise.resolve(fn(req, res, next)).catch((err) => next(err));
+    Promise.resolve(fn(req as RequestWithUser, res, next)).catch(next);

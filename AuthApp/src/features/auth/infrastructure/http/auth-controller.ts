@@ -9,7 +9,7 @@ import { UserDto } from '@auth/features/users/application/dtos/user.dto';
 import { ResetUserPasswordUseCase } from '../../application/use-cases/reset-user-password.usecase';
 import { ResetUserPasswordResponseDto } from '../../application/dtos/reset-user-password.dto';
 import { BaseController } from '@auth/shared/infrastructure/http/base-controller';
-import { RequestWithUser, ScopeService } from "app-framework";
+import { AuthorizeHandleOnboardingUsers, RequestWithUser, ScopeService } from "app-framework";
 import { IAuthAppJwtService } from '../../domain/services/jwt-service';
 import { env } from '@auth/shared/infrastructure/config/env';
 import { AccessTokenRequestDto } from '../../application/dtos/access-token-request.dto';
@@ -43,7 +43,10 @@ export class AuthController extends BaseController {
       authenticate: false,
     });
 
-    this.registerRoute('post', '/register/imported', this.registerImported.bind(this));
+    this.registerRoute('post', '/register/imported', this.registerImported.bind(this), { 
+      authenticate: true,
+      handleOnboardingUsers: AuthorizeHandleOnboardingUsers.OnlyAllowThem, 
+    });
 
     this.registerRoute('post', '/token', this.token.bind(this), {
       authenticate: false,
@@ -61,12 +64,20 @@ export class AuthController extends BaseController {
       'post',
       '/email-verification/send',
       this.sendEmailVerificationCode.bind(this),
+      {
+        authenticate: true,
+        handleOnboardingUsers: AuthorizeHandleOnboardingUsers.AllowThem,
+      }
     );
 
     this.registerRoute(
       'post',
       '/email-verification/verify',
       this.verifyEmailVerificationCode.bind(this),
+      {
+        authenticate: true,
+        handleOnboardingUsers: AuthorizeHandleOnboardingUsers.AllowThem,
+      }
     );
     this.registerRoute('get', '/retrieve/imported/:temporaryPasswordGuid', this.retrieveImported.bind(this), {
       authenticate: false,
@@ -118,7 +129,7 @@ export class AuthController extends BaseController {
     any
   > = async (req, res) => {
     await this.sendEmailVerificationCodeUseCase.execute(
-      Number((req as RequestWithUser).user?.sub),
+      Number(req.user?.sub),
     );
 
     res.json({
@@ -128,17 +139,23 @@ export class AuthController extends BaseController {
 
 public verifyEmailVerificationCode: DawahRequestHandler<
   any,
-  { success: boolean },
+  { success: boolean; accessToken: string; accessTokenExpiresIn: string },
   VerifyEmailVerificationCodeDto
 > = async (req, res) => {
+  const accessToken = req.headers.authorization?.match(/^Bearer\s+(.+)$/i)?.[1];
+  if (!accessToken) {
+    return res.status(401).json({ message: 'Access token required' });
+  }
 
-  await this.verifyEmailVerificationCodeUseCase.execute(
+  const token = await this.verifyEmailVerificationCodeUseCase.execute(
     Number(req.user?.sub),
     req.body.code,
+    accessToken,
   );
 
   res.json({
     success: true,
+    ...token,
   });
 };
   public registerImported: DawahRequestHandler<
@@ -146,16 +163,23 @@ public verifyEmailVerificationCode: DawahRequestHandler<
     any,
     RegisterUserDto
   > = async (req, res) => {
-    const payload = req.user as (RequestWithUser['user'] & { imported?: boolean }) | undefined;
-    const userId = Number(req.user?.sub);
+    const user = req.user;
+    const payload = user as (RequestWithUser['user'] & { imported?: boolean }) | undefined;
+    const userId = Number(user?.sub);
 
-    if (!payload?.imported || !req.user?.sub || Number.isNaN(userId)) {
+    if (!payload?.imported || !user?.sub || Number.isNaN(userId)) {
       res.status(403).json({ message: 'Invalid imported registration token' });
       return;
     }
 
+    const accessToken = req.headers.authorization?.match(/^Bearer\s+(.+)$/i)?.[1];
+    if (!accessToken) {
+      res.status(401).json({ message: 'Access token required' });
+      return;
+    }
+
     const { email, username, password } = req.body;
-    const registerResponse = await this.registerImportedUseCase.execute(userId, email, username, password);
+    const registerResponse = await this.registerImportedUseCase.execute(userId, email, username, password, accessToken);
 
     res.status(201).json(registerResponse);
   }
@@ -164,16 +188,8 @@ public retrieveImported: DawahRequestHandler<
   { temporaryPasswordGuid: string },
   any
 > = async (req, res) => {
-  if (!this.retrieveImportedUseCase) {
-    res.status(500).json({ message: 'Not configured' });
-    return;
-  }
 
-  const dto = await this.retrieveImportedUseCase.execute(req.params.temporaryPasswordGuid);
-
-  // sign a short-lived access token for registration flow
-  const signed = this.jwtService.signTokenWithExtraClaims(dto.id.toString(), [], 'access', undefined, { imported: true });
-
-  res.json({ username: dto.username, token: signed.token, expiresIn: signed.expiresIn });
+  const result = await this.retrieveImportedUseCase.execute(req.params.temporaryPasswordGuid);
+  res.json(result);
 }
 }

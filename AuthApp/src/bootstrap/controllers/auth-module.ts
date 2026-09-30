@@ -7,7 +7,6 @@ import { ClientService } from "@auth/features/clients/domains/services/client-se
 import { GenerateTokenUseCase, IssueClientCredentialsTokenUseCase, LoginUserUseCase, RegisterUserUseCase, ResetUserPasswordUseCase } from "@auth/features/auth/application/use-cases/index";
 // import { JwtService } from "../infrastructure/crypto/jwt.service";
 // import { TokenFactory } from "../domain/tokens/token.factory";
-import { AuthService } from "@auth/features/auth/domain/services/auth-service";
 import { AuthController } from "@auth/features/auth/infrastructure/http/auth-controller";
 import { UserRepository } from "@auth/features/users/infrastructure/persistence/typeorm/user-repository";
 import { UserEntity } from "@auth/features/users/domain/entities/user-entity";
@@ -24,8 +23,9 @@ import { EmailVerificationRepository } from "@auth/features/auth/infrastructure/
 import { EmailVerificationEntity } from "@auth/features/auth/domain/entities/email-verification-entity";
 import { SmtpEmailService } from "@auth/shared/infrastructure/email/smtp-email-service";
 import { RetrieveImportedUseCase } from '@auth/features/users/application/use-cases/retrieve-imported.usecase';
-import { GetUserActivationStatusUseCase } from "@auth/features/users/application/use-cases/get-user-activation-status.use-case";
 import { RegisterImportedUseCase } from "@auth/features/auth/application/use-cases/register-imported.usecase";
+import { ExchangeTokenUseCase } from "@auth/features/auth/application/use-cases/exchange-token.usecase";
+import { IssueTokenUseCase } from "@auth/features/auth/application/use-cases/issue-token.usecase";
 
 //src\bootstrap\controllers\auth-module.ts
 export function buildAuthController(dataSource: DataSource) {
@@ -49,27 +49,27 @@ export function buildAuthController(dataSource: DataSource) {
   const scopeService = new ScopeService();
 
   const userService = new UserService();
-  const getUserActivationStatusUseCase = new GetUserActivationStatusUseCase(userService, userRepo);
 
   const jwtService = new AuthAppJwtService(new KeyCacheService());
+  const issueTokenUseCase = new IssueTokenUseCase(userService, jwtService);
+  const exchangeTokenUseCase = new ExchangeTokenUseCase(userRepo, userService, issueTokenUseCase, jwtService);
 
   // 2. Domain services
   const emailService =
     new SmtpEmailService();
   const passwordService = new PasswordService();
   const clientService = new ClientService(bcryptHasher);
-  const authService = new AuthService(jwtService, passwordService);
   //const tokenFactory = new TokenFactory(jwt);
 
   // 3. Application service
   const issueClientCredentialsTokenUseCase = new IssueClientCredentialsTokenUseCase(jwtService, clientRepo, clientService);
-  const loginUserUseCase = new LoginUserUseCase(userRepo, bcryptHasher, authService, userService, getUserActivationStatusUseCase);
+  const loginUserUseCase = new LoginUserUseCase(userRepo, bcryptHasher, userService, issueTokenUseCase);
   const generateTokenUserCase = new GenerateTokenUseCase(issueClientCredentialsTokenUseCase, loginUserUseCase);
   const registerUserUseCase = new RegisterUserUseCase(userRepo, bcryptHasher, scopeService);
-  const retrieveImportedUseCase = new RetrieveImportedUseCase(userRepo, userService)
-  const registerImportedUseCase = new RegisterImportedUseCase(userRepo, bcryptHasher, userService, jwtService);
+  const retrieveImportedUseCase = new RetrieveImportedUseCase(userRepo, userService, issueTokenUseCase)
+  const registerImportedUseCase = new RegisterImportedUseCase(userRepo, bcryptHasher, userService, exchangeTokenUseCase);
   const resetUserPasswordUseCase = new ResetUserPasswordUseCase(userRepo, passwordService, bcryptHasher)
-  const refreshAccessTokenUseCase = new RefreshAccessTokenUseCase(jwtService, authService, userRepo, userService, getUserActivationStatusUseCase);
+  const refreshAccessTokenUseCase = new RefreshAccessTokenUseCase(jwtService, userRepo, userService, issueTokenUseCase);
   const handleOnboardingEventUseCase =
     new HandleOnboardingEventUseCase(
       userRepo,
@@ -90,6 +90,7 @@ export function buildAuthController(dataSource: DataSource) {
       emailVerificationRepo,
       handleOnboardingEventUseCase,
       bcryptHasher,
+      exchangeTokenUseCase,
     );
 
   // 4. Controller

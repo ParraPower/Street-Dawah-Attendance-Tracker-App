@@ -4,6 +4,7 @@ import { IEmailVerificationRepository } from "../../domain/repositories/iemail-v
 import { OnboardingEventType } from "@auth/features/users/domain/types/onboarding-event.type";
 import { NotFoundError, ValidationError } from "@auth/shared/infrastructure/middleware/global-error-handler";
 import { IHasherService } from "app-framework";
+import { ExchangeTokenResponse, ExchangeTokenUseCase } from './exchange-token.usecase';
 
 //src\features\auth\application\use-cases\verify-email-verification-code.usecase.ts
 export class VerifyEmailVerificationCodeUseCase {
@@ -12,12 +13,14 @@ export class VerifyEmailVerificationCodeUseCase {
     private readonly emailVerificationRepository: IEmailVerificationRepository,
     private readonly handleOnboardingEventUseCase: HandleOnboardingEventUseCase,
     private readonly hasherService: IHasherService,
+    private readonly exchangeTokenUseCase: ExchangeTokenUseCase,
   ) { }
 
   async execute(
     userId: number,
     code: string,
-  ): Promise<void> {
+    accessToken: string,
+  ): Promise<ExchangeTokenResponse> {
     const user =
       await this.userRepository.findById(userId);
 
@@ -71,5 +74,7 @@ export class VerifyEmailVerificationCodeUseCase {
       userIds: [ user.id ],
       event: OnboardingEventType.EmailVerified,
     });
+
+    return this.exchangeTokenUseCase.execute(accessToken);
   }
 }

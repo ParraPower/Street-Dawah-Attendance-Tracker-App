@@ -16,7 +16,7 @@ export interface IJwtService {
 
   verifyJwt(token: string, action: (err: Error, decoded: never) => void): void;
 
-  verifyJwtSync(token: string): never;
+  verifyJwtSync(token: string): unknown;
 
   generateJwtKeyPair(): { kid: UUID, publicKey: string, privateKey: string };
 }

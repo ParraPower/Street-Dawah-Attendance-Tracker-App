@@ -12,5 +12,5 @@ export interface IAuthAppJwtService extends IJwtService {
     extraClaims?: Record<string, any>,
     ): { token: string; jti: string; expiresIn: StringValue }; 
     
-    verifyJwtSync(token: string): never;
+    verifyJwtSync(token: string): unknown;
 }
