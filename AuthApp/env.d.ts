@@ -16,6 +16,13 @@ declare global {
         JWT_ISSUER: string;
         JWT_DEFAULT_AUDIENCE: string;
         JWT_EXPIRATION_TIME: string;
+
+        EMAIL_HOST: string;
+        EMAIL_PORT: string
+        EMAIL_USER: string
+        EMAIL_PASSWORD: string
+        EMAIL_FROM: string
+        EMAIL_SECURE: string
       }
     }
   }
