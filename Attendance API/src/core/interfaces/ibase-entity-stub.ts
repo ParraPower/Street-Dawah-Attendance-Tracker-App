@@ -1,1 +1,0 @@
-export { IBaseEntityStub } from 'app-framework';
